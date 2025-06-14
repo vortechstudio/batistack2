@@ -9,8 +9,14 @@ install: vendor/autoload.php .env public/storage public/build/manifest.json
 	php artisan install:country
 	php artisan install:pcg
 
+update-start:
+	ssh o2switch "cd /home/mapu6796/admin.c2me.ovh && git pull origin master && make update"
+
 update:
 	bash update.sh
+	php artisan filament:optimize
+	php artisan filament:optimize-clear
+	php artisan optimize
 
 .env:
 	cp .env.example .env
