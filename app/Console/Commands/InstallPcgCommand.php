@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Core\PlanComptable;
 use Illuminate\Console\Command;
-use Rap2hpoutre\FastExcel\Facades\FastExcel;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class InstallPcgCommand extends Command
 {
