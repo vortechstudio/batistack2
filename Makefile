@@ -6,7 +6,7 @@ install: vendor/autoload.php .env public/storage public/build/manifest.json
 	php artisan migrate --force
 	php artisan db:seed --force
 	php artisan install:cities
-	php artisan install:countries
+	php artisan install:country
 	php artisan install:pcg
 
 update:
