@@ -8,6 +8,10 @@ install: vendor/autoload.php .env public/storage public/build/manifest.json
 	php artisan install:cities
 	php artisan install:country
 	php artisan install:pcg
+	php artisan filament:optimize
+	php artisan filament:optimize-clear
+	php artisan optimize
+	php artisan up
 
 update-start:
 	ssh o2switch "cd /home/mapu6796/admin.c2me.ovh && git reset --hard && git pull origin master && make update"
@@ -17,6 +21,7 @@ update:
 	php artisan filament:optimize
 	php artisan filament:optimize-clear
 	php artisan optimize
+	php artisan up
 
 .env:
 	cp .env.example .env
