@@ -18,7 +18,7 @@ class VAT implements ValidationRule
         $api = new VATnumber();
 
         if(!$api->verify($value, 'FR')) {
-            $fail('VAT number is not correct');
+            $fail('Numéro de TVA Incorrect');
         }
     }
 }
