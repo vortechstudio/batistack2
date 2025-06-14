@@ -5,6 +5,7 @@ namespace App\Livewire\Settings;
 use App\Models\Core\City;
 use App\Models\Core\Country;
 use App\Rules\VAT;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -16,15 +17,19 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 
 class Company extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
     use Toast;
+    use WithFileUploads;
 
     public \App\Models\Core\Company $company;
     public ?array $data = [];
+    public $logo;
+    public $logo_wide;
 
     public function mount(): void
     {
@@ -84,15 +89,33 @@ class Company extends Component implements HasSchemas
                                 TextInput::make('capital')->label('Capital'),
                             ]),
                         TextInput::make('rcs')->label('RCS'),
-                    ])
-
+                    ]),
             ]);
     }
 
-    public function create()
+    public function create(): void
     {
         $this->company->update($this->form->getState());
         toastr()->success("Les informations de la société ont été mise à jours");
+    }
+
+    public function uploadLogo(): void
+    {
+        try {
+            $this->logo->storeAs(
+                path: 'societe',
+                name: 'logo.png',
+            );
+
+            $this->logo_wide->storeAs(
+                path: 'societe',
+                name: 'logo_wide.png',
+            );
+
+            toastr()->success("Le logo est enregistré");
+        }catch (\Exception $e){
+            toastr()->error($e->getMessage());
+        }
     }
 
 

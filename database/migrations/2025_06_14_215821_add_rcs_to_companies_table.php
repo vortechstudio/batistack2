@@ -9,13 +9,15 @@ return new class extends Migration {
     {
         Schema::table('companies', function (Blueprint $table) {
             $table->string('rcs')->nullable();
+            $table->string('logo')->nullable();
+            $table->string('logo_wide')->nullable();
         });
     }
 
     public function down(): void
     {
         Schema::table('companies', function (Blueprint $table) {
-            $table->dropColumn('rcs');
+            $table->dropColumn('rcs', 'logo', 'logo_wide');
         });
     }
 };
