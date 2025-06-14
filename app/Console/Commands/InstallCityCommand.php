@@ -38,7 +38,7 @@ class InstallCityCommand extends Command
             foreach ($chunks as $i => $chunk) {
                 $this->info("Traitement de la tranche " . ($i + 1) . "/{$totalChunks}");
 
-                $bar = $this->output->createProgressBar($chunk);
+                $bar = $this->output->createProgressBar(count($chunk));
                 foreach ($chunk as $city) {
                     $latLong = explode(',', $city['coordonnees_gps']);
 
