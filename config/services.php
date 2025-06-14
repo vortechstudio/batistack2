@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'bridge' => [
+        'client_id' => env('BRIDGE_CLIENT_ID'),
+        'client_secret' => env('BRIDGE_CLIENT_SECRET'),
+        'endpoint' => 'https://api.bridgeapi.io/v3/',
+        'version' => '2025-01-15'
+    ],
+
+    'siren' => [
+        'api_key' => env('SIREN_API_KEY'),
+    ]
+
 ];

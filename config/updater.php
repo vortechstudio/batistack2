@@ -43,7 +43,7 @@ return [
     'optimize' => true,
 
     'after_update_pipelines' => [
-        // you can add your own pipelines here
+        \App\Pipeline\InstallPipeline::class,
     ],
 
 ];

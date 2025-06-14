@@ -20,6 +20,8 @@
     "devDependencies": {
         "@tailwindcss/vite": "^4.1.10",
         "daisyui": "^5.0.43",
+        "laravel-echo": "^2.1.5",
+        "pusher-js": "^8.4.0",
         "tailwindcss": "^4.1.10"
     }
 }
