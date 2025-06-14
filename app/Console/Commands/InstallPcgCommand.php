@@ -27,7 +27,7 @@ class InstallPcgCommand extends Command
                     'type' => $account['type'],
                     'lettrage' =>  $account['lettrage'] == true ? true : false,
                     'principal' =>  $account['principal'],
-                    'initial' =>   number_format($account['initial'], 2, ',', ' '),
+                    'initial' =>   (float)$account['initial'],
                 ]);
                 $bar->advance();
             }
