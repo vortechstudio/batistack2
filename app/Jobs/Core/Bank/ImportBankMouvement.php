@@ -6,6 +6,8 @@ use App\Events\Core\Bank\AggregateMouvementEvent;
 use App\Models\Core\Company;
 use App\Models\Core\CompanyBank;
 use App\Models\Core\CompanyBankAccountMouvement;
+use App\Models\User;
+use App\Notifications\Core\Bank\UpdateBankAccount;
 use App\Services\Bridge;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -53,9 +55,13 @@ class ImportBankMouvement implements ShouldQueue
                     'company_bank_account_id' => $account->id,
                 ]);
             }
+
+            foreach (User::where('role', 'admin')->get() as $user) {
+                $user->notify((new UpdateBankAccount($account))->delay(now()->addSeconds(15)));
+            }
         }
 
-        AggregateMouvementEvent::dispatch();
+
     }
 
     private function getAccessToken(): void

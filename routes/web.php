@@ -7,6 +7,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/test', function () {
+    \Bugsnag\BugsnagLaravel\Facades\Bugsnag::notifyException(new RuntimeException("Error !"));
+});
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
