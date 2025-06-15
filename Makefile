@@ -29,7 +29,7 @@ update:
 	cp .env.example .env
 	php artisan key:generate
 	@echo "\nConfiguration des variables d'environnement..."
-		bash config.sh
+	bash config.sh
 
 public/storage:
 	php artisan storage:link
