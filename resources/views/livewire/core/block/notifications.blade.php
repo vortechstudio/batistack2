@@ -2,7 +2,7 @@
     @if(count($notifications) > 0)
         <flux:button wire:click="readNotification" icon:trailing="bell"><span class="status status-error animate-ping"></span></flux:button>
     @else
-        <flux:button icon:trailing="bell"></flux:button>
+        <flux:button href="{{ route('notifications') }}" icon:trailing="bell"></flux:button>
     @endif
 
     @if(count($notifications) > 0)
