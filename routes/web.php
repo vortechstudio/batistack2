@@ -20,7 +20,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('settings/company', \App\Livewire\Settings\Company::class)->name('settings.company');
     Route::get('settings/pcg', \App\Livewire\Settings\Plan::class)->name('settings.pcg');
+    Route::get('settings/pcg/create', \App\Livewire\Settings\CreatePlan::class)->name('settings.pcg.create');
     Route::get('settings/bank', \App\Livewire\Settings\Bank::class)->name('settings.bank');
+    Route::get('settings/bank/create', \App\Livewire\Settings\CreateBank::class)->name('settings.bank.create');
 });
+
+Route::get('/api/bank/connect', [\App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');;
 
 require __DIR__.'/auth.php';

@@ -21,3 +21,5 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+batistack.test.pem
+batistack.test-key.pem

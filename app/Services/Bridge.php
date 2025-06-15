@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Core\Company;
+
 class Bridge
 {
     private string $client_id;
@@ -11,5 +13,83 @@ class Bridge
     {
         $this->client_id = config('services.bridge.client_id');
         $this->client_secret = config('services.bridge.client_secret');
+    }
+
+    public function get(string $folder, array|null $data = null, string $withToken = null): ?array
+    {
+        try {
+            if($withToken) {
+                $request = \Http::withoutVerifying()->withHeaders([
+                    'Bridge-Version' => config('services.bridge.version'),
+                    'Client-Id' => $this->client_id,
+                    'Client-Secret' => $this->client_secret,
+                    'accept' => 'application/json',
+                    'content-type' => 'application/json',
+                    'authorization' => 'Bearer '.$withToken,
+                ])
+                    ->get(config('services.bridge.endpoint').$folder, $data)
+                    ->json();
+            } else {
+                $request = \Http::withoutVerifying()->withHeaders([
+                    'Bridge-Version' => config('services.bridge.version'),
+                    'Client-Id' => $this->client_id,
+                    'Client-Secret' => $this->client_secret,
+                    'accept' => 'application/json',
+                    'content-type' => 'application/json',
+                ])
+                    ->get(config('services.bridge.endpoint').$folder, $data)
+                    ->json();
+            }
+
+            return collect($request)->toArray();
+        }catch (\Exception $exception) {
+            \Log::emergency($exception);
+            toastr()->addError($exception->getMessage());
+            return null;
+        }
+    }
+
+    public function post(string $folder, array|null $data = null, string|null $withToken = null): ?array
+    {
+        try {
+            if ($withToken) {
+                $request = \Http::withoutVerifying()->withHeaders([
+                    'Bridge-Version' => config('services.bridge.version'),
+                    'Client-Id' => $this->client_id,
+                    'Client-Secret' => $this->client_secret,
+                    'accept' => 'application/json',
+                    'authorization' => 'Bearer '.$withToken,
+                    'content-type' => 'application/json',
+                ])
+                    ->post(config('services.bridge.endpoint').$folder, $data)
+                    ->json();
+            } else {
+                $request = \Http::withoutVerifying()->withHeaders([
+                    'Bridge-Version' => config('services.bridge.version'),
+                    'Client-Id' => $this->client_id,
+                    'Client-Secret' => $this->client_secret,
+                    'accept' => 'application/json',
+                    'content-type' => 'application/json',
+                ])
+                    ->post(config('services.bridge.endpoint').$folder, $data)
+                    ->json();
+            }
+
+            return collect($request)->toArray();
+        }catch (\Exception $exception) {
+            \Log::emergency($exception);
+            toastr()->addError($exception->getMessage());
+            return null;
+        }
+    }
+
+    public function getAccessToken(): void
+    {
+        if(!cache()->has('bridge_access_token')) {
+            $authToken = $this->post('aggregation/authorization/token', [
+                'user_uuid' => Company::first()->bridge_client_id,
+            ]);
+            cache()->put('bridge_access_token', $authToken['access_token']);
+        }
     }
 }

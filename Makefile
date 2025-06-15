@@ -8,6 +8,7 @@ install: vendor/autoload.php .env public/storage public/build/manifest.json
 	php artisan install:cities
 	php artisan install:country
 	php artisan install:pcg
+	php artisan install:bank
 	php artisan filament:optimize
 	php artisan filament:optimize-clear
 	php artisan optimize
@@ -18,6 +19,7 @@ update-start:
 
 update:
 	bash update.sh
+	php artisan install:bank
 	php artisan filament:optimize
 	php artisan filament:optimize-clear
 	php artisan optimize
@@ -44,3 +46,11 @@ vendor/autoload.php: composer.lock
 public/build/manifest.json: package.json
 	npm i
 	npm run build
+
+reset:
+	php artisan migrate:fresh --seed
+	php artisan install:bank
+	php artisan install:cities
+	php artisan install:country
+	php artisan install:pcg
+	php artisan optimize:clear

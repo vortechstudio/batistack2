@@ -5,3 +5,8 @@
  */
 
 import './echo';
+
+window.Echo.private('App.Models.User.1')
+    .listen('AggregateMouvementEvent', (event) => {
+        console.log(event)
+    })
