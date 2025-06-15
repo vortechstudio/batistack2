@@ -19,3 +19,7 @@ sed -i "s/^GITHUB_REPOSITORY=\".*\"/GITHUB_REPOSITORY=batistack2/" .env
 
 sed -i "s/^BRIDGE_CLIENT_ID=\".*\"/BRIDGE_CLIENT_ID=sandbox_id_4d775bc33db849938327555d5287e6c6/" .env
 sed -i "s/^BRIDGE_CLIENT_SECRET=\".*\"/BRIDGE_CLIENT_SECRET=sandbox_secret_aUH13Wm3ON27lYek7plXtxDPYxZBhdQpd0lW5Ok7MtwnlQccpqJcSNtkh4K8svL1/" .env
+
+sed -i "s/^PUSHER_APP_KEY=\".*\"/PUSHER_APP_KEY=7edfa96845d9f9a080e9/" .env
+sed -i "s/^PUSHER_APP_SECRET=\".*\"/PUSHER_APP_SECRET=1e7ccaba47065ed0c632/" .env
+sed -i "s/^PUSHER_APP_ID=\".*\"/PUSHER_APP_ID=2008361/" .env
