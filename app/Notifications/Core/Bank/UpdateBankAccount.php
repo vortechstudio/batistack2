@@ -51,8 +51,8 @@ class UpdateBankAccount extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            "type" => "success",
-            "icon" => "o-arrows-right-left",
+            "type" => "green",
+            "icon" => "heroicon-o-arrows-right-left",
             "title" => "Compte ".$this->account->name,
             "description" => "Les mouvements du comptes {$this->account->name} ont été mise à jours",
         ];
