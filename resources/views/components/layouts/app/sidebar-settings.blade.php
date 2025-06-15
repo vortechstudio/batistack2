@@ -24,6 +24,7 @@
 
             @include('components.layouts.app.sidebar-foot')
         </flux:sidebar>
+        @include("components.layouts.app.sidebar-head")
 
         <!-- Mobile User Menu -->
         <flux:header class="lg:hidden">

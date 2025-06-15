@@ -12,7 +12,7 @@ class Notifications extends Component
 
     public function mount(): void
     {
-        $this->notifications = auth()->user()->notifications;
+        $this->notifications = auth()->user()->unreadNotifications;
     }
 
     public function readNotification(): void

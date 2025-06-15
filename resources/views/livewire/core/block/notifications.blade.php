@@ -10,7 +10,7 @@
                 @foreach($notifications as $notification)
                     <div class="flex justify-between items-center mx-2 my-4 p-2 bg-{{ $notification['data']['type'] }}-50 rounded">
                         <div class="flex items-center">
-                            <figure class="flex justify-center items-center border border-{{ $notification['data']['type'] }}-500 rounded-md w-12 h-12 bg-gray- me-3">
+                            <figure class="flex justify-center items-center border border-{{ $notification['data']['type'] }}-500 rounded-md w-12! h-12! bg-gray- me-3">
                                 @svg($this->getIconNotification($notification->id), 'text-'.$notification['data']['type'].'-500')
                             </figure>
                             <div class="">
