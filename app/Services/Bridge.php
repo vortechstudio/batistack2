@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Core\Company;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 
 class Bridge
 {
@@ -44,6 +45,7 @@ class Bridge
             return collect($request)->toArray();
         }catch (\Exception $exception) {
             \Log::emergency($exception);
+            Bugsnag::notifyException($exception);
             toastr()->addError($exception->getMessage());
             return null;
         }
@@ -78,6 +80,7 @@ class Bridge
             return collect($request)->toArray();
         }catch (\Exception $exception) {
             \Log::emergency($exception);
+            Bugsnag::notifyException($exception);
             toastr()->addError($exception->getMessage());
             return null;
         }

@@ -18,6 +18,7 @@ update-start:
 	ssh o2switch "cd /home/mapu6796/admin.c2me.ovh && git reset --hard && git pull origin master && make update"
 
 update:
+	bash update.sh
 	php artisan migrate --force
 	php artisan install:bank
 	php artisan filament:optimize
