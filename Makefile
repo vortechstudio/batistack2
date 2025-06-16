@@ -9,6 +9,8 @@ install: vendor/autoload.php .env public/storage public/build/manifest.json
 	php artisan install:country
 	php artisan install:pcg
 	php artisan install:bank
+	php artisan install:condition-reglement
+	php artisan install:mode-reglement
 	php artisan filament:optimize
 	php artisan filament:optimize-clear
 	php artisan optimize
@@ -54,4 +56,6 @@ reset:
 	php artisan install:cities
 	php artisan install:country
 	php artisan install:pcg
+	php artisan install:condition-reglement
+	php artisan install:mode-reglement
 	php artisan optimize:clear
