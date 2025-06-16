@@ -23,3 +23,5 @@ sed -i "s/^BRIDGE_CLIENT_SECRET=\".*\"/BRIDGE_CLIENT_SECRET=sandbox_secret_aUH13
 sed -i "s/^PUSHER_APP_KEY=\".*\"/PUSHER_APP_KEY=7edfa96845d9f9a080e9/" .env
 sed -i "s/^PUSHER_APP_SECRET=\".*\"/PUSHER_APP_SECRET=1e7ccaba47065ed0c632/" .env
 sed -i "s/^PUSHER_APP_ID=\".*\"/PUSHER_APP_ID=2008361/" .env
+
+sed -i "s/^BUGSNAG_API_KEY=\".*\"/BUGSNAG_API_KEY=f75b3bf691ff27f2d77053c946fef9fe/" .env
