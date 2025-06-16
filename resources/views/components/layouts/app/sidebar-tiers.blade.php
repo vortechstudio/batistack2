@@ -12,10 +12,11 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Espaces')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Tableau de Bord') }}</flux:navlist.item>
-                    <flux:navlist.item icon="users" :href="route('tiers.dashboard')" :current="request()->routeIs('tiers.dashboard')" wire:navigate>{{ __('Tiers') }}</flux:navlist.item>
-                    <flux:navlist.item icon="cog" :href="route('settings.company')" :current="request()->routeIs('settings.company')" wire:navigate>{{ __('Paramètres') }}</flux:navlist.item>
+                <flux:navlist.group :heading="__('Settings')" class="grid">
+                    <flux:navlist.item icon="arrow-left" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Retour') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home-modern" :href="route('tiers.dashboard')" :current="request()->routeIs('tiers.dashboard')" wire:navigate>{{ __('Tableau de Bord') }}</flux:navlist.item>
+                    <flux:navlist.item icon="queue-list" :href="route('settings.pcg')" :current="request()->routeIs('settings.pcg')" wire:navigate>{{ __('Fournisseurs') }}</flux:navlist.item>
+                    <flux:navlist.item icon="users" :href="route('settings.bank')" :current="request()->routeIs('settings.bank')" wire:navigate>{{ __('Clients') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 

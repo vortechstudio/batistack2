@@ -4,7 +4,7 @@
 sed -i "s/^APP_URL=.*/APP_URL=https:\/\/admin.c2me.ovh/" .env
 
 sed -i "s/^DB_HOST=.*/DB_HOST=functions.o2switch.net/" .env
-sed -i "s/^DB_DATABASE=.*/DB_DATABASE=mapu6796_batistack_c2me/" .env
+sed -i "s/^DB_DATABASE=.*/=mapu6796_batisDB_DATABASEtack_c2me/" .env
 sed -i "s/^DB_USERNAME=.*/DB_USERNAME=mapu6796_root/" .env
 sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=rbU89a-4/" .env
 

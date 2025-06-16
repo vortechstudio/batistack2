@@ -29,6 +29,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/pcg/create', \App\Livewire\Settings\CreatePlan::class)->name('settings.pcg.create');
     Route::get('settings/bank', \App\Livewire\Settings\Bank::class)->name('settings.bank');
     Route::get('settings/bank/create', \App\Livewire\Settings\CreateBank::class)->name('settings.bank.create');
+
+    Route::prefix('tiers')->group(function () {
+        Route::get('/', \App\Livewire\Tiers\Dashboard::class)->name('tiers.dashboard');
+    });
 });
 
 Route::get('/api/bank/connect', [\App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');;
