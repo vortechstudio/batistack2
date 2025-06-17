@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Core;
 
 use App\Models\Core\Company;
+use App\Models\Core\CompanyBank;
 use App\Models\Core\CompanyBankAccount;
 use App\Models\Core\CompanyBankAccountMouvement;
 use App\Models\User;
@@ -23,6 +24,17 @@ class UpdateBankMouvementCommand extends Command
         $accounts = CompanyBankAccount::all();
 
         foreach ($accounts as $account) {
+            $infoCompte = $this->bridge->get('aggregation/accounts/'.$account->account_id, null, $this->getAccessToken());
+
+            CompanyBankAccount::find($account->id)->update([
+                'balance' =>  $infoCompte['balance'],
+                'instante' =>   $infoCompte['instant_balance'] ?? 0,
+                'updated_at' => now()
+            ]);
+            CompanyBank::find($account->company_bank_id)->update([
+                'last_refreshed_at' => now()
+            ]);
+
             $transactions = $this->bridge->get('aggregation/transactions?limit=500&account_id='.$account->account_id.'&min_date=2025-01-01', null, $this->getAccessToken());
 
             foreach ($transactions['resources'] as $transaction) {
