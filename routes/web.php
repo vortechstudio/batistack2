@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('supply')->group(function () {
             Route::get('/', \App\Livewire\Tiers\Supply\ListSupply::class)->name('tiers.supply.list');
+            Route::get('{id}', \App\Livewire\Tiers\Supply\ViewSupply::class)->name('tiers.supply.view');
         });
 
         Route::prefix('customers')->group(function () {

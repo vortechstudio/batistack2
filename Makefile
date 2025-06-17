@@ -51,11 +51,12 @@ public/build/manifest.json: package.json
 	npm run build
 
 reset:
-	php artisan migrate:fresh --seed
+	php artisan migrate:fresh
 	php artisan install:bank
 	php artisan install:cities
 	php artisan install:country
 	php artisan install:pcg
 	php artisan install:condition-reglement
 	php artisan install:mode-reglement
+	php artisan db:seed
 	php artisan optimize:clear

@@ -41,6 +41,11 @@ class Tiers extends Model
         return $this->hasOne(TiersFournisseur::class);
     }
 
+    public function client(): HasOne
+    {
+        return $this->hasOne(TiersClient::class);
+    }
+
     public function getNextId()
     {
         return $this->id ? $this->id+1 : 1;
