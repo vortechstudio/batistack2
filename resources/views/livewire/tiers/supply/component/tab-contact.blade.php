@@ -1,3 +1,3 @@
 <div>
-    {{-- Knowing others is intelligence; knowing yourself is true wisdom. --}}
+    @livewire('tiers.supply.component.table-contact', ['tiers' => $tiers])
 </div>

@@ -34,7 +34,9 @@
             <li class="list-row">
                 <div>
                     <div>TVA</div>
-                    <div class="badge badge-sm bg-{{ $tiers->tva ? 'green' : 'red' }}-300 text-white">{{ $tiers->tva ? 'Oui' : 'Non' }}</div>
+                    <x-ui.badge
+                        :color="$tiers->tva ? 'green' : 'red'"
+                        :text="$tiers->tva ? 'Oui' : 'Non'" />
                 </div>
             </li>
             @if($tiers->tva)
