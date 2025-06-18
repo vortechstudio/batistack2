@@ -11,17 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate PR description
-        uses: amannn/action-automatic-releases@v1
+        uses: tibdex/pull-request-changelog@main
         with:
           config: |
-            template: |
-              ## Changements
-              $CHANGES
-              
-              ### Types de commits
-              $COMMIT_TYPES
-            commitTypes: |
-              fix: Corrections de bugs
-              feat: Nouvelles fonctionnalités
-              docs: Documentation
-              chore: Tâches de maintenance
+            configuration: |
+              exclude:
+                - chore
+                - docs
+              template: |
+                ## Changements
+                $CHANGES
+                
+                ## Types de commits
+                $CATEGORIES
