@@ -16,7 +16,7 @@ jobs:
       - name: Récupération des commits du PR
         id: commits
         run: |
-          COMMITS=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json commits | jq -r '.commits[].messageHeadline // empty')
+          COMMITS=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json commits | jq -r .commits[].messageHeadline)
           echo "commit_messages<<EOF" >> $GITHUB_ENV
           echo "$COMMITS" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
