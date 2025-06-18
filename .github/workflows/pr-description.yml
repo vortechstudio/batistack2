@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate PR description
-        uses: amannn/auto-generate-pr-changelog@v1
+        uses: amannn/action-automatic-releases@v1
         with:
           config: |
             template: |
