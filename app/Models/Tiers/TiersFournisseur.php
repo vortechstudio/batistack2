@@ -46,6 +46,6 @@ class TiersFournisseur extends Model
 
     public function reglement(): BelongsTo
     {
-        return $this->belongsTo(ModeReglement::class, 'reglement_id', 'id');
+        return $this->belongsTo(ModeReglement::class, 'mode_reglement_id', 'id');
     }
 }

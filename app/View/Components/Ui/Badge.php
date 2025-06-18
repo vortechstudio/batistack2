@@ -14,6 +14,7 @@ class Badge extends Component
     public function __construct(
         public string $color = 'gray',
         public string $text = '',
+        public string $size = 'xs'
     )
     {
         //
