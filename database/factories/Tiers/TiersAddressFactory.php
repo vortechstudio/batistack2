@@ -12,7 +12,7 @@ class TiersAddressFactory extends Factory
     public function definition(): array
     {
         return [
-            'address' => $this->faker->address(),
+            'address' => $this->faker->streetAddress(),
             'code_postal' => $this->faker->postcode(),
             'ville' => $this->faker->city(),
             'pays' => "France",

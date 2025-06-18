@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Core\City;
 use Illuminate\Console\Command;
+use Storage;
 
 class InstallCityCommand extends Command
 {
@@ -27,9 +28,7 @@ class InstallCityCommand extends Command
     public function handle()
     {
         if(City::count() == 0){
-            $cities = \Http::withoutVerifying()
-                ->get('https://raw.githubusercontent.com/high54/Communes-France-JSON/refs/heads/master/france.json')
-                ->json();
+            $cities = collect(json_decode(Storage::disk('public')->get('private/cities.json'), true))->toArray();
 
             $chunks = array_chunk($cities, 500);
             $totalChunks = count($chunks);
