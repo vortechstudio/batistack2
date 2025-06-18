@@ -1,0 +1,27 @@
+name: Generate PR Description
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+    branches:
+      - master
+
+jobs:
+  generate-description:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate PR description
+        uses: amannn/auto-generate-pr-changelog@v1
+        with:
+          config: |
+            template: |
+              ## Changements
+              $CHANGES
+              
+              ### Types de commits
+              $COMMIT_TYPES
+            commitTypes: |
+              fix: Corrections de bugs
+              feat: Nouvelles fonctionnalités
+              docs: Documentation
+              chore: Tâches de maintenance
