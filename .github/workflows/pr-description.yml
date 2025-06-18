@@ -30,7 +30,7 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{
               "model": "llama3",
-              "prompt": "Voici la liste des messages de commit pour une pull request GitHub :\n\n${{ env.commit_messages }}\n\nGénère un résumé clair en français, en quelques lignes, de ce que cette PR contient.",
+              "prompt": "Voici la liste des messages de commit pour une pull request GitHub : ${{ env.commit_messages }}, Génère un résumé clair en français, en quelques lignes, de ce que cette PR contient.",
               "stream": false
             }')
 
