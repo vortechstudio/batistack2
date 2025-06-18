@@ -4,7 +4,7 @@
         @include('partials.head')
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
+    <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
@@ -79,6 +79,8 @@
 
         {{ $slot }}
 
+        @filamentScripts
+        @vite('resources/js/app.js')
         @fluxScripts
     </body>
 </html>
