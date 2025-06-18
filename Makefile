@@ -60,3 +60,6 @@ reset:
 	php artisan install:mode-reglement
 	php artisan db:seed
 	php artisan optimize:clear
+
+pr:
+	.\pr-agent.bat
