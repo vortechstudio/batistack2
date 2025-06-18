@@ -22,6 +22,7 @@ use Livewire\Component;
 class TableContact extends Component implements HasForms, HasActions, HasTable
 {
     use InteractsWithForms, InteractsWithActions, InteractsWithTable;
+
     public Tiers $tiers;
 
     public function table(Table $table): Table
@@ -32,42 +33,66 @@ class TableContact extends Component implements HasForms, HasActions, HasTable
                 Action::make('createContact')
                     ->label('Ajouter un contact')
                     ->icon('heroicon-o-plus')
-                ->schema([
-                    Hidden::make('tiers_id')
-                    ->default($this->tiers->id),
-
-                    Grid::make()
-                    ->columns(['lg' => 3])
                     ->schema([
-                        Select::make('civilite')
-                            ->label('Civilité')
-                            ->options([
-                                "Mr" => "Mr",
-                                "Mme" => "Mme",
-                                "Mlle" => "Mlle",
+                        Hidden::make('tiers_id')
+                            ->default($this->tiers->id),
+
+                        Grid::make()
+                            ->columns(['lg' => 3])
+                            ->schema([
+                                Select::make('civilite')
+                                    ->label('Civilité')
+                                    ->options([
+                                        "Mr" => "Mr",
+                                        "Mme" => "Mme",
+                                        "Mlle" => "Mlle",
+                                    ]),
+
+                                TextInput::make('nom')
+                                    ->label('Nom'),
+
+                                TextInput::make('prenom')
+                                    ->label('Prénom'),
                             ]),
 
-                        TextInput::make('nom')
-                            ->label('Nom'),
+                        Grid::make()
+                            ->columns(['lg' => 3])
+                            ->schema([
+                                TextInput::make('telephone')
+                                    ->label('Téléphone')
+                                    ->prefixIcon('solar-phone-bold-duotone'),
 
-                        TextInput::make('prenom')
-                            ->label('Prénom'),
+                                TextInput::make('portable')
+                                    ->label('Mobile')
+                                    ->prefixIcon('solar-smartphone-2-bold-duotone'),
+
+                                TextInput::make('email')
+                                    ->label('Adresse email')
+                                    ->prefixIcon('heroicon-c-at-symbol'),
+                            ])
                     ])
-                ])
             ])
             ->query($this->tiers->contacts()->getQuery())
             ->columns([
                 TextColumn::make('nom')
-                ->label('Identité')
-                ->formatStateUsing(fn(TiersContact $record) => $record->nom." ".$record->prenom),
+                    ->label('Identité')
+                    ->formatStateUsing(fn(TiersContact $record) => $record->nom . " " . $record->prenom),
 
                 TextColumn::make('poste')
-                ->label('Poste/Fonction'),
+                    ->label('Poste/Fonction'),
 
                 TextColumn::make('tel')
                     ->label('Coordonnées')
                     ->formatStateUsing(fn(TiersContact $record) => "<div class='flex flex-col'><div class='mb-1'><strong>Téléphone: </strong>$record->tel</div><div class='mb-1'><strong>Portable: </strong>$record->portable</div><div class='mb-1'><strong>Email: </strong>$record->email</div></div>")
                     ->html(),
+            ])
+            ->recordActions([
+                Action::make('delete')
+                ->label('')
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->action(fn(TiersContact $record) => $record->delete()),
             ]);
     }
 
