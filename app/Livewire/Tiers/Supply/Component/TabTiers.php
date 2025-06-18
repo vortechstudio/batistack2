@@ -19,6 +19,7 @@ class TabTiers extends Component implements HasForms, HasActions, HasTable
 {
     use InteractsWithForms, InteractsWithActions, InteractsWithTable;
     public Tiers $tiers;
+    public ?array $data = [];
 
     public function mount(Tiers $tiers): void
     {
@@ -29,7 +30,9 @@ class TabTiers extends Component implements HasForms, HasActions, HasTable
     {
         return Action::make('draftMail')
             ->label('Envoyer un email')
-            ->url('/');
+            ->schema([
+
+            ]);
     }
 
     public function editAction(): Action

@@ -17,7 +17,11 @@
                 </div>
             </div>
         </div>
-        <span class="badge badge-lg bg-{{ $tiers->nature->color() }}-300 text-white">{{ $tiers->nature->label() }}</span>
+        <x-ui.badge
+            :color="$tiers->nature->color()"
+            :text="$tiers->nature->label()"
+            size="xl" />
+
     </div>
     <div class="bg-white shadow rounded">
         <div class="tabs tabs-border">
@@ -26,13 +30,25 @@
                 @livewire('tiers.supply.component.tab-tiers', ['tiers' => $tiers])
             </div>
 
-            <input type="radio" name="options" class="tab" aria-label="Contacts/Adresses" checked="checked"/>
+            <input type="radio" name="options" class="tab" aria-label="Contacts/Adresses" />
             <div class="tab-content border-base-300 bg-base-100 p-10">
                 @livewire('tiers.supply.component.tab-contact', ['tiers' => $tiers])
             </div>
 
-            <input type="radio" name="options" class="tab" aria-label="Tab 3" />
-            <div class="tab-content border-base-300 bg-base-100 p-10">Tab content 3</div>
+            <input type="radio" name="options" class="tab" aria-label="Fournisseur" checked="checked" />
+            <div class="tab-content border-base-300 bg-base-100 p-10">
+                @livewire('tiers.supply.component.tab-supply', ['tiers' => $tiers])
+            </div>
+
+            <input type="radio" name="options" class="tab" aria-label="Produits" />
+            <div class="tab-content border-base-300 bg-base-100 p-10">
+                Liste des Produits
+            </div>
+
+            <input type="radio" name="options" class="tab" aria-label="Mode de Règlements" />
+            <div class="tab-content border-base-300 bg-base-100 p-10">
+                Liste des modes de règlement
+            </div>
         </div>
     </div>
 </div>

@@ -21,8 +21,11 @@ class ViewSupply extends Component implements HasForms, HasTable, HasActions
         $this->tiers = Tiers::with('addresses', 'contacts', 'fournisseur', 'client', 'logs')->find($id);
     }
 
+
+
     public function render()
     {
+        //dd($this->tiers->fournisseur()->with('comptaGen', 'comptaFournisseur')->first());
         return view('livewire.tiers.supply.view-supply')
             ->layout('components.layouts.tiers');
     }
