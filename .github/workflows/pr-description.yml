@@ -29,12 +29,12 @@ jobs:
           RESPONSE=$(curl -s http://86.217.43.98:11434/api/generate \
             -H "Content-Type: application/json" \
             -d '{
-              "model": "llama3",
+              "model": "deepseeker-r1",
               "prompt": "Voici la liste des messages de commit pour une pull request GitHub :\n\n${{ env.commit_messages }}\n\nGénère un résumé clair en français, en quelques lignes, de ce que cette PR contient.",
               "stream": false
             }')
 
-          SUMMARY=$(echo "$RESPONSE" | jq -r '.response // "Impossible de générer le résumé"')
+          SUMMARY=$(echo "$RESPONSE" | jq -r '.response')
           echo "summary<<EOF" >> $GITHUB_ENV
           echo "$SUMMARY" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
