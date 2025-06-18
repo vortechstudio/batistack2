@@ -16,7 +16,7 @@ jobs:
       - name: Récupération des commits du PR
         id: commits
         run: |
-          COMMITS=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json commits -q '.commits[].message' | jq -r '.[]')
+          COMMITS=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json commits -q '.commits[].messageHeadline' | jq -r '.[]')
           echo "commit_messages<<EOF" >> $GITHUB_ENV
           echo "$COMMITS" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -34,7 +34,7 @@ jobs:
               "stream": false
             }')
 
-          SUMMARY=$(echo "$RESPONSE" | jq -r '.response')
+          SUMMARY=$(echo "$RESPONSE" | jq -r '.response // "Impossible de générer le résumé"')
           echo "summary<<EOF" >> $GITHUB_ENV
           echo "$SUMMARY" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
