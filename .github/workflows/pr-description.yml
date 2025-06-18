@@ -10,16 +10,37 @@ jobs:
   generate-description:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout du code
+        uses: actions/checkout@v4
 
-      - uses: octue/generate-pull-request-description@1.0.0.beta-2
-        id: pr-description
-        with:
-          pull_request_url: ${{ github.event.pull_request.url }}
-          api_token: ${{ secrets.GH_TOKEN }}
+      - name: Récupération des commits du PR
+        id: commits
+        run: |
+          COMMITS=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json commits -q '.commits[].message' | jq -r '.[]')
+          echo "commit_messages<<EOF" >> $GITHUB_ENV
+          echo "$COMMITS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Update pull request body
-        uses: riskledger/update-pr-description@v2
-        with:
-          body: ${{ steps.pr-description.outputs.pull_request_description }}
-          token: ${{ secrets.GH_TOKEN }}
+      - name: Génération du résumé avec Ollama server
+        id: ollama
+        run: |
+          RESPONSE=$(curl -s http://86.217.43.98:11434/api/generate \
+            -H "Content-Type: application/json" \
+            -d '{
+              "model": "llama3",
+              "prompt": "Voici la liste des messages de commit pour une pull request GitHub :\n\n${{ env.commit_messages }}\n\nGénère un résumé clair en français, en quelques lignes, de ce que cette PR contient.",
+              "stream": false
+            }')
+
+          SUMMARY=$(echo "$RESPONSE" | jq -r '.response')
+          echo "summary<<EOF" >> $GITHUB_ENV
+          echo "$SUMMARY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Mise à jour de la PR
+        run: |
+          gh pr edit ${{ github.event.pull_request.number }} --body "${{ env.summary }}"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

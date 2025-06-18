@@ -7,8 +7,12 @@ use App\Models\Tiers\TiersContact;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -28,6 +32,28 @@ class TableContact extends Component implements HasForms, HasActions, HasTable
                 Action::make('createContact')
                     ->label('Ajouter un contact')
                     ->icon('heroicon-o-plus')
+                ->schema([
+                    Hidden::make('tiers_id')
+                    ->default($this->tiers->id),
+
+                    Grid::make()
+                    ->columns(['lg' => 3])
+                    ->schema([
+                        Select::make('civilite')
+                            ->label('Civilité')
+                            ->options([
+                                "Mr" => "Mr",
+                                "Mme" => "Mme",
+                                "Mlle" => "Mlle",
+                            ]),
+
+                        TextInput::make('nom')
+                            ->label('Nom'),
+
+                        TextInput::make('prenom')
+                            ->label('Prénom'),
+                    ])
+                ])
             ])
             ->query($this->tiers->contacts()->getQuery())
             ->columns([
