@@ -5,4 +5,5 @@ return [
     App\Providers\TelescopeServiceProvider::class,
     App\Providers\VoltServiceProvider::class,
     Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+    Webklex\IMAP\Providers\LaravelServiceProvider::class,
 ];
