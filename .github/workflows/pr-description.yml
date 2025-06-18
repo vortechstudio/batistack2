@@ -29,7 +29,7 @@ jobs:
           RESPONSE=$(curl -s http://86.217.43.98:11434/api/generate \
             -H "Content-Type: application/json" \
             -d '{
-              "model": "deepseeker-r1",
+              "model": "llama3",
               "prompt": "Voici la liste des messages de commit pour une pull request GitHub :\n\n${{ env.commit_messages }}\n\nGénère un résumé clair en français, en quelques lignes, de ce que cette PR contient.",
               "stream": false
             }')
