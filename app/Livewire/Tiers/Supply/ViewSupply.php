@@ -18,7 +18,7 @@ class ViewSupply extends Component implements HasForms, HasTable, HasActions
 
     public function mount(int $id): void
     {
-        $this->tiers = Tiers::with('addresses', 'contacts', 'fournisseur', 'client')->find($id);
+        $this->tiers = Tiers::with('addresses', 'contacts', 'fournisseur', 'client', 'logs')->find($id);
     }
 
     public function render()

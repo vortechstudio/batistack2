@@ -36,6 +36,11 @@ class Tiers extends Model
         return $this->hasMany(TiersContact::class);
     }
 
+    public function logs(): HasMany
+    {
+        return $this->hasMany(TiersLog::class);
+    }
+
     public function fournisseur(): HasOne
     {
         return $this->hasOne(TiersFournisseur::class);
