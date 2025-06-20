@@ -4,7 +4,7 @@
 sed -i "s/^APP_URL=.*/APP_URL=https:\/\/admin.c2me.ovh/" .env
 
 sed -i "s/^DB_HOST=.*/DB_HOST=functions.o2switch.net/" .env
-sed -i "s/^DB_DATABASE=.*/=mapu6796_batisDB_DATABASEtack_c2me/" .env
+sed -i "s/^DB_DATABASE=.*/=mapu6796_batistack_c2me/" .env
 sed -i "s/^DB_USERNAME=.*/DB_USERNAME=mapu6796_root/" .env
 sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=rbU89a-4/" .env
 
@@ -25,3 +25,6 @@ sed -i "s/^PUSHER_APP_SECRET=\".*\"/PUSHER_APP_SECRET=1e7ccaba47065ed0c632/" .en
 sed -i "s/^PUSHER_APP_ID=\".*\"/PUSHER_APP_ID=2008361/" .env
 
 sed -i "s/^BUGSNAG_API_KEY=\".*\"/BUGSNAG_API_KEY=f75b3bf691ff27f2d77053c946fef9fe/" .env
+sed -i "s/^IMAP_PORT=\".*\"/IMAP_PORT=993/" .env
+sed -i "s/^IMAP_PASSWORD=\".*\"/IMAP_PASSWORD=Kelya04062023@/" .env
+sed -i "s/^IMAP_PASSWORD_COMPTA=\".*\"/IMAP_PASSWORD_COMPTA=Kelya04062023@/" .env
