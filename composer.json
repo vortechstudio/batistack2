@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-imap": "*",
         "blade-ui-kit/blade-heroicons": "^2.6",
         "bugsnag/bugsnag-laravel": "^2.29",
         "codeat3/blade-solar-icons": "^1.2",
@@ -21,6 +22,7 @@
         "ph-7/eu-vat-validator": "^3.1",
         "php-flasher/flasher-laravel": "^2.1",
         "php-flasher/flasher-toastr-laravel": "^2.1",
+        "php-imap/php-imap": "^5.0",
         "rap2hpoutre/fast-excel": "^5.6",
         "robsontenorio/mary": "^2.4",
         "salahhusa9/laravel-updater": "^1.3",
