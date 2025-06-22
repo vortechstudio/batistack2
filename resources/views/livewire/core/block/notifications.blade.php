@@ -1,4 +1,4 @@
-<flux:dropdown wire:poll.visible>
+<flux:dropdown>
     @if(count($notifications) > 0)
         <flux:button wire:click="readNotification" icon:trailing="bell"><span class="status status-error animate-ping"></span></flux:button>
     @else
