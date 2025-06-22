@@ -61,5 +61,13 @@ reset:
 	php artisan db:seed
 	php artisan optimize:clear
 
+clear:
+	php artisan config:clear
+	php artisan cache:clear
+	php artisan route:clear
+	php artisan view:clear
+	php artisan optimize:clear
+	composer dumpautoload
+
 pr:
-	.\pr-agent.bat
+	sh pr-agent.sh

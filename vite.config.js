@@ -12,6 +12,7 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    clearScreen : false,
     server: {
         cors: true,
     },
