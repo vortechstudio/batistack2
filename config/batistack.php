@@ -12,4 +12,16 @@ return [
     ],
     'domain' => env('APP_DOMAIN'),
     'version' => env('APP_VERSION'),
+    'imap' => [
+        'host' => env('IMAP_HOST'),
+        'port' =>  env('IMAP_PORT'),
+        'default' => [
+            'username' => env('IMAP_USERNAME'),
+            'password' => env('IMAP_PASSWORD'),
+        ],
+        'comptabilite' => [
+            'username' => env('IMAP_USERNAME_COMPTA'),
+            'password' => env('IMAP_PASSWORD_COMPTA'),
+        ],
+    ]
 ];
