@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # Configuration
-REPO_OWNER="vortechstudio"           # GitHub owner (ex: MaximeMockelyn)
-REPO_NAME="batistack2"            # Nom du repo
 PR_NUMBER="$1"                  # Numéro de la PR (en argument)
-OLLAMA_MODEL="llama3"           # Modèle Ollama à utiliser
+OLLAMA_MODEL="deepseek-r1"           # Modèle Ollama à utiliser
 OLLAMA_URL="http://86.217.43.98:11434/api/generate"
 
 # Vérification des dépendances
