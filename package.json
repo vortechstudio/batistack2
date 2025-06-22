@@ -3,7 +3,14 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "dev:vite:web": "vite --config vite.web.config.js",
+        "dev:vite:desktop": "vite --config vite.desktop.config.js",
+        "dev:vite:mobile" : "vite --config vite.mobile.config.js",
+        "tauri": "tauri",
+        "dev:tauri:desktop": "tauri dev",
+        "dev:tauri:mobile:android" : "tauri android dev",
+        "dev:tauri:mobile:ios" : "tauri ios dev"
     },
     "dependencies": {
         "autoprefixer": "^10.4.20",
@@ -19,6 +26,7 @@
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.1.10",
+        "@tauri-apps/cli": "^2.2.2",
         "daisyui": "^5.0.43",
         "laravel-echo": "^2.1.5",
         "pusher-js": "^8.4.0",
