@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Core\Company;
 use App\Models\Tiers\Tiers;
 use App\Models\Tiers\TiersAddress;
+use App\Models\Tiers\TiersBank;
 use App\Models\Tiers\TiersClient;
 use App\Models\Tiers\TiersContact;
 use App\Models\Tiers\TiersFournisseur;
@@ -57,6 +58,10 @@ class DatabaseSeeder extends Seeder
                         'tiers_id' =>  $tiers->id,
                     ]);
                 }
+
+                TiersBank::factory()->create([
+                    'tiers_id' => $tiers->id,
+                ]);
             }
         }
     }

@@ -47,7 +47,7 @@
 
             <input type="radio" name="options" class="tab" aria-label="Mode de Règlements" />
             <div class="tab-content border-base-300 bg-base-100 p-10">
-                Liste des modes de règlement
+                @livewire('tiers.supply.component.tab-bank', ['tiers' => $tiers])
             </div>
         </div>
     </div>
