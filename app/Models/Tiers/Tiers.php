@@ -51,6 +51,11 @@ class Tiers extends Model
         return $this->hasOne(TiersClient::class);
     }
 
+    public function banks(): HasMany
+    {
+        return $this->hasMany(TiersBank::class);
+    }
+
     public function getNextId()
     {
         return $this->id ? $this->id+1 : 1;
