@@ -35,6 +35,11 @@ jobs:
           cp .env.github .env
           php artisan key:generate
 
+      - name: Run NPM Build Frontend Env
+        run: |
+          npm install
+          npm run build
+
       - name: Run migrations
         run: php artisan migrate --force
 
