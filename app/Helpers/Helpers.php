@@ -34,10 +34,11 @@ final class Helpers
 
     public static function getLastestVersion()
     {
-        if(config('app.env') === 'production') {
+        if (config('app.env') === 'production') {
             return config('batistack.version');
-        } else {
-            return "Dev";
         }
+
+        return 'Dev';
+
     }
 }
