@@ -16,7 +16,7 @@ jobs:
           extensions: mbstring, bcmath, pdo_mysql
 
       - name: Installation des dépendances de l'application
-        run: composer install --prefer--dist --no-progress
+        run: composer install --prefer-dist --no-progress
 
       - name: Laravel Pint
         run: ./vendor/bin/pint --test
