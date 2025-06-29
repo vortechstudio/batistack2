@@ -36,7 +36,7 @@ final class ImportBankMouvement implements ShouldQueue
     {
         Log::info('Info Bank', ['Bank' => $this->bank, 'Accounts' => $this->bank->accounts]);
         foreach ($this->bank->accounts as $account) {
-            //$account is object
+            // $account is object
             $transactions = $this->api->get('aggregation/transactions?limit=500&account_id='.$account->account_id.'&min_date=2025-01-01', null, $this->token);
 
             foreach ($transactions['resources'] as $transaction) {
