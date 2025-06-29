@@ -31,4 +31,13 @@ final class Helpers
 
         return $latest ? 'CUS'.now()->year.'-00'.$latest->id + 1 : 'CUS'.now()->year.'-001';
     }
+
+    public static function getLastestVersion()
+    {
+        if(config('app.env') === 'production') {
+            return config('batistack.version');
+        } else {
+            return "Dev";
+        }
+    }
 }
