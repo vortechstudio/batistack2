@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Laravel\Telescope\Http\Middleware\Authorize;
 use Laravel\Telescope\Watchers;
 
@@ -161,12 +163,12 @@ return [
 
         Watchers\ExceptionWatcher::class => env('TELESCOPE_EXCEPTION_WATCHER', true),
 
-        //Watchers\GateWatcher::class => [
+        // Watchers\GateWatcher::class => [
         //    'enabled' => env('TELESCOPE_GATE_WATCHER', true),
         //    'ignore_abilities' => [],
         //    'ignore_packages' => true,
         //    'ignore_paths' => [],
-        //],
+        // ],
 
         Watchers\JobWatcher::class => env('TELESCOPE_JOB_WATCHER', true),
 
@@ -185,12 +187,12 @@ return [
 
         Watchers\NotificationWatcher::class => env('TELESCOPE_NOTIFICATION_WATCHER', true),
 
-        //Watchers\QueryWatcher::class => [
+        // Watchers\QueryWatcher::class => [
         //    'enabled' => env('TELESCOPE_QUERY_WATCHER', true),
         //    'ignore_packages' => true,
         //    'ignore_paths' => [],
         //    'slow' => 100,
-        //],
+        // ],
 
         Watchers\RedisWatcher::class => env('TELESCOPE_REDIS_WATCHER', true),
 
@@ -201,7 +203,7 @@ return [
             'ignore_status_codes' => [],
         ],
 
-        //Watchers\ScheduleWatcher::class => env('TELESCOPE_SCHEDULE_WATCHER', true),
-        //Watchers\ViewWatcher::class => env('TELESCOPE_VIEW_WATCHER', true),
+        // Watchers\ScheduleWatcher::class => env('TELESCOPE_SCHEDULE_WATCHER', true),
+        // Watchers\ViewWatcher::class => env('TELESCOPE_VIEW_WATCHER', true),
     ],
 ];

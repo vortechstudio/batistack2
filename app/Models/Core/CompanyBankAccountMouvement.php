@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Core;
 
 use App\Enums\Core\BankMouvementType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CompanyBankAccountMouvement extends Model
+final class CompanyBankAccountMouvement extends Model
 {
     protected $guarded = [];
+
     public function account(): BelongsTo
     {
         return $this->belongsTo(CompanyBankAccount::class);

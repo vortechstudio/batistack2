@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Core;
 
 use App\Models\Core\Company;
@@ -11,28 +13,29 @@ use App\Notifications\Core\Bank\UpdateBankAccount;
 use App\Services\Bridge;
 use Illuminate\Console\Command;
 
-class UpdateBankMouvementCommand extends Command
+final class UpdateBankMouvementCommand extends Command
 {
+    public Bridge $bridge;
+
     protected $signature = 'update:bank-mouvement';
 
     protected $description = 'Command description';
-    public Bridge $bridge;
 
     public function handle(): void
     {
-        $this->bridge = new Bridge();
+        $this->bridge = new Bridge;
         $accounts = CompanyBankAccount::all();
 
         foreach ($accounts as $account) {
             $infoCompte = $this->bridge->get('aggregation/accounts/'.$account->account_id, null, $this->getAccessToken());
 
             CompanyBankAccount::find($account->id)->update([
-                'balance' =>  $infoCompte['balance'],
-                'instante' =>   $infoCompte['instant_balance'] ?? 0,
-                'updated_at' => now()
+                'balance' => $infoCompte['balance'],
+                'instante' => $infoCompte['instant_balance'] ?? 0,
+                'updated_at' => now(),
             ]);
             CompanyBank::find($account->company_bank_id)->update([
-                'last_refreshed_at' => now()
+                'last_refreshed_at' => now(),
             ]);
 
             $transactions = $this->bridge->get('aggregation/transactions?limit=500&account_id='.$account->account_id.'&min_date=2025-01-01', null, $this->getAccessToken());

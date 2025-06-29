@@ -72,6 +72,7 @@
         <!-- TODO: Tableau de Produits du fournisseur -->
         <!-- TODO: Tableau des factures fournisseur -->
         <div class="grid grid-cols-3 gap-5">
+            {{ $this->editAction }}
             <x-mary-button
                 link="/"
                 class="btn-primary"
@@ -88,5 +89,7 @@
                 label="Créer un avoir" />
         </div>
     </div>
+
+    <x-filament-actions::modals />
 
 </div>

@@ -1,0 +1,22 @@
+name: Code Quality
+on:
+  pull_request:
+    branches: [develop, master]
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, bcmath, pdo_mysql
+
+      - name: Installation des dépendances de l'application
+        run: composer install --prefer-dist --no-progress
+
+      - name: Laravel Pint
+        run: composer test:lint

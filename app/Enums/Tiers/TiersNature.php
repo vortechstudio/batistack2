@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Tiers;
 
 enum TiersNature: string
@@ -7,7 +9,15 @@ enum TiersNature: string
     case Fournisseur = 'fournisseur';
     case Client = 'client';
 
-    public function label()
+    public static function array(): array
+    {
+        return [
+            'fournisseur',
+            'client',
+        ];
+    }
+
+    public function label(): string
     {
         return match ($this) {
             self::Fournisseur => 'Fournisseur',
@@ -15,19 +25,11 @@ enum TiersNature: string
         };
     }
 
-    public function color()
+    public function color(): string
     {
         return match ($this) {
             self::Fournisseur => 'red',
             self::Client => 'green',
         };
-    }
-
-    public static function array()
-    {
-        return [
-            'fournisseur',
-            'client'
-        ];
     }
 }

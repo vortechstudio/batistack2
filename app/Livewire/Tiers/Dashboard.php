@@ -1,26 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers;
 
-use App\Enums\Tiers\TiersNature;
 use App\Models\Tiers\Tiers;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class Dashboard extends Component implements HasForms, HasTable, HasActions
+final class Dashboard extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
+
     public int $countClient;
+
     public int $countFournisseur;
+
     public array $statTiers = [];
+
     public $tiers;
 
     public function mount(): void
@@ -36,12 +39,12 @@ class Dashboard extends Component implements HasForms, HasTable, HasActions
                     [
                         'data' => [$this->countClient, $this->countFournisseur],
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
-    #[Title("Gestion des Tiers")]
+    #[Title('Gestion des Tiers')]
     public function render()
     {
         return view('livewire.tiers.dashboard')

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Core\Pages;
 
 use Filament\Actions\Action;
@@ -9,9 +11,10 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
 
-class Notification extends Component implements HasForms, HasActions
+final class Notification extends Component implements HasActions, HasForms
 {
-    use InteractsWithForms, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms;
+
     public $notifications;
 
     public function mount(): void

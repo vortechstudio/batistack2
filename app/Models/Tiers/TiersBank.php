@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Tiers;
 
 use App\Models\Core\Bank;
@@ -7,11 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TiersBank extends Model
+final class TiersBank extends Model
 {
     /** @use HasFactory<\Database\Factories\Tiers\TiersBankFactory> */
     use HasFactory;
+
     public $timestamps = false;
+
     protected $guarded = [];
 
     public function tiers(): BelongsTo

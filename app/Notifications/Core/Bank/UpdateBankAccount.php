@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications\Core\Bank;
 
 use App\Models\Core\CompanyBankAccount;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class UpdateBankAccount extends Notification
+final class UpdateBankAccount extends Notification
 {
     use Queueable;
 
@@ -17,8 +18,7 @@ class UpdateBankAccount extends Notification
      */
     public function __construct(
         public CompanyBankAccount $account,
-    )
-    {
+    ) {
         //
     }
 
@@ -51,10 +51,10 @@ class UpdateBankAccount extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            "type" => "green",
-            "icon" => "heroicon-o-arrows-right-left",
-            "title" => "Compte ".$this->account->name,
-            "description" => "Les mouvements du comptes {$this->account->name} ont été mise à jours",
+            'type' => 'green',
+            'icon' => 'heroicon-o-arrows-right-left',
+            'title' => 'Compte '.$this->account->name,
+            'description' => "Les mouvements du comptes {$this->account->name} ont été mise à jours",
         ];
     }
 }

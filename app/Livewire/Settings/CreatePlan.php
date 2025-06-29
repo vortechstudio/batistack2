@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Settings;
 
 use App\Models\Core\PlanComptable;
@@ -13,7 +15,7 @@ use Filament\Schemas\Schema;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class CreatePlan extends Component implements HasSchemas
+final class CreatePlan extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
 
@@ -34,7 +36,7 @@ class CreatePlan extends Component implements HasSchemas
                         Select::make('type')->label('Type de Compte')->options(PlanComptable::all()->pluck('type', 'type')),
                         TextInput::make('initial')->label('Balance Initial')->suffix('€'),
                         Toggle::make('lettrage')->label('Lettrage'),
-                    ])
+                    ]),
             ])
             ->statePath('data');
     }
@@ -42,7 +44,7 @@ class CreatePlan extends Component implements HasSchemas
     public function createPlan(): void
     {
         PlanComptable::create($this->form->getState());
-        toastr()->success("Le compte à été créer avec succès");
+        toastr()->success('Le compte à été créer avec succès');
         $this->redirect(route('settings.pcg'));
     }
 

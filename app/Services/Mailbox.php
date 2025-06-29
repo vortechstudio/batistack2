@@ -1,20 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use PhpImap\Exceptions\InvalidParameterException;
 
-class Mailbox
+final class Mailbox
 {
-    private string $mdx;
-    protected \PhpImap\Mailbox $connect;
     public ?string $err = null;
+
+    private readonly string $mdx;
+
+    private readonly \PhpImap\Mailbox $connect;
 
     public function __construct(
         public string $type = 'default'
-    )
-    {
-        $this->mdx = "{".config('batistack.imap.host').":".config('batistack.imap.port')."/imap/ssl}INBOX";
+    ) {
+        $this->mdx = '{'.config('batistack.imap.host').':'.config('batistack.imap.port').'/imap/ssl}INBOX';
         $this->connect = new \PhpImap\Mailbox(
             $this->mdx,
             config('batistack.imap.'.$this->type.'.username'),
@@ -27,27 +30,20 @@ class Mailbox
         }
     }
 
-
-    private function getFolders(): array
-    {
-        return $this->connect->getMailboxes("*");
-    }
-
     public function getFoldersFormat()
     {
         return collect($this->getFolders())
-            ->map(function ($folder) {
+            ->map(function (array $folder) {
                 $folder['shortpath'] = str_replace('INBOX.', '', $folder['shortpath']);
+
                 return $folder;
             })->toArray();
     }
 
     public function getAllMessages()
     {
-        return collect($this->connect->searchMailbox("ALL"))
-            ->map(function ($mailId) {
-                return $this->connect->getMail($mailId);
-            });
+        return collect($this->connect->searchMailbox('ALL'))
+            ->map(fn ($mailId): \PhpImap\IncomingMail => $this->connect->getMail($mailId));
     }
 
     public function getMessageBody(string $messageId)
@@ -58,5 +54,10 @@ class Mailbox
     public function getMessagesFromFolders(string $folder): array
     {
         $this->connect->switchMailbox($folder);
+    }
+
+    private function getFolders(): array
+    {
+        return $this->connect->getMailboxes('*');
     }
 }

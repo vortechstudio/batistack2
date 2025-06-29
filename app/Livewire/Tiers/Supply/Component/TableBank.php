@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Supply\Component;
 
 use App\Models\Core\Bank;
@@ -25,11 +27,12 @@ use Intervention\Validation\Rules\Bic;
 use Intervention\Validation\Rules\Iban;
 use Livewire\Component;
 
-class TableBank extends Component implements HasTable, HasForms, HasActions
+final class TableBank extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
     public Tiers $tiers;
+
     public ?array $data = [];
 
     public function mount(): void
@@ -47,19 +50,19 @@ class TableBank extends Component implements HasTable, HasForms, HasActions
                     ->schema([
                         Select::make('bank_id')
                             ->label('Banque')
-                            ->options(fn() => Bank::all()->pluck('name', 'id'))
+                            ->options(fn () => Bank::all()->pluck('name', 'id'))
                             ->searchable(),
 
                         Grid::make()
                             ->schema([
                                 TextInput::make('iban')
                                     ->label('IBAN')
-                                    ->rules([new Iban()])
+                                    ->rules([new Iban])
                                     ->required(),
 
                                 TextInput::make('bic')
                                     ->label('BIC/SWIFT')
-                                    ->rules([new Bic()])
+                                    ->rules([new Bic])
                                     ->required(),
                             ]),
 
@@ -74,19 +77,19 @@ class TableBank extends Component implements HasTable, HasForms, HasActions
                     ->schema([
                         Select::make('bank_id')
                             ->label('Banque')
-                            ->options(fn() => Bank::all()->pluck('name', 'id'))
+                            ->options(fn () => Bank::all()->pluck('name', 'id'))
                             ->searchable(),
 
                         Grid::make()
                             ->schema([
                                 TextInput::make('iban')
                                     ->label('IBAN')
-                                    ->rules([new Iban()])
+                                    ->rules([new Iban])
                                     ->required(),
 
                                 TextInput::make('bic')
                                     ->label('BIC/SWIFT')
-                                    ->rules([new Bic()])
+                                    ->rules([new Bic])
                                     ->required(),
                             ]),
 
@@ -99,8 +102,8 @@ class TableBank extends Component implements HasTable, HasForms, HasActions
                     ->iconButton()
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading(fn(TiersBank $record) => "Supprimer ".$record->bank->name)
-                    ->action(fn(TiersBank $record) => $record->delete()),
+                    ->modalHeading(fn (TiersBank $record): string => 'Supprimer '.$record->bank->name)
+                    ->action(fn (TiersBank $record) => $record->delete()),
             ])
             ->columns([
                 TextColumn::make('bank.name')

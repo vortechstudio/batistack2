@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Pipeline;
 
 use Closure;
 use Illuminate\Contracts\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Artisan;
 
-class InstallPipeline implements Pipeline
+final class InstallPipeline implements Pipeline
 {
-
     public function handle($payload, Closure $next): void
     {
         \Artisan::call('install:cities');
@@ -16,34 +17,35 @@ class InstallPipeline implements Pipeline
         Artisan::call('install:pcg');
         $next($payload);
     }
+
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function send($passable)
+    public function send($passable): void
     {
         // TODO: Implement send() method.
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function through($pipes)
+    public function through($pipes): void
     {
         // TODO: Implement through() method.
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function via($method)
+    public function via($method): void
     {
         // TODO: Implement via() method.
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function then(Closure $destination)
+    public function then(Closure $destination): void
     {
         // TODO: Implement then() method.
     }

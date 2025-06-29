@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Settings;
 
 use App\Models\Core\City;
 use App\Models\Core\Country;
 use App\Rules\VAT;
-use Filament\Forms\Components\FileUpload;
+use Exception;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -20,15 +21,18 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 
-class Company extends Component implements HasSchemas
+final class Company extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
     use Toast;
     use WithFileUploads;
 
     public \App\Models\Core\Company $company;
+
     public ?array $data = [];
+
     public $logo;
+
     public $logo_wide;
 
     public function mount(): void
@@ -59,14 +63,14 @@ class Company extends Component implements HasSchemas
                         Select::make('ville')
                             ->label('Ville')
                             ->live()
-                            ->options(fn(Get $get) => City::whereLike('postal_code', $get('code_postal'))->pluck('city', 'city')),
+                            ->options(fn (Get $get) => City::whereLike('postal_code', $get('code_postal'))->pluck('city', 'city')),
 
                         Select::make('pays')
                             ->label('Pays')
-                            ->options(Country::all()->pluck('name', 'name'))
+                            ->options(Country::all()->pluck('name', 'name')),
                     ]),
 
-                Section::make("Coordonnées")
+                Section::make('Coordonnées')
                     ->schema([
                         Grid::make()
                             ->columns(4)
@@ -75,7 +79,7 @@ class Company extends Component implements HasSchemas
                                 TextInput::make('fax')->label('Fax')->tel()->mask('99 99 99 99 99'),
                                 TextInput::make('email')->label('Email')->email(),
                                 TextInput::make('web')->label('Site Web')->url(),
-                            ])
+                            ]),
                     ]),
 
                 Section::make('Informations Fiscales')
@@ -84,7 +88,7 @@ class Company extends Component implements HasSchemas
                             ->columns(4)
                             ->schema([
                                 TextInput::make('siret')->label('Siret')->mask('999 999 999 99999'),
-                                TextInput::make('num_tva')->label('Numéro de TVA')->mask('aa99999999999')->rules([new VAT()]),
+                                TextInput::make('num_tva')->label('Numéro de TVA')->mask('aa99999999999')->rules([new VAT]),
                                 TextInput::make('ape')->label('Code NAF/APE')->mask('9999a'),
                                 TextInput::make('capital')->label('Capital'),
                             ]),
@@ -96,7 +100,7 @@ class Company extends Component implements HasSchemas
     public function create(): void
     {
         $this->company->update($this->form->getState());
-        toastr()->success("Les informations de la société ont été mise à jours");
+        toastr()->success('Les informations de la société ont été mise à jours');
     }
 
     public function uploadLogo(): void
@@ -112,12 +116,11 @@ class Company extends Component implements HasSchemas
                 name: 'logo_wide.png',
             );
 
-            toastr()->success("Le logo est enregistré");
-        }catch (\Exception $e){
+            toastr()->success('Le logo est enregistré');
+        } catch (Exception $e) {
             toastr()->error($e->getMessage());
         }
     }
-
 
     #[Title('Paramètre de la Société')]
     public function render()

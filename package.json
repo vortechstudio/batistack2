@@ -6,11 +6,11 @@
         "dev": "vite",
         "dev:vite:web": "vite --config vite.web.config.js",
         "dev:vite:desktop": "vite --config vite.desktop.config.js",
-        "dev:vite:mobile" : "vite --config vite.mobile.config.js",
+        "dev:vite:mobile": "vite --config vite.mobile.config.js",
         "tauri": "tauri",
         "dev:tauri:desktop": "tauri dev",
-        "dev:tauri:mobile:android" : "tauri android dev",
-        "dev:tauri:mobile:ios" : "tauri ios dev"
+        "dev:tauri:mobile:android": "tauri android dev",
+        "dev:tauri:mobile:ios": "tauri ios dev"
     },
     "dependencies": {
         "autoprefixer": "^10.4.20",
@@ -25,11 +25,15 @@
         "lightningcss-linux-x64-gnu": "^1.29.1"
     },
     "devDependencies": {
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/github": "^11.0.3",
         "@tailwindcss/vite": "^4.1.10",
         "@tauri-apps/cli": "^2.2.2",
         "daisyui": "^5.0.43",
         "laravel-echo": "^2.1.5",
         "pusher-js": "^8.4.0",
+        "semantic-release": "^24.2.5",
         "tailwindcss": "^4.1.10"
     }
 }

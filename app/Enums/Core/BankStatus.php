@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Core;
 
 enum BankStatus: string
@@ -13,7 +15,7 @@ enum BankStatus: string
         return match ($this) {
             self::Healthy => 'Ok',
             self::Degraded => 'Problème connue',
-            self::Down => "Echec"
+            self::Down => 'Echec'
         };
     }
 

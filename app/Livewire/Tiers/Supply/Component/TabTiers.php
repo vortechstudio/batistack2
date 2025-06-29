@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Supply\Component;
 
 use App\Models\Tiers\Tiers;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
@@ -15,10 +16,12 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class TabTiers extends Component implements HasForms, HasActions, HasTable
+final class TabTiers extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithActions, InteractsWithTable;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
+
     public Tiers $tiers;
+
     public ?array $data = [];
 
     public function mount(Tiers $tiers): void
@@ -54,17 +57,16 @@ class TabTiers extends Component implements HasForms, HasActions, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading("Derniers Evènements")
+            ->heading('Derniers Evènements')
             ->query(Tiers::query()->where('tiers.id', $this->tiers->id)->newQuery())
             ->columns([
                 TextColumn::make('id')
-                ->label('# Ref'),
+                    ->label('# Ref'),
 
                 TextColumn::make('title')
                     ->label('Titre'),
             ]);
     }
-
 
     public function render()
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Customers;
 
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -10,9 +12,10 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
 
-class ListCustomers extends Component implements HasForms, HasTable, HasActions
+final class ListCustomers extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
+
     public function render()
     {
         return view('livewire.tiers.customers.list-customers');

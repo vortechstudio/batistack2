@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Tiers;
 
 enum TiersType: string
@@ -11,8 +13,31 @@ enum TiersType: string
     case Particulier = 'particulier';
     case Tpe = 'tpe';
 
+    public static function plucks(): array
+    {
+        return [
+            'administration' => 'Administration',
+            'autre' => 'Autre',
+            'grand_compte' => 'Grand Compte',
+            'pme_pmi' => 'PME/PMI',
+            'particulier' => 'Particulier',
+            'tpe' => 'TPE',
+        ];
+    }
 
-    public function label()
+    public static function array(): array
+    {
+        return [
+            'administration',
+            'autre',
+            'grand_compte',
+            'pme_pmi',
+            'particulier',
+            'tpe',
+        ];
+    }
+
+    public function label(): string
     {
         return match ($this) {
             self::Administration => 'Administration',
@@ -22,29 +47,5 @@ enum TiersType: string
             self::Particulier => 'Particulier',
             self::Tpe => 'Tpe',
         };
-    }
-
-    public static function plucks()
-    {
-        return [
-            "administration" => "Administration",
-            "autre" => "Autre",
-            "grand_compte" => "Grand Compte",
-            "pme_pmi" => "PME/PMI",
-            "particulier" => "Particulier",
-            "tpe" => "TPE",
-        ];
-    }
-
-    public static function array()
-    {
-        return [
-            'administration',
-            'autre',
-            'grand_compte',
-            'pme_pmi',
-            'particulier',
-            'tpe'
-        ];
     }
 }

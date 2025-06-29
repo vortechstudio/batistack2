@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Supply\Component;
 
 use App\Models\Core\City;
@@ -24,11 +26,12 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class TableAddress extends Component implements HasTable, HasForms, HasActions
+final class TableAddress extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
     public Tiers $tiers;
+
     public ?array $data = [];
 
     public function mount(): void
@@ -36,7 +39,7 @@ class TableAddress extends Component implements HasTable, HasForms, HasActions
         $this->form->fill();
     }
 
-    public function table(Table $table)
+    public function table(Table $table): Table
     {
         return $table
             ->heading('Liste des adresses du tiers')
@@ -46,7 +49,7 @@ class TableAddress extends Component implements HasTable, HasForms, HasActions
                     ->icon('heroicon-o-plus')
                     ->schema([
                         Hidden::make('tiers_id')
-                        ->default($this->tiers->id),
+                            ->default($this->tiers->id),
 
                         TextInput::make('address')
                             ->label('Adresse du tier')
@@ -68,12 +71,12 @@ class TableAddress extends Component implements HasTable, HasForms, HasActions
                                 Select::make('ville')
                                     ->label('Ville')
                                     ->live()
-                                    ->options(fn(Get $get) => City::whereLike('postal_code', $get('code_postal'))->pluck('city', 'city')),
+                                    ->options(fn (Get $get) => City::whereLike('postal_code', $get('code_postal'))->pluck('city', 'city')),
 
                                 Select::make('pays')
                                     ->label('Pays')
-                                    ->options(Country::all()->pluck('name', 'name'))
-                            ])
+                                    ->options(Country::all()->pluck('name', 'name')),
+                            ]),
                     ]),
             ])
             ->query($this->tiers->addresses()->getQuery())
@@ -90,17 +93,17 @@ class TableAddress extends Component implements HasTable, HasForms, HasActions
 
                     TextColumn::make('pays')
                         ->label('Pays'),
-                ])
+                ]),
             ])
             ->recordActions([
                 Action::make('delete')
                     ->icon('heroicon-o-trash')
                     ->requiresConfirmation()
-                    ->action(fn(TiersAddress $record) => $record->delete()),
+                    ->action(fn (TiersAddress $record) => $record->delete()),
             ])
             ->contentGrid([
                 'md' => 2,
-                'xl' => 6
+                'xl' => 6,
             ]);
     }
 
