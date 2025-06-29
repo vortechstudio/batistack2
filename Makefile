@@ -17,7 +17,7 @@ install: vendor/autoload.php .env public/storage public/build/manifest.json
 	php artisan up
 
 update-start:
-	ssh o2switch "cd /home/mapu6796/admin.c2me.ovh && git reset --hard && git pull origin master && make update"
+	ssh o2switch "cd /home/mapu6796/admin.c2me.ovh && git reset --hard && git pull origin production && make update"
 
 update:
 	bash update.sh
