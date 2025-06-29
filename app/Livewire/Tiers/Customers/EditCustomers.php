@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Customers;
 
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class EditCustomers extends Component
+final class EditCustomers extends Component
 {
     public int $id;
 

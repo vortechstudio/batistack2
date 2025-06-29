@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Customers;
 
 use App\Models\Tiers\Tiers;
@@ -11,7 +13,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
 
-class ViewCustomers extends Component implements HasActions, HasForms, HasTable
+final class ViewCustomers extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
