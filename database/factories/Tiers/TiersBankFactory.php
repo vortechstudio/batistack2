@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Factories\Tiers;
 
 use App\Models\Core\Bank;
-use App\Models\Tiers\Tiers;
 use App\Models\Tiers\TiersBank;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,7 +20,7 @@ final class TiersBankFactory extends Factory
             'external_id' => null,
             'default' => $this->faker->boolean(),
 
-            'tiers_id' => Tiers::factory(),
+            'tiers_id' => null,
             'bank_id' => Bank::all()->random()->id,
         ];
     }
