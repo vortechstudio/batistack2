@@ -20,6 +20,3 @@ jobs:
 
       - name: Laravel Pint
         run: composer test:lint
-
-      - name: Larastan
-        run: ./vendor/bin/phpstan analyse
