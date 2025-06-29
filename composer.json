@@ -20,6 +20,7 @@
         "livewire/flux": "^2.1.1",
         "livewire/livewire": "^3.6",
         "livewire/volt": "^1.7",
+        "opcodesio/log-viewer": "^3.18",
         "owenvoke/blade-fontawesome": "^2.9",
         "ph-7/eu-vat-validator": "^3.1",
         "php-flasher/flasher-laravel": "^2.1",
