@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Supply;
 
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class EditSupply extends Component
+final class EditSupply extends Component
 {
     public int $id;
 

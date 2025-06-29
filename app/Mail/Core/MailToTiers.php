@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail\Core;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class MailToTiers extends Mailable
+final class MailToTiers extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -21,8 +22,7 @@ class MailToTiers extends Mailable
         public string $mail,
         public string $messages,
         public string $object,
-    )
-    {
+    ) {
         //
     }
 

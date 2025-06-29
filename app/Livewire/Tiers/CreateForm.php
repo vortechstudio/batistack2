@@ -39,9 +39,10 @@ final class CreateForm extends Component implements HasSchemas
     public string $type;
 
     public ?array $data = [];
+
     public ?Tiers $tiers;
 
-    public function mount(string $type, int|null $id = null): void
+    public function mount(string $type, ?int $id = null): void
     {
         $this->type = $type;
 
@@ -91,7 +92,7 @@ final class CreateForm extends Component implements HasSchemas
 
                                         TextInput::make('num_tva')
                                             ->label('Numéro de TVA')
-                                            ->hidden(fn(Get $get): bool => !$get('tva')),
+                                            ->hidden(fn (Get $get): bool => ! $get('tva')),
                                     ]),
 
                             ]),
@@ -113,13 +114,13 @@ final class CreateForm extends Component implements HasSchemas
                                             ->columnSpan(2)
                                             ->label('Ville')
                                             ->searchable()
-                                            ->options(fn(Get $get) => $get('code_postal') ? City::where('postal_code', $get('code_postal'))->pluck('city', 'city')->toArray() : City::all()->pluck('city', 'city')->toArray()),
+                                            ->options(fn (Get $get) => $get('code_postal') ? City::where('postal_code', $get('code_postal'))->pluck('city', 'city')->toArray() : City::all()->pluck('city', 'city')->toArray()),
 
                                         Select::make('pays')
                                             ->columnSpan(2)
                                             ->label('Pays')
                                             ->searchable()
-                                            ->options(fn() => Country::all()->pluck('name', 'name')->toArray()),
+                                            ->options(fn () => Country::all()->pluck('name', 'name')->toArray()),
                                     ]),
                             ]),
 
@@ -178,8 +179,8 @@ final class CreateForm extends Component implements HasSchemas
                                             ->label('Code Comptable (Général)')
                                             ->columnSpan(1)
                                             ->searchable()
-                                            ->getSearchResultsUsing(fn(string $search): array => PlanComptable::query()->whereLike('account', '%' . $search . '%')->limit(25)->pluck('account', 'id')->all())
-                                            ->getOptionLabelUsing(fn($value): ?string => PlanComptable::find($value)->code . ' - ' . PlanComptable::find($value)->account)
+                                            ->getSearchResultsUsing(fn (string $search): array => PlanComptable::query()->whereLike('account', '%'.$search.'%')->limit(25)->pluck('account', 'id')->all())
+                                            ->getOptionLabelUsing(fn ($value): ?string => PlanComptable::find($value)->code.' - '.PlanComptable::find($value)->account)
                                             ->allowHtml(),
 
                                         TextInput::make('code_comptable_fournisseur')
@@ -192,12 +193,12 @@ final class CreateForm extends Component implements HasSchemas
                                         Select::make('condition_reglement_id')
                                             ->label('Condition Reglement')
                                             ->columnSpan(1)
-                                            ->options(fn() => ConditionReglement::all()->pluck('name', 'id')->all()),
+                                            ->options(fn () => ConditionReglement::all()->pluck('name', 'id')->all()),
 
                                         Select::make('mode_reglement_id')
                                             ->label('Mode de Règlement')
                                             ->columnSpan(1)
-                                            ->options(fn() => ModeReglement::all()->pluck('name', 'id')->all()),
+                                            ->options(fn () => ModeReglement::all()->pluck('name', 'id')->all()),
                                     ]),
                             ]),
 
@@ -234,7 +235,7 @@ final class CreateForm extends Component implements HasSchemas
     {
         Tiers::create([
             'name' => $this->form->getState()['name'],
-            'nature' => $this->type == 'supply' ? TiersNature::Fournisseur : TiersNature::Client,
+            'nature' => $this->type === 'supply' ? TiersNature::Fournisseur : TiersNature::Client,
             'type' => $this->form->getState()['type'],
             'code_tiers' => $this->form->getState()['code_tiers'],
             'siren' => $this->form->getState()['siren'],
@@ -264,7 +265,7 @@ final class CreateForm extends Component implements HasSchemas
             ]);
         }
 
-        if ($this->type == 'supply') {
+        if ($this->type === 'supply') {
             $four = $tiers->fournisseur()->create([
                 'tiers_id' => $tiers->id,
                 'tva' => $this->form->getState()['tva'],
@@ -276,14 +277,14 @@ final class CreateForm extends Component implements HasSchemas
             ]);
 
             PlanComptable::updateOrCreate([
-                'code' => $this->form->getState()['code_comptable_fournisseur']
+                'code' => $this->form->getState()['code_comptable_fournisseur'],
             ], [
                 'code' => $this->form->getState()['code_comptable_fournisseur'],
                 'account' => $this->form->getState()['name'],
                 'type' => 'Payable',
                 'lettrage' => 1,
                 'principal' => 4,
-                'initial' => 0
+                'initial' => 0,
             ]);
             $plan = PlanComptable::where('code', $this->form->getState()['code_comptable_fournisseur'])->first();
 
@@ -302,14 +303,14 @@ final class CreateForm extends Component implements HasSchemas
             ]);
 
             PlanComptable::updateOrCreate([
-                'code' => $this->form->getState()['code_comptable_client']
+                'code' => $this->form->getState()['code_comptable_client'],
             ], [
                 'code' => $this->form->getState()['code_comptable_client'],
                 'account' => $this->form->getState()['name'],
                 'type' => 'Client',
                 'lettrage' => 1,
                 'principal' => 4,
-                'initial' => 0
+                'initial' => 0,
             ]);
             $plan = PlanComptable::where('code', $this->form->getState()['code_comptable_client'])->first();
             $clt->update([
