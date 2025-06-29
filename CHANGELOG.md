@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/vortechstudio/batistack2/compare/v1.0.0...v1.0.1) (2025-06-29)
+
+
+### Bug Fixes
+
+* **TiersBankFactory:** set tiers_id to null by default ([8d1dc11](https://github.com/vortechstudio/batistack2/commit/8d1dc114f44f230ac9faf16ca17f2f82450171d3))
+
 # 1.0.0 (2025-06-29)
 
 
