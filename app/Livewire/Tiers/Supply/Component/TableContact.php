@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Supply\Component;
 
 use App\Models\Tiers\Tiers;
@@ -19,7 +21,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class TableContact extends Component implements HasActions, HasForms, HasTable
+final class TableContact extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
@@ -76,14 +78,14 @@ class TableContact extends Component implements HasActions, HasForms, HasTable
             ->columns([
                 TextColumn::make('nom')
                     ->label('Identité')
-                    ->formatStateUsing(fn (TiersContact $record) => $record->nom.' '.$record->prenom),
+                    ->formatStateUsing(fn (TiersContact $record): string => $record->nom.' '.$record->prenom),
 
                 TextColumn::make('poste')
                     ->label('Poste/Fonction'),
 
                 TextColumn::make('tel')
                     ->label('Coordonnées')
-                    ->formatStateUsing(fn (TiersContact $record) => "<div class='flex flex-col'><div class='mb-1'><strong>Téléphone: </strong>$record->tel</div><div class='mb-1'><strong>Portable: </strong>$record->portable</div><div class='mb-1'><strong>Email: </strong>$record->email</div></div>")
+                    ->formatStateUsing(fn (TiersContact $record): string => "<div class='flex flex-col'><div class='mb-1'><strong>Téléphone: </strong>$record->tel</div><div class='mb-1'><strong>Portable: </strong>$record->portable</div><div class='mb-1'><strong>Email: </strong>$record->email</div></div>")
                     ->html(),
             ])
             ->recordActions([

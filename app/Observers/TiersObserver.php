@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Observers;
 
 use App\Models\Tiers\Tiers;
 
-class TiersObserver
+final class TiersObserver
 {
     public function created(Tiers $tiers): void
     {

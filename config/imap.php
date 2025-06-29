@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
 * File:     imap.php
 * Category: config
@@ -151,8 +153,8 @@ return [
     */
     'options' => [
         'delimiter' => '/',
-        'fetch' => \Webklex\PHPIMAP\IMAP::FT_PEEK,
-        'sequence' => \Webklex\PHPIMAP\IMAP::ST_UID,
+        'fetch' => Webklex\PHPIMAP\IMAP::FT_PEEK,
+        'sequence' => Webklex\PHPIMAP\IMAP::ST_UID,
         'fetch_body' => true,
         'fetch_flags' => true,
         'soft_fail' => false,
@@ -197,9 +199,9 @@ return [
             'attachment' => 'utf-8', // mimeheader
         ],
         'decoder' => [
-            'header' => \Webklex\PHPIMAP\Decoder\HeaderDecoder::class,
-            'message' => \Webklex\PHPIMAP\Decoder\MessageDecoder::class,
-            'attachment' => \Webklex\PHPIMAP\Decoder\AttachmentDecoder::class,
+            'header' => Webklex\PHPIMAP\Decoder\HeaderDecoder::class,
+            'message' => Webklex\PHPIMAP\Decoder\MessageDecoder::class,
+            'attachment' => Webklex\PHPIMAP\Decoder\AttachmentDecoder::class,
         ],
     ],
 
@@ -220,20 +222,20 @@ return [
     */
     'events' => [
         'message' => [
-            'new' => \Webklex\IMAP\Events\MessageNewEvent::class,
-            'moved' => \Webklex\IMAP\Events\MessageMovedEvent::class,
-            'copied' => \Webklex\IMAP\Events\MessageCopiedEvent::class,
-            'deleted' => \Webklex\IMAP\Events\MessageDeletedEvent::class,
-            'restored' => \Webklex\IMAP\Events\MessageRestoredEvent::class,
+            'new' => Webklex\IMAP\Events\MessageNewEvent::class,
+            'moved' => Webklex\IMAP\Events\MessageMovedEvent::class,
+            'copied' => Webklex\IMAP\Events\MessageCopiedEvent::class,
+            'deleted' => Webklex\IMAP\Events\MessageDeletedEvent::class,
+            'restored' => Webklex\IMAP\Events\MessageRestoredEvent::class,
         ],
         'folder' => [
-            'new' => \Webklex\IMAP\Events\FolderNewEvent::class,
-            'moved' => \Webklex\IMAP\Events\FolderMovedEvent::class,
-            'deleted' => \Webklex\IMAP\Events\FolderDeletedEvent::class,
+            'new' => Webklex\IMAP\Events\FolderNewEvent::class,
+            'moved' => Webklex\IMAP\Events\FolderMovedEvent::class,
+            'deleted' => Webklex\IMAP\Events\FolderDeletedEvent::class,
         ],
         'flag' => [
-            'new' => \Webklex\IMAP\Events\FlagNewEvent::class,
-            'deleted' => \Webklex\IMAP\Events\FlagDeletedEvent::class,
+            'new' => Webklex\IMAP\Events\FlagNewEvent::class,
+            'deleted' => Webklex\IMAP\Events\FlagDeletedEvent::class,
         ],
     ],
 
@@ -251,7 +253,7 @@ return [
     | The provided masks below are used as the default masks.
     */
     'masks' => [
-        'message' => \Webklex\PHPIMAP\Support\Masks\MessageMask::class,
-        'attachment' => \Webklex\PHPIMAP\Support\Masks\AttachmentMask::class,
+        'message' => Webklex\PHPIMAP\Support\Masks\MessageMask::class,
+        'attachment' => Webklex\PHPIMAP\Support\Masks\AttachmentMask::class,
     ],
 ];

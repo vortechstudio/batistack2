@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Models\Core\Country;
+use Http;
 use Illuminate\Console\Command;
 
-class InstallCountryCommand extends Command
+final class InstallCountryCommand extends Command
 {
     protected $signature = 'install:country';
 
@@ -16,14 +19,14 @@ class InstallCountryCommand extends Command
         if (Country::count() === 0) {
             $this->info('Installation des informations des pays');
 
-            $countries = \Http::withoutVerifying()
+            $countries = Http::withoutVerifying()
                 ->get('https://gist.githubusercontent.com/revolunet/6173043/raw/222c4537affb1bdecbabcec51143742709aa0b6e/countries-FR.json')
                 ->json();
 
             $bar = $this->output->createProgressBar(count($countries));
             $bar->start();
 
-            foreach ($countries as $k => $country) {
+            foreach ($countries as $country) {
                 Country::create([
                     'name' => $country,
                 ]);

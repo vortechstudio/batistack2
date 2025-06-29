@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Supply\Component;
 
 use App\Models\Core\Bank;
@@ -25,7 +27,7 @@ use Intervention\Validation\Rules\Bic;
 use Intervention\Validation\Rules\Iban;
 use Livewire\Component;
 
-class TableBank extends Component implements HasActions, HasForms, HasTable
+final class TableBank extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
@@ -100,7 +102,7 @@ class TableBank extends Component implements HasActions, HasForms, HasTable
                     ->iconButton()
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading(fn (TiersBank $record) => 'Supprimer '.$record->bank->name)
+                    ->modalHeading(fn (TiersBank $record): string => 'Supprimer '.$record->bank->name)
                     ->action(fn (TiersBank $record) => $record->delete()),
             ])
             ->columns([

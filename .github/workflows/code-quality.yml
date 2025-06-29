@@ -19,7 +19,7 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Laravel Pint
-        run: ./vendor/bin/pint --test
+        run: composer test:lint
 
       - name: Larastan
         run: ./vendor/bin/phpstan analyse

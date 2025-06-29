@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Server;
 
 use File;
@@ -11,13 +13,13 @@ use function Laravel\Prompts\intro;
 use function Laravel\Prompts\note;
 use function Laravel\Prompts\warning;
 
-class ServeMobileCommand extends Command
+final class ServeMobileCommand extends Command
 {
     protected $signature = 'serve:mobile {--android} {--ios}';
 
     protected $description = 'Command description';
 
-    public function handle()
+    public function handle(): void
     {
         if (! $this->option('ios') && ! $this->option('android')) {
             warning("A device option is needed : 'mobile:serve --android' or 'mobile:serve --ios'");

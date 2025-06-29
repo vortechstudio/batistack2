@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'unit_poids' => [
         'slug' => 'kilogram',

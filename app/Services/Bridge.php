@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\Core\Company;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Exception;
+use Http;
+use Log;
 
-class Bridge
+final readonly class Bridge
 {
     private string $client_id;
 
@@ -20,8 +25,8 @@ class Bridge
     public function get(string $folder, ?array $data = null, ?string $withToken = null): ?array
     {
         try {
-            if ($withToken) {
-                $request = \Http::withoutVerifying()->withHeaders([
+            if ($withToken !== null && $withToken !== '' && $withToken !== '0') {
+                $request = Http::withoutVerifying()->withHeaders([
                     'Bridge-Version' => config('services.bridge.version'),
                     'Client-Id' => $this->client_id,
                     'Client-Secret' => $this->client_secret,
@@ -32,7 +37,7 @@ class Bridge
                     ->get(config('services.bridge.endpoint').$folder, $data)
                     ->json();
             } else {
-                $request = \Http::withoutVerifying()->withHeaders([
+                $request = Http::withoutVerifying()->withHeaders([
                     'Bridge-Version' => config('services.bridge.version'),
                     'Client-Id' => $this->client_id,
                     'Client-Secret' => $this->client_secret,
@@ -44,8 +49,8 @@ class Bridge
             }
 
             return collect($request)->toArray();
-        } catch (\Exception $exception) {
-            \Log::emergency($exception);
+        } catch (Exception $exception) {
+            Log::emergency($exception);
             Bugsnag::notifyException($exception);
             toastr()->addError($exception->getMessage());
 
@@ -56,8 +61,8 @@ class Bridge
     public function post(string $folder, ?array $data = null, ?string $withToken = null): ?array
     {
         try {
-            if ($withToken) {
-                $request = \Http::withoutVerifying()->withHeaders([
+            if ($withToken !== null && $withToken !== '' && $withToken !== '0') {
+                $request = Http::withoutVerifying()->withHeaders([
                     'Bridge-Version' => config('services.bridge.version'),
                     'Client-Id' => $this->client_id,
                     'Client-Secret' => $this->client_secret,
@@ -68,7 +73,7 @@ class Bridge
                     ->post(config('services.bridge.endpoint').$folder, $data)
                     ->json();
             } else {
-                $request = \Http::withoutVerifying()->withHeaders([
+                $request = Http::withoutVerifying()->withHeaders([
                     'Bridge-Version' => config('services.bridge.version'),
                     'Client-Id' => $this->client_id,
                     'Client-Secret' => $this->client_secret,
@@ -80,8 +85,8 @@ class Bridge
             }
 
             return collect($request)->toArray();
-        } catch (\Exception $exception) {
-            \Log::emergency($exception);
+        } catch (Exception $exception) {
+            Log::emergency($exception);
             Bugsnag::notifyException($exception);
             toastr()->addError($exception->getMessage());
 

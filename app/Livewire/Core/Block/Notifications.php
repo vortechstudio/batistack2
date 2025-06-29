@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Core\Block;
 
 use Livewire\Component;
 
-class Notifications extends Component
+final class Notifications extends Component
 {
     public $notifications;
 

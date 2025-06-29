@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Server;
 
 use Illuminate\Console\Command;
@@ -9,13 +11,13 @@ use Illuminate\Support\Facades\Process;
 use function Laravel\Prompts\intro;
 use function Laravel\Prompts\note;
 
-class ServeDesktopCommand extends Command
+final class ServeDesktopCommand extends Command
 {
     protected $signature = 'serve:desktop';
 
     protected $description = 'Command description';
 
-    public function handle()
+    public function handle(): void
     {
         intro('Running Desktop Environment');
 

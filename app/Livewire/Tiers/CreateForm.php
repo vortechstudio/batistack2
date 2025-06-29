@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers;
 
 use App\Enums\Tiers\TiersType;
@@ -22,7 +24,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Livewire\Component;
 
-class CreateForm extends Component implements HasSchemas
+final class CreateForm extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
 
@@ -38,7 +40,7 @@ class CreateForm extends Component implements HasSchemas
 
     public function form(Schema $schema): Schema
     {
-        if ($this->type == 'supply') {
+        if ($this->type === 'supply') {
             return $schema
                 ->components([
                     Wizard::make([
@@ -74,7 +76,7 @@ class CreateForm extends Component implements HasSchemas
 
                                         TextInput::make('num_tva')
                                             ->label('Numéro de TVA')
-                                            ->hidden(fn (Get $get) => ! $get('tva')),
+                                            ->hidden(fn (Get $get): bool => ! $get('tva')),
                                     ]),
 
                             ]),
@@ -187,9 +189,10 @@ class CreateForm extends Component implements HasSchemas
                     ]),
                 ])
                 ->statePath('data');
-        } else {
-            return $schema;
         }
+
+        return $schema;
+
     }
 
     public function render()

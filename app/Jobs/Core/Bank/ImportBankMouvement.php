@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs\Core\Bank;
 
 use App\Models\Core\Company;
@@ -10,14 +12,15 @@ use App\Notifications\Core\Bank\UpdateBankAccount;
 use App\Services\Bridge;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Log;
 
-class ImportBankMouvement implements ShouldQueue
+final class ImportBankMouvement implements ShouldQueue
 {
     use Queueable;
 
-    private string $token;
-
     public Bridge $api;
+
+    private string $token;
 
     /**
      * Create a new job instance.
@@ -30,11 +33,11 @@ class ImportBankMouvement implements ShouldQueue
     }
 
     /**
-     * Execute the job.
+     * @return void
      */
     public function handle(): void
     {
-        \Log::info('Info Bank', ['Bank' => $this->bank, 'Accounts' => $this->bank->accounts]);
+        Log::info('Info Bank', ['Bank' => $this->bank, 'Accounts' => $this->bank->accounts]);
         foreach ($this->bank->accounts as $account) {
             $transactions = $this->api->get('aggregation/transactions?limit=500&account_id='.$account->account_id.'&min_date=2025-01-01', null, $this->token);
 

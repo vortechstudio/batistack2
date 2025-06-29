@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Core\Company;
 use App\Services\Bridge;
+use Exception;
+use Log;
 
-class BankController extends Controller
+final class BankController extends Controller
 {
     public function connectAccount()
     {
@@ -13,7 +17,7 @@ class BankController extends Controller
         $bridge = new Bridge;
         if (! $company->bridge_client_id) {
             $user_account = $bridge->post('aggregation/users', [
-                'external_user_id' => 'USER'.rand(1, 5000),
+                'external_user_id' => 'USER'.random_int(1, 5000),
             ]);
             $company->update(['bridge_client_id' => $user_account['uuid']]);
         }
@@ -34,8 +38,8 @@ class BankController extends Controller
             }
 
             return redirect($session['url']);
-        } catch (\Exception $e) {
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage(), ['session' => $session]);
+        } catch (Exception $e) {
+            Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
             toastr()->addError($e->getMessage(), [], 'Erreur');
 
             return redirect()->back();

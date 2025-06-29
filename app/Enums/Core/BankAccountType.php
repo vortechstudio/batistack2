@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Core;
 
 enum BankAccountType: string
@@ -27,7 +29,7 @@ enum BankAccountType: string
         };
     }
 
-    public function color()
+    public function color(): string
     {
         return match ($this) {
             BankAccountType::CHECKING => 'success',

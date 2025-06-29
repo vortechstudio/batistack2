@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Core;
 
 use App\Enums\Core\BankAccountType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CompanyBankAccount extends Model
+final class CompanyBankAccount extends Model
 {
     protected $guarded = [];
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Settings;
 
 use App\Models\Core\PlanComptable;
@@ -13,7 +15,7 @@ use Filament\Schemas\Schema;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class CreatePlan extends Component implements HasSchemas
+final class CreatePlan extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
 

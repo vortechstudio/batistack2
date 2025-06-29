@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers;
 
 use App\Models\Tiers\Tiers;
@@ -12,7 +14,7 @@ use Filament\Tables\Contracts\HasTable;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class Dashboard extends Component implements HasActions, HasForms, HasTable
+final class Dashboard extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 

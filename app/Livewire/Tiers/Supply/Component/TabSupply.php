@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Supply\Component;
 
 use App\Models\Core\ConditionReglement;
@@ -19,7 +21,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Livewire\Component;
 
-class TabSupply extends Component implements HasActions, HasForms
+final class TabSupply extends Component implements HasActions, HasForms
 {
     use InteractsWithActions, InteractsWithForms;
 
@@ -51,7 +53,7 @@ class TabSupply extends Component implements HasActions, HasForms
                             ->label('Numero TVA')
                             ->default($this->supply->num_tva)
                             ->live()
-                            ->hidden(fn (Get $get) => ! $get('tva')),
+                            ->hidden(fn (Get $get): bool => ! $get('tva')),
                     ]),
 
                 Grid::make(2)
@@ -84,7 +86,7 @@ class TabSupply extends Component implements HasActions, HasForms
                             ->default($this->supply->mode_reglement_id),
                     ]),
             ])
-            ->action(function (array $data) {});
+            ->action(function (array $data): void {});
     }
 
     public function render()

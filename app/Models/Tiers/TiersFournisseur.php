@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Tiers;
 
 use App\Models\Core\ConditionReglement;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TiersFournisseur extends Model
+final class TiersFournisseur extends Model
 {
     /** @use HasFactory<\Database\Factories\Tiers\TiersFournisseurFactory> */
     use HasFactory;
@@ -17,13 +19,6 @@ class TiersFournisseur extends Model
     public $timestamps = false;
 
     protected $guarded = [];
-
-    protected function casts(): array
-    {
-        return [
-            'tva' => 'boolean',
-        ];
-    }
 
     public function tiers(): BelongsTo
     {
@@ -48,5 +43,12 @@ class TiersFournisseur extends Model
     public function reglement(): BelongsTo
     {
         return $this->belongsTo(ModeReglement::class, 'mode_reglement_id', 'id');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'tva' => 'boolean',
+        ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Tiers\Tiers;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -10,7 +12,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tiers_logs', function (Blueprint $table) {
+        Schema::create('tiers_logs', function (Blueprint $table): void {
             $table->id();
             $table->string('title');
             $table->boolean('event_day')->default(false);

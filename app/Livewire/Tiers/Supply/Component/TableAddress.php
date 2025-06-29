@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Supply\Component;
 
 use App\Models\Core\City;
@@ -24,7 +26,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class TableAddress extends Component implements HasActions, HasForms, HasTable
+final class TableAddress extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
@@ -37,7 +39,7 @@ class TableAddress extends Component implements HasActions, HasForms, HasTable
         $this->form->fill();
     }
 
-    public function table(Table $table)
+    public function table(Table $table): \Filament\Tables\Table
     {
         return $table
             ->heading('Liste des adresses du tiers')

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Settings;
 
 use App\Jobs\Core\Bank\ImportBankMouvement;
@@ -10,11 +12,11 @@ use Illuminate\Http\Request;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class CreateBank extends Component
+final class CreateBank extends Component
 {
-    public ?array $item;
+    public ?array $item = null;
 
-    public ?array $accounts;
+    public ?array $accounts = null;
 
     public CompanyBank $banque;
 
@@ -30,7 +32,7 @@ class CreateBank extends Component
         $this->accounts = $bridge->get('aggregation/accounts', ['item_id' => $request->get('item_id')], cache('bridge_access_token'));
         $banks = \App\Models\Core\Bank::where('bridge_id', $this->item['provider_id'])->first();
 
-        $this->accounts = collect($this->accounts['resources'])->filter(fn ($item) => isset($item['balance']))->toArray();
+        $this->accounts = collect($this->accounts['resources'])->filter(fn ($item): bool => isset($item['balance']))->toArray();
 
         if (CompanyBank::where('item_id', $request->item_id)->exists()) {
             CompanyBank::where('item_id', $request->item_id)

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Core;
 
 use App\Models\Core\Company;
@@ -11,13 +13,13 @@ use App\Notifications\Core\Bank\UpdateBankAccount;
 use App\Services\Bridge;
 use Illuminate\Console\Command;
 
-class UpdateBankMouvementCommand extends Command
+final class UpdateBankMouvementCommand extends Command
 {
+    public Bridge $bridge;
+
     protected $signature = 'update:bank-mouvement';
 
     protected $description = 'Command description';
-
-    public Bridge $bridge;
 
     public function handle(): void
     {

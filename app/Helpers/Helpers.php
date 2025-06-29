@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Helpers;
 
 use App\Models\Tiers\Tiers;
 
-class Helpers
+final class Helpers
 {
     public static function eur(string|int|float $number): string
     {
@@ -15,27 +17,16 @@ class Helpers
     {
         $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789*%_-)=';
 
-        return substr(str_shuffle(str_repeat($chars, $length)), 0, $length);
+        return mb_substr(str_shuffle(str_repeat($chars, $length)), 0, $length);
     }
 
     public static function generateCodeTiers(string $type): string
     {
         if ($type === 'f') {
             $latest = Tiers::where('nature', 'fournisseur')->orderBy('id', 'desc')->first();
-            if ($latest) {
-                $code = 'SUP'.now()->year.'-00'.$latest->id + 1;
-            } else {
-                $code = 'SUP'.now()->year.'-001';
-            }
-        } else {
-            $latest = Tiers::where('nature', 'client')->orderBy('id', 'desc')->first();
-            if ($latest) {
-                $code = 'CUS'.now()->year.'-00'.$latest->id + 1;
-            } else {
-                $code = 'CUS'.now()->year.'-001';
-            }
+            return $latest ? 'SUP'.now()->year.'-00'.$latest->id + 1 : 'SUP'.now()->year.'-001';
         }
-
-        return $code;
+        $latest = Tiers::where('nature', 'client')->orderBy('id', 'desc')->first();
+        return $latest ? 'CUS'.now()->year.'-00'.$latest->id + 1 : 'CUS'.now()->year.'-001';
     }
 }

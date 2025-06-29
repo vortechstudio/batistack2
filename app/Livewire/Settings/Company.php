@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Settings;
 
 use App\Models\Core\City;
 use App\Models\Core\Country;
 use App\Rules\VAT;
+use Exception;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
@@ -18,7 +21,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 
-class Company extends Component implements HasSchemas
+final class Company extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
     use Toast;
@@ -114,7 +117,7 @@ class Company extends Component implements HasSchemas
             );
 
             toastr()->success('Le logo est enregistré');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             toastr()->error($e->getMessage());
         }
     }

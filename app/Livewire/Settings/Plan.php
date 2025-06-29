@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Settings;
 
 use App\Models\Core\PlanComptable;
@@ -19,7 +21,7 @@ use Filament\Tables\Table;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class Plan extends Component implements HasActions, HasForms, HasTable
+final class Plan extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
@@ -34,8 +36,8 @@ class Plan extends Component implements HasActions, HasForms, HasTable
                 TextColumn::make('lettrage')
                     ->label('Lettrage')
                     ->badge()
-                    ->color(fn (string $state) => $state ? 'success' : 'warning')
-                    ->formatStateUsing(fn (string $state) => $state ? 'Oui' : 'Non'),
+                    ->color(fn (string $state): string => $state !== '' && $state !== '0' ? 'success' : 'warning')
+                    ->formatStateUsing(fn (string $state): string => $state !== '' && $state !== '0' ? 'Oui' : 'Non'),
                 TextColumn::make('initial')
                     ->label('Balance Inital')->money('EUR'),
             ])

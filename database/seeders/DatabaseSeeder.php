@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Core\Company;
@@ -13,7 +15,7 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+final class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
@@ -34,14 +36,14 @@ class DatabaseSeeder extends Seeder
         }
 
         if (Tiers::count() === 0) {
-            Tiers::factory(rand(5, 30))->create();
+            Tiers::factory(random_int(5, 30))->create();
 
             foreach (Tiers::all() as $tiers) {
-                TiersAddress::factory(rand(1, 2))->create([
+                TiersAddress::factory(random_int(1, 2))->create([
                     'tiers_id' => $tiers->id,
                 ]);
 
-                TiersContact::factory(rand(1, 10))->create([
+                TiersContact::factory(random_int(1, 10))->create([
                     'tiers_id' => $tiers->id,
                 ]);
 

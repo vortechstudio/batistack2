@@ -44,7 +44,8 @@
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-laravel": "^3.2",
-        "predis/predis": "^3.0"
+        "predis/predis": "^3.0",
+        "rector/rector": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -82,7 +83,11 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
-        ]
+        ],
+        "lint": "pint",
+        "test:lint": "pint --test",
+        "refactor": "rector",
+        "test:refactor": "rector --dry-run"
     },
     "extra": {
         "laravel": {

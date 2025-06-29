@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Tiers;
 
 use App\Models\Tiers\TiersAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TiersAddressFactory extends Factory
+final class TiersAddressFactory extends Factory
 {
     protected $model = TiersAddress::class;
 

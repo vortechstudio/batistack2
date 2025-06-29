@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications\Core\Bank;
 
 use App\Models\Core\CompanyBankAccount;
@@ -7,7 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class UpdateBankAccount extends Notification
+final class UpdateBankAccount extends Notification
 {
     use Queueable;
 

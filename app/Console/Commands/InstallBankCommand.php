@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Models\Core\Bank;
 use App\Services\Bridge;
 use Illuminate\Console\Command;
 
-class InstallBankCommand extends Command
+final class InstallBankCommand extends Command
 {
     protected $signature = 'install:bank';
 

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Models\Core\ConditionReglement;
 use Illuminate\Console\Command;
 
-class InstallConditionReglementCommand extends Command
+final class InstallConditionReglementCommand extends Command
 {
     protected $signature = 'install:condition-reglement';
 

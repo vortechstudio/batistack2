@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Models\Core\ModeReglement;
 use Illuminate\Console\Command;
 
-class InstallModeReglementCommand extends Command
+final class InstallModeReglementCommand extends Command
 {
     protected $signature = 'install:mode-reglement';
 

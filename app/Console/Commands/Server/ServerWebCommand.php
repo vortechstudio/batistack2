@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Server;
 
 use Illuminate\Console\Command;
@@ -8,13 +10,13 @@ use Illuminate\Support\Facades\Process;
 use function Laravel\Prompts\intro;
 use function Laravel\Prompts\note;
 
-class ServerWebCommand extends Command
+final class ServerWebCommand extends Command
 {
     protected $signature = 'serve:web';
 
     protected $description = 'Command description';
 
-    public function handle()
+    public function handle(): void
     {
         intro('Running Web Environment');
 

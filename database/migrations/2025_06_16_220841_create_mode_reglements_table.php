@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('mode_reglements', function (Blueprint $table) {
+        Schema::create('mode_reglements', function (Blueprint $table): void {
             $table->id();
             $table->string('code');
             $table->string('name');
@@ -16,11 +18,11 @@ return new class extends Migration
             $table->boolean('bridgeable')->default(false);
         });
 
-        Schema::table('tiers_fournisseurs', function (Blueprint $table) {
+        Schema::table('tiers_fournisseurs', function (Blueprint $table): void {
             $table->foreignId('mode_reglement_id')->constrained();
         });
 
-        Schema::table('tiers_clients', function (Blueprint $table) {
+        Schema::table('tiers_clients', function (Blueprint $table): void {
             $table->foreignId('mode_reglement_id')->constrained();
         });
     }

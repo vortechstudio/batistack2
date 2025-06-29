@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Settings;
 
 use App\Jobs\Core\Bank\ImportBankMouvement;
@@ -14,7 +16,7 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class Bank extends Component implements HasActions, HasForms
+final class Bank extends Component implements HasActions, HasForms
 {
     use InteractsWithActions, InteractsWithForms;
 

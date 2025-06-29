@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tiers_fournisseurs', function (Blueprint $table) {
+        Schema::create('tiers_fournisseurs', function (Blueprint $table): void {
             $table->id();
             $table->boolean('tva')->default(true);
             $table->string('num_tva')->nullable();
@@ -20,7 +22,7 @@ return new class extends Migration
 
         });
 
-        Schema::create('tiers_clients', function (Blueprint $table) {
+        Schema::create('tiers_clients', function (Blueprint $table): void {
             $table->id();
             $table->boolean('tva');
             $table->string('num_tva')->nullable();

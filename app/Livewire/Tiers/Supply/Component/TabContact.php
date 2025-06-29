@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Tiers\Supply\Component;
 
 use App\Models\Tiers\Tiers;
 use Livewire\Component;
 
-class TabContact extends Component
+final class TabContact extends Component
 {
     public Tiers $tiers;
 

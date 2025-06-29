@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use Http;
 use Illuminate\Http\Client\ConnectionException;
 
-class Siren
+final class Siren
 {
     /**
      * @throws ConnectionException
      */
     public function call(string $siren, string $type = 'info'): mixed
     {
-        $request = \Http::withoutVerifying()
+        $request = Http::withoutVerifying()
             ->withHeaders([
                 'X-INSEE-Api-Key-Integration' => config('services.siren_api.key'),
             ])
@@ -19,12 +22,12 @@ class Siren
 
         if ($request->getStatusCode() === 404) {
             return false;
-        } else {
-            if ($type === 'info') {
-                return $request->json()['uniteLegale'];
-            } else {
-                return true;
-            }
         }
+        if ($type === 'info') {
+            return $request->json()['uniteLegale'];
+        }
+
+        return true;
+
     }
 }
