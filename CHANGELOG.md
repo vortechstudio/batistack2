@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/vortechstudio/batistack2/compare/v1.0.1...v1.1.0) (2025-06-29)
+
+
+### Features
+
+* **tiers:** add bank information step to create form ([0e183ed](https://github.com/vortechstudio/batistack2/commit/0e183ed569339d8a54b9fa67e65237f43b2f1155))
+* **ui:** display app version in logo component ([17394f5](https://github.com/vortechstudio/batistack2/commit/17394f562b4ba8af7d9b768862747ce4cd367fae))
+
 ## [1.0.1](https://github.com/vortechstudio/batistack2/compare/v1.0.0...v1.0.1) (2025-06-29)
 
 
