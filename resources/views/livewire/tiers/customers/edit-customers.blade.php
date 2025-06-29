@@ -1,3 +1,3 @@
 <div>
-    {{-- Be like water. --}}
+    @livewire('tiers.create-form', ['type' => 'customer', 'id' => $id])
 </div>
