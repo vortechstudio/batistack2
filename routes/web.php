@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', App\Livewire\Tiers\Supply\ListSupply::class)->name('tiers.supply.list');
             Route::get('/create', App\Livewire\Tiers\Supply\CreateSupply::class)->name('tiers.supply.create');
             Route::get('{id}', App\Livewire\Tiers\Supply\ViewSupply::class)->name('tiers.supply.view');
+            Route::get('{id}/edit', App\Livewire\Tiers\Supply\EditSupply::class)->name('tiers.supply.edit');
         });
 
         Route::prefix('customers')->group(function () {

@@ -39,11 +39,18 @@ final class CreateForm extends Component implements HasSchemas
     public string $type;
 
     public ?array $data = [];
+    public ?Tiers $tiers;
 
-    public function mount(string $type): void
+    public function mount(string $type, int|null $id = null): void
     {
         $this->type = $type;
-        $this->form->fill();
+
+        if ($id) {
+            $this->tiers = Tiers::find($id);
+            $this->form->fill($this->tiers->attributesToArray());
+        } else {
+            $this->form->fill();
+        }
     }
 
     public function form(Schema $schema): Schema
