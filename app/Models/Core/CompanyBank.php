@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class CompanyBank extends Model
 {
     protected $guarded = [];
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }
+
     public function bank(): BelongsTo
     {
         return $this->belongsTo(Bank::class);

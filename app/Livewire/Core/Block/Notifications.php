@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Core\Block;
 
-use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
 
 class Notifications extends Component
 {
     public $notifications;
+
     public string $icon;
 
     public function mount(): void
@@ -27,7 +27,8 @@ class Notifications extends Component
 
     public function getIconNotification($id): string
     {
-        $notif =  $this->notifications->where('id', $id)->first();
+        $notif = $this->notifications->where('id', $id)->first();
+
         return $notif['data']['icon'];
     }
 }

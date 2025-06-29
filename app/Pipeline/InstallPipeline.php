@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Artisan;
 
 class InstallPipeline implements Pipeline
 {
-
     public function handle($payload, Closure $next): void
     {
         \Artisan::call('install:cities');
@@ -16,8 +15,9 @@ class InstallPipeline implements Pipeline
         Artisan::call('install:pcg');
         $next($payload);
     }
+
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function send($passable)
     {
@@ -25,7 +25,7 @@ class InstallPipeline implements Pipeline
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function through($pipes)
     {
@@ -33,7 +33,7 @@ class InstallPipeline implements Pipeline
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function via($method)
     {
@@ -41,7 +41,7 @@ class InstallPipeline implements Pipeline
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function then(Closure $destination)
     {

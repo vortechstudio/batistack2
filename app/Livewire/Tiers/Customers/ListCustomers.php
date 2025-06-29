@@ -10,9 +10,10 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
 
-class ListCustomers extends Component implements HasForms, HasTable, HasActions
+class ListCustomers extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
+
     public function render()
     {
         return view('livewire.tiers.customers.list-customers');

@@ -8,7 +8,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/test', function () {
-    $mdx = new \App\Services\Mailbox();
+    $mdx = new \App\Services\Mailbox;
     dd($mdx->getMessageBody(1));
 });
 
@@ -51,6 +51,6 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-Route::get('/api/bank/connect', [\App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');;
+Route::get('/api/bank/connect', [\App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');
 
 require __DIR__.'/auth.php';

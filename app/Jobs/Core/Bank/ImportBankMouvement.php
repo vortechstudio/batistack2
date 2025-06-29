@@ -2,7 +2,6 @@
 
 namespace App\Jobs\Core\Bank;
 
-use App\Events\Core\Bank\AggregateMouvementEvent;
 use App\Models\Core\Company;
 use App\Models\Core\CompanyBank;
 use App\Models\Core\CompanyBankAccountMouvement;
@@ -15,7 +14,9 @@ use Illuminate\Foundation\Queue\Queueable;
 class ImportBankMouvement implements ShouldQueue
 {
     use Queueable;
+
     private string $token;
+
     public Bridge $api;
 
     /**
@@ -23,9 +24,8 @@ class ImportBankMouvement implements ShouldQueue
      */
     public function __construct(
         public CompanyBank $bank,
-    )
-    {
-        $this->api = new Bridge();
+    ) {
+        $this->api = new Bridge;
         $this->getAccessToken();
     }
 
@@ -34,13 +34,13 @@ class ImportBankMouvement implements ShouldQueue
      */
     public function handle(): void
     {
-        \Log::info("Info Bank", ["Bank" => $this->bank, "Accounts" => $this->bank->accounts]);
+        \Log::info('Info Bank', ['Bank' => $this->bank, 'Accounts' => $this->bank->accounts]);
         foreach ($this->bank->accounts as $account) {
             $transactions = $this->api->get('aggregation/transactions?limit=500&account_id='.$account->account_id.'&min_date=2025-01-01', null, $this->token);
 
             foreach ($transactions['resources'] as $transaction) {
                 CompanyBankAccountMouvement::updateOrCreate([
-                    'transaction_id' =>  $transaction['id'],
+                    'transaction_id' => $transaction['id'],
                 ], [
                     'title' => $transaction['clean_description'],
                     'description' => $transaction['provider_description'],
@@ -60,7 +60,6 @@ class ImportBankMouvement implements ShouldQueue
                 $user->notify((new UpdateBankAccount($account))->delay(now()->addSeconds(15)));
             }
         }
-
 
     }
 

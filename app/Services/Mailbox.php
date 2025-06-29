@@ -7,14 +7,15 @@ use PhpImap\Exceptions\InvalidParameterException;
 class Mailbox
 {
     private string $mdx;
+
     protected \PhpImap\Mailbox $connect;
+
     public ?string $err = null;
 
     public function __construct(
         public string $type = 'default'
-    )
-    {
-        $this->mdx = "{".config('batistack.imap.host').":".config('batistack.imap.port')."/imap/ssl}INBOX";
+    ) {
+        $this->mdx = '{'.config('batistack.imap.host').':'.config('batistack.imap.port').'/imap/ssl}INBOX';
         $this->connect = new \PhpImap\Mailbox(
             $this->mdx,
             config('batistack.imap.'.$this->type.'.username'),
@@ -27,10 +28,9 @@ class Mailbox
         }
     }
 
-
     private function getFolders(): array
     {
-        return $this->connect->getMailboxes("*");
+        return $this->connect->getMailboxes('*');
     }
 
     public function getFoldersFormat()
@@ -38,13 +38,14 @@ class Mailbox
         return collect($this->getFolders())
             ->map(function ($folder) {
                 $folder['shortpath'] = str_replace('INBOX.', '', $folder['shortpath']);
+
                 return $folder;
             })->toArray();
     }
 
     public function getAllMessages()
     {
-        return collect($this->connect->searchMailbox("ALL"))
+        return collect($this->connect->searchMailbox('ALL'))
             ->map(function ($mailId) {
                 return $this->connect->getMail($mailId);
             });

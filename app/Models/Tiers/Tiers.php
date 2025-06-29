@@ -15,6 +15,7 @@ class Tiers extends Model
     use HasFactory;
 
     public $timestamps = false;
+
     protected $guarded = [];
 
     protected function casts(): array
@@ -58,18 +59,20 @@ class Tiers extends Model
 
     public function getNextId()
     {
-        return $this->id ? $this->id+1 : 1;
+        return $this->id ? $this->id + 1 : 1;
     }
 
     public function getNextClientCode(): string
     {
-        $cus = "CLT".now()->year."-";
-        return $this->id ? $cus.$this->id+1 : $cus."1";
+        $cus = 'CLT'.now()->year.'-';
+
+        return $this->id ? $cus.$this->id + 1 : $cus.'1';
     }
 
     public function getNextFournisseurCode(): string
     {
-        $cus = "FOUR".now()->year."-";
-        return $this->id ? $cus.$this->id+1 : $cus."1";
+        $cus = 'FOUR'.now()->year.'-';
+
+        return $this->id ? $cus.$this->id + 1 : $cus.'1';
     }
 }

@@ -12,7 +12,9 @@ class TiersContact extends Model
     use HasFactory;
 
     public $timestamps = false;
+
     protected $guarded = [];
+
     public function tiers(): BelongsTo
     {
         return $this->belongsTo(Tiers::class);

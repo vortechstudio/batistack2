@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Company extends Model
 {
     public $timestamps = false;
+
     protected $guarded = [];
 
     public function banks(): HasMany

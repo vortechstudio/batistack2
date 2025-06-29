@@ -13,27 +13,27 @@ class InstallConditionReglementCommand extends Command
 
     public function handle(): void
     {
-        if(ConditionReglement::count() === 0) {
+        if (ConditionReglement::count() === 0) {
             ConditionReglement::create([
-                'code' => "RECEP",
-                "name" => "A Réception",
-                "name_document" => "A Réception",
-                "nb_jours" => 1,
-                "fdm" => false,
+                'code' => 'RECEP',
+                'name' => 'A Réception',
+                'name_document' => 'A Réception',
+                'nb_jours' => 1,
+                'fdm' => false,
             ]);
             ConditionReglement::create([
-                'code' => "30D",
-                "name" => "30 Jours",
-                "name_document" => "Réglement à 30 jours",
-                "nb_jours" => 30,
-                "fdm" => false,
+                'code' => '30D',
+                'name' => '30 Jours',
+                'name_document' => 'Réglement à 30 jours',
+                'nb_jours' => 30,
+                'fdm' => false,
             ]);
             ConditionReglement::create([
-                'code' => "30DMONTH",
-                "name" => "30 Jours fin de mois",
-                "name_document" => "Réglement à 30 jours fin de mois",
-                "nb_jours" => 30,
-                "fdm" => true,
+                'code' => '30DMONTH',
+                'name' => '30 Jours fin de mois',
+                'name_document' => 'Réglement à 30 jours fin de mois',
+                'nb_jours' => 30,
+                'fdm' => true,
             ]);
         }
     }

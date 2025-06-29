@@ -4,14 +4,14 @@ namespace App\Enums\Core;
 
 enum UserRole: string
 {
-    case ADMINISTRATEUR = "admin";
-    case CLIENT = "client";
-    case FOURNISSEUR = "fournisseur";
-    case SALARIE = "salarie";
-    case COMPTABILITE = "comptabilite";
-    case COUNTERMASTER = "Chef de Chantier";
+    case ADMINISTRATEUR = 'admin';
+    case CLIENT = 'client';
+    case FOURNISSEUR = 'fournisseur';
+    case SALARIE = 'salarie';
+    case COMPTABILITE = 'comptabilite';
+    case COUNTERMASTER = 'Chef de Chantier';
 
-    public function label():string
+    public function label(): string
     {
         return match ($this) {
             self::ADMINISTRATEUR => 'Administration',
@@ -23,7 +23,7 @@ enum UserRole: string
         };
     }
 
-    public function color():string
+    public function color(): string
     {
         return match ($this) {
             self::ADMINISTRATEUR => 'danger',

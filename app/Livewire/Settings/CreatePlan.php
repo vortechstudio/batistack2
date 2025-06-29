@@ -34,7 +34,7 @@ class CreatePlan extends Component implements HasSchemas
                         Select::make('type')->label('Type de Compte')->options(PlanComptable::all()->pluck('type', 'type')),
                         TextInput::make('initial')->label('Balance Initial')->suffix('€'),
                         Toggle::make('lettrage')->label('Lettrage'),
-                    ])
+                    ]),
             ])
             ->statePath('data');
     }
@@ -42,7 +42,7 @@ class CreatePlan extends Component implements HasSchemas
     public function createPlan(): void
     {
         PlanComptable::create($this->form->getState());
-        toastr()->success("Le compte à été créer avec succès");
+        toastr()->success('Le compte à été créer avec succès');
         $this->redirect(route('settings.pcg'));
     }
 

@@ -14,7 +14,7 @@ class InstallCountryCommand extends Command
     public function handle(): void
     {
         if (Country::count() === 0) {
-            $this->info("Installation des informations des pays");
+            $this->info('Installation des informations des pays');
 
             $countries = \Http::withoutVerifying()
                 ->get('https://gist.githubusercontent.com/revolunet/6173043/raw/222c4537affb1bdecbabcec51143742709aa0b6e/countries-FR.json')
@@ -25,7 +25,7 @@ class InstallCountryCommand extends Command
 
             foreach ($countries as $k => $country) {
                 Country::create([
-                    'name' => $country
+                    'name' => $country,
                 ]);
                 $bar->advance();
             }

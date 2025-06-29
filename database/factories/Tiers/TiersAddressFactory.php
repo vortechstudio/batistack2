@@ -15,7 +15,7 @@ class TiersAddressFactory extends Factory
             'address' => $this->faker->streetAddress(),
             'code_postal' => $this->faker->postcode(),
             'ville' => $this->faker->city(),
-            'pays' => "France",
+            'pays' => 'France',
         ];
     }
 }

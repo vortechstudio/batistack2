@@ -12,6 +12,7 @@ class TiersAddress extends Model
     use HasFactory;
 
     public $timestamps = false;
+
     protected $guarded = [];
 
     public function tiers(): BelongsTo

@@ -4,6 +4,7 @@ namespace App\Console\Commands\Server;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
+
 use function Laravel\Prompts\intro;
 use function Laravel\Prompts\note;
 
@@ -15,23 +16,23 @@ class ServerWebCommand extends Command
 
     public function handle()
     {
-        intro( 'Running Web Environment' );
+        intro('Running Web Environment');
 
         $this->initViteServer();
         $this->initPHPServer();
     }
 
-    private function initViteServer() : void
+    private function initViteServer(): void
     {
-        note( "Starting Vite Development Server" );
+        note('Starting Vite Development Server');
 
-        Process::start( "npm run dev:vite:web" );
+        Process::start('npm run dev:vite:web');
     }
 
-    private function initPHPServer() : void
+    private function initPHPServer(): void
     {
-        note( "Starting PHP Server" );
+        note('Starting PHP Server');
 
-        Process::forever()->run( "php artisan serve --port=50000" );
+        Process::forever()->run('php artisan serve --port=50000');
     }
 }

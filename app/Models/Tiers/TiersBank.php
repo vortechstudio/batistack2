@@ -11,7 +11,9 @@ class TiersBank extends Model
 {
     /** @use HasFactory<\Database\Factories\Tiers\TiersBankFactory> */
     use HasFactory;
+
     public $timestamps = false;
+
     protected $guarded = [];
 
     public function tiers(): BelongsTo

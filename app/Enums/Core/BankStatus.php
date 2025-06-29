@@ -13,7 +13,7 @@ enum BankStatus: string
         return match ($this) {
             self::Healthy => 'Ok',
             self::Degraded => 'Problème connue',
-            self::Down => "Echec"
+            self::Down => 'Echec'
         };
     }
 

@@ -15,6 +15,7 @@ class TiersClient extends Model
     use HasFactory;
 
     public $timestamps = false;
+
     protected $guarded = [];
 
     protected function casts(): array

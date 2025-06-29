@@ -13,14 +13,18 @@ use Livewire\Component;
 class CreateBank extends Component
 {
     public ?array $item;
+
     public ?array $accounts;
+
     public CompanyBank $banque;
+
     public $code;
+
     public $lettrage;
 
     public function mount(Request $request): void
     {
-        $bridge = new Bridge();
+        $bridge = new Bridge;
         $bridge->getAccessToken();
         $this->item = $bridge->get('aggregation/items/'.$request->get('item_id'), null, cache('bridge_access_token'));
         $this->accounts = $bridge->get('aggregation/accounts', ['item_id' => $request->get('item_id')], cache('bridge_access_token'));
@@ -28,21 +32,21 @@ class CreateBank extends Component
 
         $this->accounts = collect($this->accounts['resources'])->filter(fn ($item) => isset($item['balance']))->toArray();
 
-        if(CompanyBank::where('item_id', $request->item_id)->exists()){
+        if (CompanyBank::where('item_id', $request->item_id)->exists()) {
             CompanyBank::where('item_id', $request->item_id)
                 ->first()
                 ->update([
                     'item_id' => $request->item_id,
                     'bank_id' => $banks->id,
                     'company_id' => \App\Models\Core\Company::first()->id,
-                    'last_refreshed_at' => now()
+                    'last_refreshed_at' => now(),
                 ]);
         } else {
             CompanyBank::create([
                 'item_id' => $request->get('item_id'),
                 'bank_id' => $banks->id,
                 'company_id' => \App\Models\Core\Company::first()->id,
-                'last_refreshed_at' => now()
+                'last_refreshed_at' => now(),
             ]);
         }
 
@@ -52,18 +56,18 @@ class CreateBank extends Component
             CompanyBankAccount::updateOrCreate([
                 'account_id' => $account['id'],
             ], [
-                "account_id" => $account['id'],
-                "name" => $account['name'],
-                "balance" => $account['balance'],
-                "instante" => $account['instant_balance'] ?? '0.00',
-                "type" => $account['type'],
-                "iban" => $account['iban'] ?? null,
-                "company_bank_id" => $this->banque['id'],
+                'account_id' => $account['id'],
+                'name' => $account['name'],
+                'balance' => $account['balance'],
+                'instante' => $account['instant_balance'] ?? '0.00',
+                'type' => $account['type'],
+                'iban' => $account['iban'] ?? null,
+                'company_bank_id' => $this->banque['id'],
             ]);
         }
 
         ImportBankMouvement::dispatch($this->banque);
-        toastr()->addSuccess("Les Informations bancaires ont bien été ajouté !");
+        toastr()->addSuccess('Les Informations bancaires ont bien été ajouté !');
         toastr()->addInfo("L'aggrégation de vos comptes ont commencée, vous serez alerté de sa disposition");
         $this->redirect(route('settings.bank'));
     }

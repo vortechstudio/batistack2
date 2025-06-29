@@ -11,9 +11,10 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
 
-class ViewSupply extends Component implements HasForms, HasTable, HasActions
+class ViewSupply extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
+
     public Tiers $tiers;
 
     public function mount(int $id): void
@@ -21,11 +22,9 @@ class ViewSupply extends Component implements HasForms, HasTable, HasActions
         $this->tiers = Tiers::with('addresses', 'contacts', 'fournisseur', 'client', 'logs')->find($id);
     }
 
-
-
     public function render()
     {
-        //dd($this->tiers->fournisseur()->with('comptaGen', 'comptaFournisseur')->first());
+        // dd($this->tiers->fournisseur()->with('comptaGen', 'comptaFournisseur')->first());
         return view('livewire.tiers.supply.view-supply')
             ->layout('components.layouts.tiers');
     }

@@ -14,11 +14,11 @@ class Siren implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $api = new \App\Services\Siren();
+        $api = new \App\Services\Siren;
         $call = $api->call($value, 'validation');
 
-        if ($call){
-            $fail("Siren Invalide");
+        if ($call) {
+            $fail('Siren Invalide');
         }
     }
 }

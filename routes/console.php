@@ -10,4 +10,3 @@ Artisan::command('inspire', function () {
 Schedule::command('telescope:clear')->hourly();
 Schedule::command('update:bank-mouvement')
     ->everyFourHours();
-

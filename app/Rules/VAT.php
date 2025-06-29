@@ -15,9 +15,9 @@ class VAT implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $api = new VATnumber();
+        $api = new VATnumber;
 
-        if(!$api->verify($value, 'FR')) {
+        if (! $api->verify($value, 'FR')) {
             $fail('Numéro de TVA Incorrect');
         }
     }

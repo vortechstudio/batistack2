@@ -11,7 +11,6 @@ enum TiersType: string
     case Particulier = 'particulier';
     case Tpe = 'tpe';
 
-
     public function label()
     {
         return match ($this) {
@@ -27,12 +26,12 @@ enum TiersType: string
     public static function plucks()
     {
         return [
-            "administration" => "Administration",
-            "autre" => "Autre",
-            "grand_compte" => "Grand Compte",
-            "pme_pmi" => "PME/PMI",
-            "particulier" => "Particulier",
-            "tpe" => "TPE",
+            'administration' => 'Administration',
+            'autre' => 'Autre',
+            'grand_compte' => 'Grand Compte',
+            'pme_pmi' => 'PME/PMI',
+            'particulier' => 'Particulier',
+            'tpe' => 'TPE',
         ];
     }
 
@@ -44,7 +43,7 @@ enum TiersType: string
             'grand_compte',
             'pme_pmi',
             'particulier',
-            'tpe'
+            'tpe',
         ];
     }
 }

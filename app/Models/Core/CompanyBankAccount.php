@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CompanyBankAccount extends Model
 {
     protected $guarded = [];
+
     public function companyBank(): BelongsTo
     {
         return $this->belongsTo(CompanyBank::class);

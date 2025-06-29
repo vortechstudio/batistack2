@@ -27,7 +27,7 @@ enum TiersNature: string
     {
         return [
             'fournisseur',
-            'client'
+            'client',
         ];
     }
 }

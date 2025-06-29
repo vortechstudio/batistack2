@@ -24,6 +24,7 @@ class Bank extends Component implements HasActions, HasForms
     {
         $this->companyBanks = CompanyBank::all()->load('bank', 'company', 'accounts');
     }
+
     public function createBankAction(): Action
     {
         return CreateAction::make('createBankAction')

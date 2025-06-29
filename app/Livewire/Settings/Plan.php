@@ -7,29 +7,21 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
-use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class Plan extends Component implements HasForms, HasTable, HasActions
+class Plan extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
     public function table(Table $table): Table
     {
@@ -42,8 +34,8 @@ class Plan extends Component implements HasForms, HasTable, HasActions
                 TextColumn::make('lettrage')
                     ->label('Lettrage')
                     ->badge()
-                    ->color(fn(string $state) => $state ? 'success' : 'warning')
-                    ->formatStateUsing(fn(string $state) => $state ? 'Oui' : 'Non'),
+                    ->color(fn (string $state) => $state ? 'success' : 'warning')
+                    ->formatStateUsing(fn (string $state) => $state ? 'Oui' : 'Non'),
                 TextColumn::make('initial')
                     ->label('Balance Inital')->money('EUR'),
             ])
@@ -57,7 +49,7 @@ class Plan extends Component implements HasForms, HasTable, HasActions
                     ->label('Supprimer')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
-                    ->action(fn(PlanComptable $planComptable) => $planComptable->delete())
+                    ->action(fn (PlanComptable $planComptable) => $planComptable->delete()),
             ]);
     }
 

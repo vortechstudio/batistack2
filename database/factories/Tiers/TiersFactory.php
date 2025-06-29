@@ -21,7 +21,7 @@ class TiersFactory extends Factory
             'name' => $this->faker->company(),
             'nature' => $nature,
             'type' => $type,
-            'code_tiers' => $nature == 'fournisseur' ? "FOUR2026-".rand(1,600) : "CLT2026-".rand(1,600),
+            'code_tiers' => $nature == 'fournisseur' ? 'FOUR2026-'.rand(1, 600) : 'CLT2026-'.rand(1, 600),
             'siren' => $this->faker->siren(),
             'tva' => $tva,
             'num_tva' => $tva ? $this->faker->vat() : null,
