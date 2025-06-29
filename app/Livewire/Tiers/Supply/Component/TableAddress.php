@@ -39,7 +39,7 @@ final class TableAddress extends Component implements HasActions, HasForms, HasT
         $this->form->fill();
     }
 
-    public function table(Table $table): \Filament\Tables\Table
+    public function table(Table $table): Table
     {
         return $table
             ->heading('Liste des adresses du tiers')

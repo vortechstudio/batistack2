@@ -43,7 +43,7 @@ final class Mailbox
     public function getAllMessages()
     {
         return collect($this->connect->searchMailbox('ALL'))
-            ->map(fn($mailId): \PhpImap\IncomingMail => $this->connect->getMail($mailId));
+            ->map(fn ($mailId): \PhpImap\IncomingMail => $this->connect->getMail($mailId));
     }
 
     public function getMessageBody(string $messageId)

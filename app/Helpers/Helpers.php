@@ -24,9 +24,11 @@ final class Helpers
     {
         if ($type === 'f') {
             $latest = Tiers::where('nature', 'fournisseur')->orderBy('id', 'desc')->first();
+
             return $latest ? 'SUP'.now()->year.'-00'.$latest->id + 1 : 'SUP'.now()->year.'-001';
         }
         $latest = Tiers::where('nature', 'client')->orderBy('id', 'desc')->first();
+
         return $latest ? 'CUS'.now()->year.'-00'.$latest->id + 1 : 'CUS'.now()->year.'-001';
     }
 }

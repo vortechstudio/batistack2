@@ -32,9 +32,6 @@ final class ImportBankMouvement implements ShouldQueue
         $this->getAccessToken();
     }
 
-    /**
-     * @return void
-     */
     public function handle(): void
     {
         Log::info('Info Bank', ['Bank' => $this->bank, 'Accounts' => $this->bank->accounts]);
