@@ -21,7 +21,7 @@ final class TiersBankFactory extends Factory
             'external_id' => null,
             'default' => $this->faker->boolean(),
 
-            'tiers_id' => Tiers::factory(),
+            'tiers_id' => null,
             'bank_id' => Bank::all()->random()->id,
         ];
     }

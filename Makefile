@@ -4,13 +4,13 @@ deploy:
 install: vendor/autoload.php .env public/storage public/build/manifest.json
 	php artisan cache:clear
 	php artisan migrate --force
-	php artisan db:seed --force
 	php artisan install:cities
 	php artisan install:country
 	php artisan install:pcg
 	php artisan install:bank
 	php artisan install:condition-reglement
 	php artisan install:mode-reglement
+	php artisan db:seed --force
 	php artisan filament:optimize
 	php artisan filament:optimize-clear
 	php artisan optimize
