@@ -21,6 +21,7 @@ update-start:
 
 update:
 	bash update.sh
+	composer install --prefer-dist --no-interaction
 	php artisan migrate --force
 	php artisan install:bank
 	php artisan filament:optimize

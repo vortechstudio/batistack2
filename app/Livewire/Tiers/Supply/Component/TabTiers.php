@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace App\Livewire\Tiers\Supply\Component;
 
+use App\Mail\Core\MailToTiers;
 use App\Models\Tiers\Tiers;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 final class TabTiers extends Component implements HasActions, HasForms, HasTable
@@ -34,15 +38,26 @@ final class TabTiers extends Component implements HasActions, HasForms, HasTable
         return Action::make('draftMail')
             ->label('Envoyer un email')
             ->schema([
+                TextInput::make('email')
+                    ->label('Email')
+                    ->default($this->tiers->contacts()->first()->email),
 
-            ]);
+                TextInput::make('subject')
+                    ->label('Sujet'),
+
+                RichEditor::make('message')
+                    ->label('Message'),
+            ])
+            ->action(function (array $data) {
+                Mail::to($data['email'])->send(new MailToTiers($data['email'], $data['message'], $data['subject']));
+            });
     }
 
     public function editAction(): Action
     {
         return Action::make('edit')
             ->label('Modifier')
-            ->url('/');
+            ->url(route('tiers.supply.edit', $this->tiers->id));
     }
 
     public function deleteAction(): Action
