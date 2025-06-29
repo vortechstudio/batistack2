@@ -28,12 +28,12 @@ enum TiersType: string
     public static function array(): array
     {
         return [
-            'administration',
-            'autre',
-            'grand_compte',
-            'pme_pmi',
-            'particulier',
-            'tpe',
+            'administration' => 'administration',
+            'autre' => 'autre',
+            'grand_compte' => 'grand_compte',
+            'pme_pmi' => 'pme_pmi',
+            'particulier' => 'particulier',
+            'tpe' => 'tpe',
         ];
     }
 
