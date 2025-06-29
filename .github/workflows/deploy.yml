@@ -16,5 +16,8 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             cd /home/mapu6796/admin.c2me.ovh
-            git pull origin production
+            git fetch --tags
+            LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+            git checkout tags/$LATEST_TAG -b release
+            git pull origin release
             make update
