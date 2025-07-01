@@ -56,6 +56,11 @@ final class User extends Authenticatable
             ->implode('');
     }
 
+    public function routeNotificationForWhatsApp()
+    {
+        return $this->phone_number;
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -68,10 +73,5 @@ final class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
         ];
-    }
-
-    public function routeNotificationForWhatsApp()
-    {
-        return $this->phone_number;
     }
 }
