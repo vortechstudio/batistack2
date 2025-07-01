@@ -1,3 +1,5 @@
 <div>
-    {{-- Success is as dangerous as failure. --}}
+    {{ $this->table }}
+
+    <x-filament-actions::modals />
 </div>
