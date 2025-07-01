@@ -1,3 +1,19 @@
+# [1.2.0](https://github.com/vortechstudio/batistack2/compare/v1.1.0...v1.2.0) (2025-07-01)
+
+
+### Bug Fixes
+
+* **layout:** add livewire notifications to sidebar tier ([7f058f7](https://github.com/vortechstudio/batistack2/commit/7f058f7cb00a7cbfd28aa199c7e7730744e15608))
+
+
+### Features
+
+* **customers:** add create, view and edit customer components ([31449d6](https://github.com/vortechstudio/batistack2/commit/31449d663e2a611b6646133dd95cde934f3b8507))
+* **customers:** implement customer creation and edit forms ([069adfd](https://github.com/vortechstudio/batistack2/commit/069adfd4c3c7678872d13a87c39b1e40185ddc82))
+* **customers:** implement customers list table with actions ([a368fd7](https://github.com/vortechstudio/batistack2/commit/a368fd78ba2220e0eeaa6b7e4998c8dafc8ba36f))
+* **tiers:** add edit functionality and email support for suppliers ([3585e1d](https://github.com/vortechstudio/batistack2/commit/3585e1d171f86aa6a7fd206a93f27813cf7e877e))
+* **tiers:** implement create functionality for tiers form ([c030007](https://github.com/vortechstudio/batistack2/commit/c0300073122b9a2ff90f0b1708c7259c156494a4))
+
 # [1.1.0](https://github.com/vortechstudio/batistack2/compare/v1.0.1...v1.1.0) (2025-06-29)
 
 
