@@ -21,10 +21,14 @@ update-start:
 
 update:
 	bash update.sh
+	composer install --prefer-dist --no-interaction
+	npm install
+	npm run build
 	php artisan migrate --force
 	php artisan install:bank
 	php artisan filament:optimize
 	php artisan filament:optimize-clear
+	php artisan optimize
 	php artisan clear
 	php artisan up
 

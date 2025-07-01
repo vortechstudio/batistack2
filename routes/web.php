@@ -44,10 +44,14 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', App\Livewire\Tiers\Supply\ListSupply::class)->name('tiers.supply.list');
             Route::get('/create', App\Livewire\Tiers\Supply\CreateSupply::class)->name('tiers.supply.create');
             Route::get('{id}', App\Livewire\Tiers\Supply\ViewSupply::class)->name('tiers.supply.view');
+            Route::get('{id}/edit', App\Livewire\Tiers\Supply\EditSupply::class)->name('tiers.supply.edit');
         });
 
         Route::prefix('customers')->group(function () {
             Route::get('/', App\Livewire\Tiers\Customers\ListCustomers::class)->name('tiers.customers.list');
+            Route::get('create', App\Livewire\Tiers\Customers\CreateCustomers::class)->name('tiers.customers.create');
+            Route::get('{id}', App\Livewire\Tiers\Customers\ViewCustomers::class)->name('tiers.customers.view');
+            Route::get('{id}/edit', App\Livewire\Tiers\Customers\EditCustomers::class)->name('tiers.customers.edit');
         });
 
     });

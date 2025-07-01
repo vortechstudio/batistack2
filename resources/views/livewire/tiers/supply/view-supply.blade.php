@@ -25,7 +25,7 @@
     </div>
     <div class="bg-white shadow rounded">
         <div class="tabs tabs-border">
-            <input type="radio" name="options" class="tab" aria-label="Tiers"/>
+            <input type="radio" name="options" class="tab" aria-label="Tiers" checked="checked"/>
             <div class="tab-content border-base-300 bg-base-100 p-10" id="my_tabs_1">
                 @livewire('tiers.supply.component.tab-tiers', ['tiers' => $tiers])
             </div>
@@ -35,7 +35,7 @@
                 @livewire('tiers.supply.component.tab-contact', ['tiers' => $tiers])
             </div>
 
-            <input type="radio" name="options" class="tab" aria-label="Fournisseur" checked="checked" />
+            <input type="radio" name="options" class="tab" aria-label="Fournisseur" />
             <div class="tab-content border-base-300 bg-base-100 p-10">
                 @livewire('tiers.supply.component.tab-supply', ['tiers' => $tiers])
             </div>
