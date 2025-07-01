@@ -30,6 +30,7 @@
         "robsontenorio/mary": "^2.4",
         "salahhusa9/laravel-updater": "^1.3",
         "sentry/sentry-laravel": "^4.15",
+        "twilio/sdk": "^8.6",
         "webklex/laravel-imap": "*"
     },
     "require-dev": {

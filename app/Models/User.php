@@ -30,6 +30,7 @@ final class User extends Authenticatable
         'bridge_uuid_token',
         'token',
         'tiers_id',
+        'phone_number',
     ];
 
     /**
