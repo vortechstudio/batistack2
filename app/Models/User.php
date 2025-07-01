@@ -30,6 +30,8 @@ final class User extends Authenticatable
         'bridge_uuid_token',
         'token',
         'tiers_id',
+        'phone_number',
+        'notif_phone',
     ];
 
     /**
@@ -52,6 +54,11 @@ final class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function routeNotificationForWhatsApp()
+    {
+        return $this->phone_number;
     }
 
     /**
