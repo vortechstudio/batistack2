@@ -31,6 +31,7 @@ final class User extends Authenticatable
         'token',
         'tiers_id',
         'phone_number',
+        'notif_phone',
     ];
 
     /**
@@ -67,5 +68,10 @@ final class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
         ];
+    }
+
+    public function routeNotificationForWhatsApp()
+    {
+        return $this->phone_number;
     }
 }
