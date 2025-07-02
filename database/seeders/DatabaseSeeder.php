@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Chantiers\ChantierAddress;
+use App\Models\Chantiers\ChantierDepense;
+use App\Models\Chantiers\ChantierIntervention;
+use App\Models\Chantiers\Chantiers;
+use App\Models\Chantiers\ChantierTask;
 use App\Models\Core\Company;
 use App\Models\Tiers\Tiers;
 use App\Models\Tiers\TiersAddress;
@@ -64,6 +69,35 @@ final class DatabaseSeeder extends Seeder
 
                 TiersBank::factory()->create([
                     'tiers_id' => $tiers->id,
+                ]);
+            }
+        }
+
+        if (Chantiers::count() === 0) {
+            Chantiers::factory(rand(5,30))->create([
+                "tiers_id" => Tiers::all()->random()->id,
+                "responsable_id" => User::first()->id,
+            ]);
+
+            foreach (Chantiers::all() as $chantier) {
+                ChantierAddress::factory()
+                    ->create([
+                        'chantiers_id' => $chantier->id,
+                    ]);
+
+                ChantierDepense::factory(rand(1,15))->create([
+                    'chantiers_id' => $chantier->id,
+                    'tiers_id' => $chantier->tiers_id,
+                ]);
+
+                ChantierTask::factory(rand(1,10))->create([
+                    'chantiers_id' => $chantier->id,
+                    'assigned_id' => $chantier->responsable_id,
+                ]);
+
+                ChantierIntervention::factory(rand(1,5))->create([
+                    'chantiers_id' => $chantier->id,
+                    'intervenant_id' => $chantier->responsable_id,
                 ]);
             }
         }

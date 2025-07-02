@@ -27,6 +27,21 @@ final class Chantiers extends Model
         return $this->belongsTo(User::class, 'responsable_id');
     }
 
+    public function addresses()
+    {
+        return $this->hasMany(ChantierAddress::class);
+    }
+
+    public function interventions()
+    {
+        return $this->hasMany(ChantierIntervention::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(ChantierTask::class);
+    }
+
     protected function casts(): array
     {
         return [

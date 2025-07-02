@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Database\Factories\Chantiers;
 
 use App\Enums\Chantiers\StatusChantier;
 use App\Models\Chantiers\Chantiers;
@@ -26,7 +26,7 @@ final class ChantiersFactory extends Factory
             'date_debut' => $debut,
             'date_fin_prevu' => $fin,
             'date_fin_reel' => $fin->addDays(rand(15, 45)),
-            'status' => $this->faker->randomElement(StatusChantier::array()),
+            'status' => $this->faker->randomElement(['planifie', 'progress', 'terminer', 'annuler']),
             'budget_estime' => $this->faker->randomFloat(),
             'budget_reel' => $this->faker->randomFloat(),
             'created_at' => Carbon::now(),
