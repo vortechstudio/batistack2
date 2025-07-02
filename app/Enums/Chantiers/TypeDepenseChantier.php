@@ -14,10 +14,10 @@ enum TypeDepenseChantier: string
     public static function array()
     {
         return [
-            'materiel' => self::Materiel,
-            'main_oeuvre' => self::Main_Oeuvre,
-            'sous_traitance' => self::Sous_Traitance,
-            'transport' => self::Transport,
+            'materiel' => 'materiel',
+            'main_oeuvre' => 'main_oeuvre',
+            'sous_traitance' => 'sous_traitance',
+            'transport' => 'transport',
         ];
     }
 

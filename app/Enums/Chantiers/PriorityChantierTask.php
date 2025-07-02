@@ -31,9 +31,9 @@ enum PriorityChantierTask: string
     public function color()
     {
         return match ($this) {
-            self::Low => 'blue',
-            self::Medium => 'amber',
-            self::High => 'red',
+            self::Low => 'primary',
+            self::Medium => 'warning',
+            self::High => 'danger',
         };
     }
 }
