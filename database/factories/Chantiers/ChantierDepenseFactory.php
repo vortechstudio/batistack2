@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Chantiers;
 
 use App\Enums\Chantiers\TypeDepenseChantier;
@@ -9,7 +11,7 @@ use App\Models\Tiers\Tiers;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class ChantierDepenseFactory extends Factory
+final class ChantierDepenseFactory extends Factory
 {
     protected $model = ChantierDepense::class;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Chantiers;
 
 use Filament\Support\Icons\Heroicon;
@@ -50,5 +52,4 @@ enum StatusChantier: string
             self::Annuler => Heroicon::XMark,
         };
     }
-
 }

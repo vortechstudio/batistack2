@@ -72,7 +72,7 @@ final class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
-            'notif_phone' => 'boolean'
+            'notif_phone' => 'boolean',
         ];
     }
 }

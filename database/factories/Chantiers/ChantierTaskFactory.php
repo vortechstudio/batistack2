@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Chantiers;
 
 use App\Models\Chantiers\Chantiers;
@@ -8,14 +10,15 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class ChantierTaskFactory extends Factory
+final class ChantierTaskFactory extends Factory
 {
     protected $model = ChantierTask::class;
 
     public function definition(): array
     {
-        $debut = Carbon::now()->addDays(rand(1, 180))->subDays(rand(1,360));
-        $fin = $debut->addDays(rand(1,360))->subDays(rand(1,360));
+        $debut = Carbon::now()->addDays(rand(1, 180))->subDays(rand(1, 360));
+        $fin = $debut->addDays(rand(1, 360))->subDays(rand(1, 360));
+
         return [
             'libelle' => $this->faker->word(),
             'description' => $this->faker->text(),

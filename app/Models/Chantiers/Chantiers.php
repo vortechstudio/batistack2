@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Chantiers;
 
 use App\Enums\Chantiers\StatusChantier;
@@ -9,9 +11,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Chantiers extends Model
+final class Chantiers extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
     public function tiers(): BelongsTo

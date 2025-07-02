@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\Chantiers\StatusChantier;
@@ -9,20 +11,21 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class ChantiersFactory extends Factory
+final class ChantiersFactory extends Factory
 {
     protected $model = Chantiers::class;
 
     public function definition(): array
     {
-        $debut = Carbon::now()->addDays(rand(1, 180))->subDays(rand(1,360));
-        $fin = $debut->addDays(rand(1,360))->subDays(rand(1,360));
+        $debut = Carbon::now()->addDays(rand(1, 180))->subDays(rand(1, 360));
+        $fin = $debut->addDays(rand(1, 360))->subDays(rand(1, 360));
+
         return [
             'libelle' => $this->faker->word(),
             'description' => $this->faker->text(),
             'date_debut' => $debut,
             'date_fin_prevu' => $fin,
-            'date_fin_reel' => $fin->addDays(rand(15,45)),
+            'date_fin_reel' => $fin->addDays(rand(15, 45)),
             'status' => $this->faker->randomElement(StatusChantier::array()),
             'budget_estime' => $this->faker->randomFloat(),
             'budget_reel' => $this->faker->randomFloat(),
