@@ -57,6 +57,10 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
+Route::group(['prefix' => 'documents', 'middleware' => ['web', 'auth']], function () {
+    \UniSharp\LaravelFilemanager\Lfm::routes();
+});
+
 Route::get('/api/bank/connect', [App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');
 
 require __DIR__.'/auth.php';
