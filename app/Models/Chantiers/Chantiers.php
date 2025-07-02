@@ -48,6 +48,11 @@ final class Chantiers extends Model
         return $this->hasMany(ChantierTask::class);
     }
 
+    public function logs()
+    {
+        return $this->hasMany(ChantierLog::class);
+    }
+
     protected function casts(): array
     {
         return [
