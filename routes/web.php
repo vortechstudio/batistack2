@@ -55,6 +55,15 @@ Route::middleware(['auth'])->group(function () {
         });
 
     });
+
+    Route::prefix('chantiers')->group(function () {
+        Route::get('/', \App\Livewire\Chantiers\Dashboard::class)->name('chantiers.dashboard');
+        Route::get('{id}', \App\Livewire\Chantier\View::class)->name('chantiers.view');
+    });
+});
+
+Route::group(['prefix' => 'documents', 'middleware' => ['web', 'auth']], function () {
+    UniSharp\LaravelFilemanager\Lfm::routes();
 });
 
 Route::get('/api/bank/connect', [App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');

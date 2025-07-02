@@ -6,7 +6,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Core\UserRole;
+use App\Models\Chantiers\Chantiers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -72,6 +74,12 @@ final class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'notif_phone' => 'boolean',
         ];
+    }
+
+    public function chantiers(): BelongsToMany
+    {
+        return $this->belongsToMany(Chantiers::class);
     }
 }

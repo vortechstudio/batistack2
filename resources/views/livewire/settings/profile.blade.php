@@ -10,7 +10,7 @@ new class extends Component {
     public string $name = '';
     public string $email = '';
     public string|null $phone_number = '';
-    public bool $notif_phone = false;
+    public $notif_phone = false;
 
     /**
      * Mount the component.
@@ -20,7 +20,7 @@ new class extends Component {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
         $this->phone_number = Auth::user()->phone_number;
-        $this->notif_phone = Auth::user()->notif_phone;
+        $this->notif_phone = Auth::user()->notif_phone ? true : false;
     }
 
     /**
