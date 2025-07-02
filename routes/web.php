@@ -55,6 +55,10 @@ Route::middleware(['auth'])->group(function () {
         });
 
     });
+
+    Route::prefix('chantiers')->group(function () {
+        Route::get('/', \App\Livewire\Chantiers\Dashboard::class)->name('chantiers.dashboard');
+    });
 });
 
 Route::group(['prefix' => 'documents', 'middleware' => ['web', 'auth']], function () {

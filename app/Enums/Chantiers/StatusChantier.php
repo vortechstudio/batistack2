@@ -16,10 +16,10 @@ enum StatusChantier: string
     public static function array()
     {
         return [
-            'planifie' => 'planifie',
-            'progress' => 'progress',
-            'terminer' => 'terminer',
-            'annuler' => 'annuler',
+            'planifie' => 'Planifié',
+            'progress' => 'En cours',
+            'terminer' => 'Terminer',
+            'annuler' => 'Annuler',
         ];
     }
 
@@ -37,7 +37,7 @@ enum StatusChantier: string
     {
         return match ($this) {
             self::Planifie => 'gray',
-            self::Progress => 'blue',
+            self::Progress => 'amber',
             self::Terminer => 'green',
             self::Annuler => 'red',
         };

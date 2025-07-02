@@ -36,10 +36,10 @@ enum StatusChantierTask: string
     public function color()
     {
         return match ($this) {
-            self::Todo => 'blue',
-            self::Progress => 'amber',
-            self::Finished => 'green',
-            self::Blocked => 'red',
+            self::Todo => 'primary',
+            self::Progress => 'warning',
+            self::Finished => 'success',
+            self::Blocked => 'danger',
         };
     }
 
