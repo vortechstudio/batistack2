@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('chantiers')->group(function () {
         Route::get('/', \App\Livewire\Chantiers\Dashboard::class)->name('chantiers.dashboard');
+        Route::get('{id}', \App\Livewire\Chantier\View::class)->name('chantiers.view');
     });
 });
 

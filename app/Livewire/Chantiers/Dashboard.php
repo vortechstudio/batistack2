@@ -23,6 +23,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -110,7 +111,7 @@ class Dashboard extends Component implements HasForms, HasActions, HasTable
                             $chantier->users()->attach($intervenant);
                         }
 
-                        if(!$data['other_address']){
+                        if (!$data['other_address']) {
                             $chantier->addresses()->create([
                                 'address' => $chantier->tiers()->first()->addresses()->first()->address,
                                 'code_postal' => $chantier->tiers()->first()->addresses()->first()->code_postal,
@@ -188,7 +189,8 @@ class Dashboard extends Component implements HasForms, HasActions, HasTable
                 ActionGroup::make([
                     ActionGroup::make([
                         ViewAction::make('view')
-                            ->label('Vue du chantier'),
+                            ->label('Vue du chantier')
+                            ->url(fn(Chantiers $chantiers) => route('chantiers.view', $chantiers->id)),
 
                         EditAction::make('edit')
                             ->label('Modifier chantier'),
@@ -213,17 +215,17 @@ class Dashboard extends Component implements HasForms, HasActions, HasTable
                 ])
             ])
             ->filters([
-                SelectFilter::make('status')
-                    ->options(StatusChantier::array()),
+        SelectFilter::make('status')
+            ->options(StatusChantier::array()),
 
-                SelectFilter::make('tiers_id')
-                    ->options(Tiers::all()->pluck('name', 'id')),
+        SelectFilter::make('tiers_id')
+            ->options(Tiers::all()->pluck('name', 'id')),
 
-                QueryBuilder::make()
-                    ->constraints([
-                        QueryBuilder\Constraints\DateConstraint::make('date_debut')
-                    ])
-            ]);
+        QueryBuilder::make()
+            ->constraints([
+                QueryBuilder\Constraints\DateConstraint::make('date_debut')
+            ])
+    ]);
     }
 
     #[Title('Tableau de Bord - Chantiers')]
