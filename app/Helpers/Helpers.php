@@ -39,6 +39,12 @@ final class Helpers
         return $latest ? 'DE'.now()->year.'-00'.$latest->id + 1 : 'DE'.now()->year.'-001';
     }
 
+    public static function generateCodeCommande(): string
+    {
+        $latest = Devis::orderBy('id', 'desc')->first();
+        return $latest ? 'CMD'.now()->year.'-00'.$latest->id + 1 : 'CMD'.now()->year.'-001';
+    }
+
     public static function getLastestVersion()
     {
         if (config('app.env') === 'production') {

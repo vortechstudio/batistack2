@@ -10,6 +10,8 @@ use App\Models\Chantiers\ChantierDepense;
 use App\Models\Chantiers\ChantierIntervention;
 use App\Models\Chantiers\Chantiers;
 use App\Models\Chantiers\ChantierTask;
+use App\Models\Commerce\Commande;
+use App\Models\Commerce\CommandeLigne;
 use App\Models\Commerce\Devis;
 use App\Models\Commerce\DevisLigne;
 use App\Models\Core\Company;
@@ -116,6 +118,18 @@ final class DatabaseSeeder extends Seeder
             foreach (Devis::all() as $devis) {
                 DevisLigne::factory(rand(1,5))->create([
                     'devis_id' => $devis->id,
+                ]);
+            }
+        }
+
+        if (Commande::count() === 0) {
+            Commande::factory(rand(1,10))->create([
+                'num_commande' => Helpers::generateCodeCommande(),
+            ]);
+
+            foreach (Commande::all() as $commande) {
+                CommandeLigne::factory(rand(1,5))->create([
+                    'commande_id' => $commande->id,
                 ]);
             }
         }
