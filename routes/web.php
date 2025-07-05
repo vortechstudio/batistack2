@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
     Route::get('settings/company', App\Livewire\Settings\Company::class)->name('settings.company');
+    Route::get('settings/app', App\Livewire\Settings\SettingsApp::class)->name('settings.app');
     Route::get('settings/pcg', App\Livewire\Settings\Plan::class)->name('settings.pcg');
     Route::get('settings/pcg/create', App\Livewire\Settings\CreatePlan::class)->name('settings.pcg.create');
     Route::get('settings/bank', App\Livewire\Settings\Bank::class)->name('settings.bank');
