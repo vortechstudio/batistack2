@@ -10,26 +10,22 @@
         <div class="flex flex-row justify-between gap-4">
             <div class="flex flex-col">
                 <span>Facturation</span>
-                <progress class="progress progress-error w-90" value="0" max="100"></progress>
                 <div class="flex flex-row justify-between items-center">
-                    <span class="text-gray-300">0%</span>
-                    <span class="text-gray-300">0,00 € / 3 580,00 €</span>
+                    <span class="text-gray-300">{{ Number::currency(\App\Models\Commerce\Facture::where('chantiers_id', $chantier->id)->where('status', '!=', 'payer')->sum('amount_ttc'), 'EUR', 'fr') }} / {{ Number::currency(\App\Models\Commerce\Devis::where('chantiers_id', $chantier->id)->where('status', 'accepted')->sum('amount_ttc'), 'EUR', 'fr') }}</span>
                 </div>
             </div>
             <div class="flex flex-col">
                 <span>Paiement</span>
-                <progress class="progress progress-success w-90" value="0" max="100"></progress>
                 <div class="flex flex-row justify-between items-center">
-                    <span class="text-gray-300">0%</span>
-                    <span class="text-gray-300">0,00 € / 3 580,00 €</span>
+                    <span class="text-gray-300">{{ Number::currency(\App\Models\Commerce\Facture::where('chantiers_id', $chantier->id)->where('status', 'payer')->sum('amount_ttc'), 'EUR', 'fr') }} / {{ Number::currency(\App\Models\Commerce\Facture::where('chantiers_id', $chantier->id)->sum('amount_ttc'), 'EUR', 'fr') }}</span>
                 </div>
             </div>
             <div class="flex flex-col">
-                <span>Marges</span>
-                <progress class="progress progress-info w-90" value="27" max="100"></progress>
+                <span>Budgetisation</span>
+                <progress class="progress progress-info w-90" value="{{ $chantier->ecart_budget_percent }}" max="100"></progress>
                 <div class="flex flex-row justify-between items-center">
-                    <span class="text-gray-300">26,78 %</span>
-                    <span class="text-gray-300">1 985,45 € / 3 580,00 €</span>
+                    <span class="text-gray-300">{{ $chantier->ecart_budget_percent }} %</span>
+                    <span class="text-gray-300">{{ Number::currency($chantier->budget_estime, 'EUR', 'fr') }} / {{ Number::currency($chantier->budget_reel, 'EUR', 'fr') }}</span>
                 </div>
             </div>
         </div>

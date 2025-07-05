@@ -26,8 +26,8 @@ final class ChantiersFactory extends Factory
             'date_fin_prevu' => $fin,
             'date_fin_reel' => $fin->addDays(rand(15, 45)),
             'status' => $this->faker->randomElement(['planifie', 'progress', 'terminer', 'annuler']),
-            'budget_estime' => $this->faker->randomFloat(),
-            'budget_reel' => $this->faker->randomFloat(),
+            'budget_estime' => $this->faker->randomFloat(2, 1000,15000000),
+            'budget_reel' => $this->faker->randomFloat(2, 1000,15000000),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 

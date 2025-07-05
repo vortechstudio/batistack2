@@ -7,6 +7,8 @@ namespace App\Livewire\Chantiers;
 use App\Enums\Chantiers\StatusChantier;
 use App\Enums\Tiers\TiersNature;
 use App\Models\Chantiers\Chantiers;
+use App\Models\Commerce\Devis;
+use App\Models\Commerce\Facture;
 use App\Models\Tiers\Tiers;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -179,11 +181,11 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
 
                 TextColumn::make('devis_count')
                     ->label('Devis')
-                    ->default(0),
+                    ->formatStateUsing(fn (?Model $record) => Devis::where('chantiers_id', $record->id)->count()),
 
                 TextColumn::make('facture_count')
                     ->label('Factures')
-                    ->default(0),
+                    ->formatStateUsing(fn (?Model $record) => Facture::where('chantiers_id', $record->id)->count()),
 
             ])
             ->recordActions([

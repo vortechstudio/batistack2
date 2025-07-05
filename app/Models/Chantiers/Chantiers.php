@@ -84,6 +84,8 @@ final class Chantiers extends Model
         ];
     }
 
+
+
     protected function casts(): array
     {
         return [
@@ -92,5 +94,39 @@ final class Chantiers extends Model
             'date_fin_reel' => 'date',
             'status' => StatusChantier::class,
         ];
+    }
+
+    public function calculerBudgetEstime(): float
+    {
+        // Budget estimé = somme des montants des devis et commandes
+        $totalDevis = $this->devis()->sum('montant_ttc');
+        $totalCommandes = $this->commandes()->sum('montant_ttc');
+
+        return max($totalDevis, $totalCommandes);
+    }
+
+    public function calculerBudgetReel(): float
+    {
+        // Budget réel = somme des montants des factures + dépenses
+        $totalFactures = $this->factures()->sum('montant_ttc');
+        $totalDepenses = $this->hasMany(ChantierDepense::class)->sum('montant');
+
+        return $totalFactures + $totalDepenses;
+    }
+
+    public function mettreAJourBudgets(): void
+    {
+        $this->update([
+            'budget_estime' => $this->calculerBudgetEstime(),
+            'budget_reel' => $this->calculerBudgetReel()
+        ]);
+    }
+
+    public function getEcartBudgetPercentAttribute(): ?float
+    {
+        if ($this->budget_estime == 0) {
+            return null; // Avoid division by zero
+        }
+        return round((($this->budget_reel - $this->budget_estime) / $this->budget_estime) * 100, 2);
     }
 }
