@@ -7,6 +7,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Core\UserRole;
 use App\Models\Chantiers\Chantiers;
+use App\Models\Commerce\Devis;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -81,5 +82,10 @@ final class User extends Authenticatable
     public function chantiers(): BelongsToMany
     {
         return $this->belongsToMany(Chantiers::class);
+    }
+
+    public function devis()
+    {
+        return $this->hasMany(Devis::class);
     }
 }

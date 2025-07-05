@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Helpers\Helpers;
 use App\Models\Chantiers\ChantierAddress;
 use App\Models\Chantiers\ChantierDepense;
 use App\Models\Chantiers\ChantierIntervention;
 use App\Models\Chantiers\Chantiers;
 use App\Models\Chantiers\ChantierTask;
+use App\Models\Commerce\Devis;
+use App\Models\Commerce\DevisLigne;
 use App\Models\Core\Company;
 use App\Models\Tiers\Tiers;
 use App\Models\Tiers\TiersAddress;
@@ -98,6 +101,21 @@ final class DatabaseSeeder extends Seeder
                 ChantierIntervention::factory(rand(1,5))->create([
                     'chantiers_id' => $chantier->id,
                     'intervenant_id' => $chantier->responsable_id,
+                ]);
+            }
+        }
+
+        if (Devis::count() === 0) {
+            Devis::factory(rand(1,10))->create([
+                'chantiers_id' => Chantiers::all()->random()->id,
+                'tiers_id' => Tiers::all()->random()->id,
+                'responsable_id' => User::first()->id,
+                'num_devis' => Helpers::generateCodeDevis(),
+            ]);
+
+            foreach (Devis::all() as $devis) {
+                DevisLigne::factory(rand(1,5))->create([
+                    'devis_id' => $devis->id,
                 ]);
             }
         }

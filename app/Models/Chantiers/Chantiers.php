@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Models\Chantiers;
 
 use App\Enums\Chantiers\StatusChantier;
+use App\Models\Commerce\Devis;
 use App\Models\Tiers\Tiers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class Chantiers extends Model
 {
@@ -51,6 +53,11 @@ final class Chantiers extends Model
     public function logs()
     {
         return $this->hasMany(ChantierLog::class);
+    }
+
+    public function devis(): HasMany
+    {
+        return $this->hasMany(Devis::class);
     }
 
     protected function casts(): array

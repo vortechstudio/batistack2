@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use App\Models\Commerce\Devis;
 use App\Models\Tiers\Tiers;
 
 final class Helpers
@@ -30,6 +31,12 @@ final class Helpers
         $latest = Tiers::where('nature', 'client')->orderBy('id', 'desc')->first();
 
         return $latest ? 'CUS'.now()->year.'-00'.$latest->id + 1 : 'CUS'.now()->year.'-001';
+    }
+
+    public static function generateCodeDevis(): string
+    {
+        $latest = Devis::orderBy('id', 'desc')->first();
+        return $latest ? 'DE'.now()->year.'-00'.$latest->id + 1 : 'DE'.now()->year.'-001';
     }
 
     public static function getLastestVersion()
