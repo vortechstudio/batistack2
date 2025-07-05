@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories\Chantiers;
 
-use App\Enums\Chantiers\StatusChantier;
 use App\Models\Chantiers\Chantiers;
 use App\Models\Tiers\Tiers;
 use App\Models\User;

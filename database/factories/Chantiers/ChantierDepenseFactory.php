@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories\Chantiers;
 
-use App\Enums\Chantiers\TypeDepenseChantier;
 use App\Models\Chantiers\ChantierDepense;
 use App\Models\Chantiers\Chantiers;
 use App\Models\Tiers\Tiers;

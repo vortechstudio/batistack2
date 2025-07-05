@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Chantiers;
 
 use App\Models\Chantiers\ChantierAddress;
 use App\Models\Chantiers\Chantiers;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ChantierAddressFactory extends Factory
+final class ChantierAddressFactory extends Factory
 {
     protected $model = ChantierAddress::class;
 
