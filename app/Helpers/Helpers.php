@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use App\Models\Commerce\Commande;
 use App\Models\Commerce\Devis;
+use App\Models\Commerce\Facture;
 use App\Models\Tiers\Tiers;
 
 final class Helpers
@@ -41,8 +43,14 @@ final class Helpers
 
     public static function generateCodeCommande(): string
     {
-        $latest = Devis::orderBy('id', 'desc')->first();
+        $latest = Commande::orderBy('id', 'desc')->first();
         return $latest ? 'CMD'.now()->year.'-00'.$latest->id + 1 : 'CMD'.now()->year.'-001';
+    }
+
+    public static function generateCodeFacture(): string
+    {
+        $latest = Facture::orderBy('id', 'desc')->first();
+        return $latest ? 'FCT'.now()->year.'-00'.$latest->id + 1 : 'FCT'.now()->year.'-001';
     }
 
     public static function getLastestVersion()

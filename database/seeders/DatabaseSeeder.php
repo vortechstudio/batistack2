@@ -14,7 +14,11 @@ use App\Models\Commerce\Commande;
 use App\Models\Commerce\CommandeLigne;
 use App\Models\Commerce\Devis;
 use App\Models\Commerce\DevisLigne;
+use App\Models\Commerce\Facture;
+use App\Models\Commerce\FactureLigne;
+use App\Models\Commerce\FacturePaiement;
 use App\Models\Core\Company;
+use App\Models\Core\ModeReglement;
 use App\Models\Tiers\Tiers;
 use App\Models\Tiers\TiersAddress;
 use App\Models\Tiers\TiersBank;
@@ -131,6 +135,28 @@ final class DatabaseSeeder extends Seeder
                 CommandeLigne::factory(rand(1,5))->create([
                     'commande_id' => $commande->id,
                 ]);
+            }
+        }
+
+        if (Facture::count() === 0) {
+            Facture::factory(rand(1,30))->create([
+                'num_facture' => Helpers::generateCodeFacture(),
+            ]);
+
+            foreach (Facture::all() as $facture) {
+                FactureLigne::factory(rand(1,5))->create([
+                    'facture_id' => $facture->id,
+                ]);
+
+                if($facture->status->value == 'payer') {
+                    FacturePaiement::create([
+                        'facture_id' => $facture->id,
+                        'date_paiement' => $facture->date_echeance->addDays(rand(2,5)),
+                        'amount' => $facture->amount_ttc,
+                        'mode_reglement_id' => ModeReglement::all()->random()->id,
+                        'reference' => "STS".now()->format('ym').'-00'.rand(10,99)
+                    ]);
+                }
             }
         }
     }
