@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Chantier\Components\Table;
 
 use App\Models\Chantiers\Chantiers;
@@ -16,9 +18,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
-class DocumentFactureTable extends Component implements HasTable, HasActions, HasForms
+final class DocumentFactureTable extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
     public Chantiers $chantier;
 
@@ -26,7 +28,7 @@ class DocumentFactureTable extends Component implements HasTable, HasActions, Ha
     {
         return $table
             ->query(Facture::query()->where('chantiers_id', $this->chantier->id))
-            ->recordUrl(fn(Model $record) => route('chantiers.view', $record->id))
+            ->recordUrl(fn (Model $record) => route('chantiers.view', $record->id))
             ->columns([
                 TextColumn::make('num_facture')
                     ->label('Réference')
@@ -36,7 +38,7 @@ class DocumentFactureTable extends Component implements HasTable, HasActions, Ha
                 TextColumn::make('type_facture')
                     ->label('Type de facture')
                     ->sortable()
-                    ->formatStateUsing(fn(?Model $record) => "Facture ".$record->type_facture->label()),
+                    ->formatStateUsing(fn (?Model $record) => 'Facture '.$record->type_facture->label()),
 
                 TextColumn::make('status')
                     ->label('Etat de la facture')

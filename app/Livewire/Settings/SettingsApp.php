@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Settings;
 
 use Filament\Forms\Components\Hidden;
@@ -12,11 +14,12 @@ use Filament\Schemas\Schema;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class SettingsApp extends Component implements HasForms
+final class SettingsApp extends Component implements HasForms
 {
     use InteractsWithForms;
 
     public ?array $devisData = [];
+
     public ?array $commandesData = [];
 
     public function mount(): void
@@ -38,16 +41,15 @@ class SettingsApp extends Component implements HasForms
                 Hidden::make('action')->default('devis'),
 
                 Toggle::make('num_devis_model')
-                ->label("Modèles de numérotation des devis")
-                ->hint("Renvoie le numéro sous la forme DEyymm-nnnn où yy est l'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0. Ex: DE2501-0001"),
+                    ->label('Modèles de numérotation des devis')
+                    ->hint("Renvoie le numéro sous la forme DEyymm-nnnn où yy est l'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0. Ex: DE2501-0001"),
 
                 TextInput::make('devis_validity')
-                ->label('Délai de validité des devis (jours)')
-                ->default(30),
+                    ->label('Délai de validité des devis (jours)')
+                    ->default(30),
 
                 RichEditor::make('devis_mention')
-                ->label('Mention complémentaire sur les devis'),
-
+                    ->label('Mention complémentaire sur les devis'),
 
             ])
             ->statePath('devisData');
@@ -55,7 +57,7 @@ class SettingsApp extends Component implements HasForms
 
     public function updateSettings()
     {
-        if(!empty($this->editDevisForm->getState())) {
+        if (! empty($this->editDevisForm->getState())) {
             settings()->set('num_devis_model', $this->editDevisForm->getState()['num_devis_model']);
             settings()->set('devis_validity', $this->editDevisForm->getState()['devis_validity']);
             settings()->set('devis_mention', $this->editDevisForm->getState()['devis_mention']);

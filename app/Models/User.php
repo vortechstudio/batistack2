@@ -64,6 +64,16 @@ final class User extends Authenticatable
         return $this->phone_number;
     }
 
+    public function chantiers(): BelongsToMany
+    {
+        return $this->belongsToMany(Chantiers::class);
+    }
+
+    public function devis()
+    {
+        return $this->hasMany(Devis::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -77,15 +87,5 @@ final class User extends Authenticatable
             'role' => UserRole::class,
             'notif_phone' => 'boolean',
         ];
-    }
-
-    public function chantiers(): BelongsToMany
-    {
-        return $this->belongsToMany(Chantiers::class);
-    }
-
-    public function devis()
-    {
-        return $this->hasMany(Devis::class);
     }
 }

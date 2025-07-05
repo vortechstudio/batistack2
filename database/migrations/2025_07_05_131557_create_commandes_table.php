@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Chantiers\Chantiers;
 use App\Models\Commerce\Devis;
 use App\Models\Tiers\Tiers;
@@ -8,7 +10,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('commandes', function (Blueprint $table) {
@@ -16,8 +19,8 @@ return new class extends Migration {
             $table->string('num_commande');
             $table->date('date_commande');
             $table->string('status')->default('pending');
-            $table->decimal('amount_ht',20, 2);
-            $table->decimal('amount_ttc',20, 2);
+            $table->decimal('amount_ht', 20, 2);
+            $table->decimal('amount_ttc', 20, 2);
             $table->foreignIdFor(Devis::class)->nullable()->cascadeOnDelete();
             $table->foreignIdFor(Chantiers::class)->nullable()->cascadeOnDelete();
             $table->foreignIdFor(Tiers::class)->constrained('tiers')->cascadeOnDelete();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Commerce;
 
 use App\Helpers\Helpers;
@@ -10,7 +12,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class DevisFactory extends Factory
+final class DevisFactory extends Factory
 {
     protected $model = Devis::class;
 
@@ -18,7 +20,7 @@ class DevisFactory extends Factory
     {
         $dateDevis = $this->faker->date();
         $amount_ht = $this->faker->randomFloat(2);
-        $amount_ttc = $amount_ht*1.2;
+        $amount_ttc = $amount_ht * 1.2;
 
         return [
             'num_devis' => Helpers::generateCodeDevis(),

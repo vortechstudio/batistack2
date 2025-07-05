@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Commerce;
 
 use App\Models\Commerce\Commande;
 use App\Models\Commerce\CommandeLigne;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CommandeLigneFactory extends Factory
+final class CommandeLigneFactory extends Factory
 {
     protected $model = CommandeLigne::class;
 

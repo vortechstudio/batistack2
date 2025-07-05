@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Chantier\Components\Table;
 
 use App\Models\Chantiers\Chantiers;
@@ -16,9 +18,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
-class DocumentDevisTable extends Component implements HasTable, HasActions, HasForms
+final class DocumentDevisTable extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithActions, InteractsWithForms;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
     public Chantiers $chantier;
 
@@ -26,7 +28,7 @@ class DocumentDevisTable extends Component implements HasTable, HasActions, HasF
     {
         return $table
             ->query(Devis::query()->where('chantiers_id', $this->chantier->id))
-            ->recordUrl(fn(Model $record) => route('chantiers.view', $record->id))
+            ->recordUrl(fn (Model $record) => route('chantiers.view', $record->id))
             ->columns([
                 TextColumn::make('num_devis')
                     ->label('Réference')
@@ -60,7 +62,7 @@ class DocumentDevisTable extends Component implements HasTable, HasActions, HasF
 
     public function render()
     {
-        //dd(Devis::query()->where('chantiers_id', $this->chantier->id)->newQuery());
+        // dd(Devis::query()->where('chantiers_id', $this->chantier->id)->newQuery());
         return view('livewire.chantier.components.table.document-devis-table');
     }
 }

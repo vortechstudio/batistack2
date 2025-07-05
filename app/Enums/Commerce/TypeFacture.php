@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Commerce;
 
 enum TypeFacture: string
@@ -11,9 +13,9 @@ enum TypeFacture: string
     public function label()
     {
         return match ($this) {
-            self::ACOMPTE => "Acompte",
-            self::SITUATION => "Situation",
-            self::FINAL => "",
+            self::ACOMPTE => 'Acompte',
+            self::SITUATION => 'Situation',
+            self::FINAL => '',
         };
     }
 }

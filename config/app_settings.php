@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     // All the sections for the settings page
@@ -20,7 +22,7 @@ return [
                     'style' => '', // any inline styles
                     'rules' => 'required|min:2|max:20', // validation rules for this input
                     'value' => 'QCode', // any default value
-                    'hint' => 'You can set the app name here' // help block text for input
+                    'hint' => 'You can set the app name here', // help block text for input
                 ],
                 [
                     'name' => 'logo',
@@ -31,9 +33,9 @@ return [
                     'disk' => 'public', // which disk you want to upload
                     'path' => 'app', // path on the disk,
                     'preview_class' => 'thumbnail',
-                    'preview_style' => 'height:40px'
-                ]
-            ]
+                    'preview_style' => 'height:40px',
+                ],
+            ],
         ],
         'email' => [
             'title' => 'Email Settings',
@@ -53,9 +55,9 @@ return [
                     'type' => 'text',
                     'label' => 'Email from Name',
                     'placeholder' => 'Email from Name',
-                ]
-            ]
-        ]
+                ],
+            ],
+        ],
     ],
 
     // Setting page url, will be used for get and post request
@@ -98,8 +100,8 @@ return [
     'controller' => '\QCod\AppSettings\Controllers\AppSettingController',
 
     // settings group
-    'setting_group' => function() {
+    'setting_group' => function () {
         // return 'user_'.auth()->id();
         return 'default';
-    }
+    },
 ];

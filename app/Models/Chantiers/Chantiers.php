@@ -72,6 +72,18 @@ final class Chantiers extends Model
         return $this->hasMany(Facture::class);
     }
 
+    public function getAvancements(): array
+    {
+        $total_task = $this->tasks->count();
+        $finish_task = $this->tasks()->where('status', '!=', 'todo')->count();
+        $percent = $finish_task !== 0 ? $total_task / $finish_task * 100 : 0;
+
+        return [
+            'percent' => $percent,
+            'color' => $percent <= 33 ? 'red' : ($percent > 34 && $percent <= 66 ? 'amber' : 'green'),
+        ];
+    }
+
     protected function casts(): array
     {
         return [
@@ -79,18 +91,6 @@ final class Chantiers extends Model
             'date_fin_prevu' => 'date',
             'date_fin_reel' => 'date',
             'status' => StatusChantier::class,
-        ];
-    }
-
-    public function getAvancements(): array
-    {
-        $total_task = $this->tasks->count();
-        $finish_task = $this->tasks()->where('status', '!=', 'todo')->count();
-        $percent = $finish_task != 0 ? $total_task / $finish_task * 100 : 0;
-
-        return [
-            "percent" => $percent,
-            "color" => $percent <= 33 ? "red" : ($percent > 34 && $percent <= 66 ? "amber" : "green"),
         ];
     }
 }

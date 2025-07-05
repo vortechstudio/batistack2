@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Commerce;
 
 use App\Models\Commerce\Facture;
 use App\Models\Commerce\FactureLigne;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class FactureLigneFactory extends Factory
+final class FactureLigneFactory extends Factory
 {
     protected $model = FactureLigne::class;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Commerce;
 
 use App\Models\Chantiers\Chantiers;
@@ -10,7 +12,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class FactureFactory extends Factory
+final class FactureFactory extends Factory
 {
     protected $model = Facture::class;
 
@@ -18,7 +20,7 @@ class FactureFactory extends Factory
     {
         $dateFacture = $this->faker->date();
         $amount_ht = $this->faker->randomFloat(2);
-        $amount_ttc = $amount_ht*1.2;
+        $amount_ttc = $amount_ht * 1.2;
 
         return [
             'num_facture' => $this->faker->word(),
@@ -28,7 +30,7 @@ class FactureFactory extends Factory
                 'final' => 'final',
             ]),
             'date_facture' => $dateFacture,
-            'date_echeance' => $this->faker->boolean ? Carbon::createFromTimestamp(strtotime($dateFacture))->addDays(rand(14,60)) : $dateFacture,
+            'date_echeance' => $this->faker->boolean ? Carbon::createFromTimestamp(strtotime($dateFacture))->addDays(rand(14, 60)) : $dateFacture,
             'status' => array_rand([
                 'non_payer' => 'non_payer',
                 'partiellement' => 'partiellement',

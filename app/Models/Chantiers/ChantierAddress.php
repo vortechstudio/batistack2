@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Chantiers;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ChantierAddress extends Model
+final class ChantierAddress extends Model
 {
     use HasFactory;
-    protected $guarded = [];
 
     public $timestamps = false;
+
+    protected $guarded = [];
 
     public function chantiers(): BelongsTo
     {

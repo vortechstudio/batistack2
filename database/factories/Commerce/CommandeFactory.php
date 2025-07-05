@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Commerce;
 
 use App\Models\Chantiers\Chantiers;
@@ -8,9 +10,8 @@ use App\Models\Commerce\Devis;
 use App\Models\Tiers\Tiers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
 
-class CommandeFactory extends Factory
+final class CommandeFactory extends Factory
 {
     protected $model = Commande::class;
 
@@ -18,7 +19,7 @@ class CommandeFactory extends Factory
     {
         $dateCommande = $this->faker->date();
         $amount_ht = $this->faker->randomFloat(2);
-        $amount_ttc = $amount_ht*1.2;
+        $amount_ttc = $amount_ht * 1.2;
 
         return [
             'num_commande' => $this->faker->word(),

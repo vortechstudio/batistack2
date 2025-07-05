@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Commerce;
 
 use App\Enums\Commerce\StatusDevis;
@@ -10,12 +12,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Devis extends Model
+final class Devis extends Model
 {
     use HasFactory;
-    protected $guarded = [];
 
     public $timestamps = false;
+
+    protected $guarded = [];
 
     public function chantiers(): BelongsTo
     {
