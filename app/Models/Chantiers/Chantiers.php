@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Models\Chantiers;
 
 use App\Enums\Chantiers\StatusChantier;
+use App\Models\Commerce\Commande;
 use App\Models\Commerce\Devis;
+use App\Models\Commerce\Facture;
 use App\Models\Tiers\Tiers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -58,6 +60,16 @@ final class Chantiers extends Model
     public function devis(): HasMany
     {
         return $this->hasMany(Devis::class);
+    }
+
+    public function commandes()
+    {
+        return $this->hasMany(Commande::class);
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(Facture::class);
     }
 
     protected function casts(): array

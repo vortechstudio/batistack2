@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Livewire\Chantier\Components\Table;
+
+use App\Models\Chantiers\Chantiers;
+use App\Models\Commerce\Devis;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
+use Livewire\Component;
+
+class DocumentDevisTable extends Component implements HasTable, HasActions, HasForms
+{
+    use InteractsWithTable, InteractsWithActions, InteractsWithForms;
+
+    public Chantiers $chantier;
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->query(Devis::query()->where('chantiers_id', $this->chantier->id))
+            ->recordUrl(fn(Model $record) => route('chantiers.view', $record->id))
+            ->columns([
+                TextColumn::make('num_devis')
+                    ->label('Réference')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('status')
+                    ->label('Etat du devis')
+                    ->sortable()
+                    ->badge()
+                    ->formatStateUsing(function (?Model $record) {
+                        return new HtmlString("<span class='inline-flex items-center rounded-md bg-{$record->status->color()}-100 px-2 py-1 text-sm font-medium text-{$record->status->color()}-600 ring-1 ring-{$record->status->color()}-500/10 ring-inset'>{$record->status->label()}</span>");
+                    }),
+
+                TextColumn::make('date_devis')
+                    ->label('Date du devis')
+                    ->sortable()
+                    ->date(),
+
+                TextColumn::make('date_validate')
+                    ->label('Date de validation')
+                    ->sortable()
+                    ->date(),
+
+                TextColumn::make('amount_ttc')
+                    ->label('Montant')
+                    ->money('EUR'),
+
+            ]);
+    }
+
+    public function render()
+    {
+        //dd(Devis::query()->where('chantiers_id', $this->chantier->id)->newQuery());
+        return view('livewire.chantier.components.table.document-devis-table');
+    }
+}
