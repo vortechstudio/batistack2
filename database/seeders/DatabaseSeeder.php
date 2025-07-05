@@ -10,6 +10,8 @@ use App\Models\Chantiers\ChantierDepense;
 use App\Models\Chantiers\ChantierIntervention;
 use App\Models\Chantiers\Chantiers;
 use App\Models\Chantiers\ChantierTask;
+use App\Models\Commerce\Avoir;
+use App\Models\Commerce\AvoirLigne;
 use App\Models\Commerce\Commande;
 use App\Models\Commerce\CommandeLigne;
 use App\Models\Commerce\Devis;
@@ -157,6 +159,20 @@ final class DatabaseSeeder extends Seeder
                         'reference' => 'STS'.now()->format('ym').'-00'.rand(10, 99),
                     ]);
                 }
+            }
+        }
+
+        if (Avoir::count() === 0) {
+            foreach (Facture::where('status', 'payer')->get() as $facture) {
+                $av = Avoir::factory()->create([
+                    'num_avoir' => Helpers::generateCodeAvoir(),
+                    'facture_id' => $facture->id,
+                ]);
+                $avoir = Avoir::orderBy('id', 'desc')->first();
+
+                AvoirLigne::factory(rand(1, 5))->create([
+                    'avoir_id' => $avoir->id,
+                ]);
             }
         }
     }

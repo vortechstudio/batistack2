@@ -5,3 +5,6 @@ git pull origin production
 
 sed -i "s/^BUGSNAG_API_KEY=.*/BUGSNAG_API_KEY=f75b3bf691ff27f2d77053c946fef9fe/" .env
 sed -i "s/^APP_VERSION=.*/APP_VERSION=$LATEST_TAG/" .env
+sed -i "s/^NIGHTWATCH_TOKEN=.*/NIGHTWATCH_TOKEN=p1N53dkqBjVA2DvizzYXlOqYSfcCJ7vJdcn61lS3nOc0/" .env
+
+
