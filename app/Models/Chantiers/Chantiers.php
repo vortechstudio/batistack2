@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Chantiers;
 
 use App\Enums\Chantiers\StatusChantier;
+use App\Models\Commerce\Avoir;
 use App\Models\Commerce\Commande;
 use App\Models\Commerce\Devis;
 use App\Models\Commerce\Facture;
@@ -70,6 +71,11 @@ final class Chantiers extends Model
     public function factures()
     {
         return $this->hasMany(Facture::class);
+    }
+
+    public function avoirs()
+    {
+        return $this->hasMany(Avoir::class);
     }
 
     public function getAvancements(): array

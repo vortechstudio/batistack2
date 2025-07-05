@@ -46,6 +46,9 @@
             <div x-show="tabs === 'facture'" class="p-4 bg-white">
                 @livewire('chantier.components.table.document-facture-table', ['chantier' => $chantier])
             </div>
+            <div x-show="tabs === 'avoir'" class="p-4 bg-white">
+                @livewire('chantier.components.table.document-avoir-table', ['chantier' => $chantier])
+            </div>
         </div>
     </div>
 </div>

@@ -7,7 +7,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Core\UserRole;
 use App\Models\Chantiers\Chantiers;
+use App\Models\Commerce\Avoir;
+use App\Models\Commerce\Commande;
 use App\Models\Commerce\Devis;
+use App\Models\Commerce\Facture;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -72,6 +75,21 @@ final class User extends Authenticatable
     public function devis()
     {
         return $this->hasMany(Devis::class);
+    }
+
+    public function commandes()
+    {
+        return $this->hasMany(Commande::class);
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(Facture::class);
+    }
+
+    public function avoirs()
+    {
+        return $this->hasMany(Avoir::class);
     }
 
     /**

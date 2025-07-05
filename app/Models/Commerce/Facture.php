@@ -51,6 +51,11 @@ final class Facture extends Model
         return $this->hasMany(FacturePaiement::class);
     }
 
+    public function avoirs()
+    {
+        return $this->hasMany(Avoir::class);
+    }
+
     protected function casts(): array
     {
         return [

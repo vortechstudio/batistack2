@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use App\Models\Commerce\Avoir;
 use App\Models\Commerce\Commande;
 use App\Models\Commerce\Devis;
 use App\Models\Commerce\Facture;
@@ -54,6 +55,13 @@ final class Helpers
         $latest = Facture::orderBy('id', 'desc')->first();
 
         return $latest ? 'FCT'.now()->year.'-00'.$latest->id + 1 : 'FCT'.now()->year.'-001';
+    }
+
+    public static function generateCodeAvoir(): string
+    {
+        $latest = Avoir::orderBy('id', 'desc')->first();
+
+        return $latest ? 'AV'.now()->year.'-00'.$latest->id + 1 : 'AV'.now()->year.'-001';
     }
 
     public static function getLastestVersion()
