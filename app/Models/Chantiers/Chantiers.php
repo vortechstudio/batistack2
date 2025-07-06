@@ -83,6 +83,11 @@ final class Chantiers extends Model
         return $this->hasMany(Avoir::class);
     }
 
+    public function ressources()
+    {
+        return $this->hasMany(ChantierRessources::class);
+    }
+
     public function getAvancements(): array
     {
         $total_task = $this->tasks->count();
