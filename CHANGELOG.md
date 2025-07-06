@@ -1,3 +1,32 @@
+# [1.3.0](https://github.com/vortechstudio/batistack2/compare/v1.2.0...v1.3.0) (2025-07-06)
+
+
+### Bug Fixes
+
+* **sidebar:** correct navlist group heading from 'Settings' to 'Tiers' ([3b05e9a](https://github.com/vortechstudio/batistack2/commit/3b05e9ad04f12f019cc572b1ba3409254efcaa5b)), closes [#29](https://github.com/vortechstudio/batistack2/issues/29)
+
+
+### Features
+
+* **avoirs:** add avoirs management system with models, migrations and UI ([a61af82](https://github.com/vortechstudio/batistack2/commit/a61af82d07ff844716210664ce1b68a1fe0c5b1e))
+* **chantier:** add document tables for devis and factures ([3ac9440](https://github.com/vortechstudio/batistack2/commit/3ac94402450d770fa60b1814c72e33cf7e70b666))
+* **chantiers:** add address and intervention models with relationships ([f6db759](https://github.com/vortechstudio/batistack2/commit/f6db75908c19f0e3ba94b67e2f58a5868f4ad919))
+* **chantiers:** add chantiers dashboard with stats and listing ([8af7a19](https://github.com/vortechstudio/batistack2/commit/8af7a19b7f11c8dba5b49fea355ca273060728ab))
+* **chantiers:** add logging system for chantier operations ([b3f7ec8](https://github.com/vortechstudio/batistack2/commit/b3f7ec8a4e65847ef7afeebca454beb93982d4f7))
+* **chantiers:** add models, enums and migrations for chantiers management ([24bd53c](https://github.com/vortechstudio/batistack2/commit/24bd53c4cf1ffd4db37a4dd03a381095e60eaac3))
+* **chantiers:** add view page for chantiers with tabs ([a72ba03](https://github.com/vortechstudio/batistack2/commit/a72ba039e4b9905dae1d53f23f44f47a0c60a7ca))
+* **Chantiers:** implement budget tracking and calculation system ([e9f8ab8](https://github.com/vortechstudio/batistack2/commit/e9f8ab862f7e5e8dae935ab989f84847023b1c59))
+* **commerce:** add quotes system with models, enums and relationships ([ee087dc](https://github.com/vortechstudio/batistack2/commit/ee087dcd25e22f02209fc5c8838190ecad4e2dfc))
+* **commerce:** implement order management system ([2b6ea22](https://github.com/vortechstudio/batistack2/commit/2b6ea22bd314b4309ee2bc6c9d93bbab8dafceb6))
+* **filemanager:** integrate Laravel Filemanager with routes, views, and assets ([4c021e5](https://github.com/vortechstudio/batistack2/commit/4c021e5b8a332bbd8c9c0db1bf2ac70782191887))
+* **invoicing:** add invoice management system ([2c4f2b8](https://github.com/vortechstudio/batistack2/commit/2c4f2b8d6cae8948ca906643f6a329b06ff93080))
+* **notifications:** add WhatsApp notification channel support ([3d032ce](https://github.com/vortechstudio/batistack2/commit/3d032ce9f1f0da41be28f681bf2c8aafd3056d9c))
+* **notifications:** add WhatsApp notification support ([efb7936](https://github.com/vortechstudio/batistack2/commit/efb793618803a0ecae6008a11e2d3d716348b68e))
+* **pdf:** add PDF generation and export functionality ([68b8620](https://github.com/vortechstudio/batistack2/commit/68b862022abd4d73a735b5ef0aec916266350400))
+* **settings:** add application settings management feature ([18ced07](https://github.com/vortechstudio/batistack2/commit/18ced07e68b140da3226ce19910f956fff10f6af))
+* **user:** add phone notification preference support ([b20dc23](https://github.com/vortechstudio/batistack2/commit/b20dc237f3357d3bdf4c1afc4f8a876e75577292))
+* **user:** add phone number field and Twilio integration ([ceb2cfb](https://github.com/vortechstudio/batistack2/commit/ceb2cfb43fcf4cc567880b0fe78e1fc6bcaebc3d))
+
 # [1.2.0](https://github.com/vortechstudio/batistack2/compare/v1.1.0...v1.2.0) (2025-07-01)
 
 
