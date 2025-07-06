@@ -2,6 +2,7 @@
 
 namespace App\Models\Commerce;
 
+use App\Enums\Commerce\CategoryFee;
 use App\Models\Chantiers\Chantiers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +28,7 @@ class frais extends Model
     {
         return [
             'date_frais' => 'date',
+            'category' => CategoryFee::class,
         ];
     }
 }
