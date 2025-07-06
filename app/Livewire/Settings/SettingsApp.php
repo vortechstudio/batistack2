@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace App\Livewire\Settings;
 
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -18,49 +24,81 @@ final class SettingsApp extends Component implements HasForms
 {
     use InteractsWithForms;
 
-    public ?array $devisData = [];
-
-    public ?array $commandesData = [];
+    public ?array $data = [];
 
     public function mount(): void
     {
-        $this->editDevisForm->fill(settings()->all()->toArray());
+        $this->form->fill(settings()->all()->toArray());
     }
 
-    public function getForms(): array
-    {
-        return [
-            'editDevisForm',
-        ];
-    }
-
-    public function editDevisForm(Schema $schema): Schema
+    public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Hidden::make('action')->default('devis'),
+                Section::make('Configuration des devis client')
+                    ->schema([
+                        TextInput::make('devis_validity')
+                            ->label('Durée de validité des devis'),
 
-                Toggle::make('num_devis_model')
-                    ->label('Modèles de numérotation des devis')
-                    ->hint("Renvoie le numéro sous la forme DEyymm-nnnn où yy est l'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0. Ex: DE2501-0001"),
+                        TextArea::make('devis_mention')
+                            ->label('Mention complémentaire'),
+                    ])
+                    ->collapsed(),
 
-                TextInput::make('devis_validity')
-                    ->label('Délai de validité des devis (jours)')
-                    ->default(30),
+                Section::make('Tableau de Bord')
+                    ->schema([
+                        Section::make('Message du tableau de bord')
+                            ->description("Ajoute un message d'alerte sur le tableau de bord général de l'application")
+                            ->schema([
+                                Toggle::make('dashboard_message_active')
+                                    ->label("Activer le message d'alerte"),
 
-                RichEditor::make('devis_mention')
-                    ->label('Mention complémentaire sur les devis'),
+                                TextInput::make('dashboard_message_title')
+                                    ->label('Titre du message'),
+
+                                Textarea::make('dashboard_message_body')
+                                    ->label('Texte du message'),
+
+                                Grid::make()
+                                    ->schema([
+                                        DatePicker::make('dashboard_message_date_start')
+                                            ->label('Date de début'),
+
+                                        DatePicker::make('dashboard_message_date_end')
+                                            ->label('Date de fin'),
+                                    ])
+                            ])
+                            ->collapsed()
+                    ])
+                    ->collapsed(),
 
             ])
-            ->statePath('devisData');
+            ->statePath('data');
     }
 
-    public function updateSettings()
+    public function update()
     {
-        if (! empty($this->editDevisForm->getState())) {
-            settings()->set('num_devis_model', $this->editDevisForm->getState()['num_devis_model']);
-            settings()->set('devis_validity', $this->editDevisForm->getState()['devis_validity']);
-            settings()->set('devis_mention', $this->editDevisForm->getState()['devis_mention']);
+        try {
+            !empty($this->form->getState()['devis_validity']) ? settings()->set('devis_validity', $this->form->getState()['devis_validity']) : settings()->set('devis_validity', '');
+            !empty($this->form->getState()['devis_mention']) ? settings()->set('devis_mention', $this->form->getState()['devis_mention']) : settings()->set('devis_mention', '');
+            !empty($this->form->getState()['dashboard_message_active']) ? settings()->set('dashboard_message_active', $this->form->getState()['dashboard_message_active']) : settings()->set('dashboard_message_active', '');
+            !empty($this->form->getState()['dashboard_message_title']) ? settings()->set('dashboard_message_title', $this->form->getState()['dashboard_message_title']) : settings()->set('dashboard_message_title', '');
+            !empty($this->form->getState()['dashboard_message_body']) ? settings()->set('dashboard_message_body', $this->form->getState()['dashboard_message_body']) : settings()->set('dashboard_message_body', '');
+            !empty($this->form->getState()['dashboard_message_date_start']) ? settings()->set('dashboard_message_date_start', $this->form->getState()['dashboard_message_date_start']) : settings()->set('dashboard_message_date_start', '');
+            !empty($this->form->getState()['dashboard_message_date_end']) ? settings()->set('dashboard_message_date_end', $this->form->getState()['dashboard_message_date_end']) : settings()->set('dashboard_message_date_end', '');
+
+            Notification::make()
+                ->success()
+                ->title("Configuration de l'application")
+                ->body("La mise à jour de la configuration de l'application à été effectué avec succès")
+                ->send();
+        }catch (\Exception $exception){
+            report($exception);
+            Notification::make()
+                ->danger()
+                ->title("Configuration de l'application")
+                ->body("Erreur lors de la mise à jour de la configuration de l'application")
+                ->send();
         }
     }
 

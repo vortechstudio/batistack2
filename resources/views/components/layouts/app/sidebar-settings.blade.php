@@ -79,6 +79,7 @@
 
         {{ $slot }}
 
+        @livewire('notifications')
         @fluxScripts
     </body>
 </html>
