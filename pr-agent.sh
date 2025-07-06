@@ -2,8 +2,8 @@
 
 # Configuration
 PR_NUMBER="$1"                  # Numéro de la PR (en argument)
-OLLAMA_MODEL="deepseek-r1"           # Modèle Ollama à utiliser
-OLLAMA_URL="http://86.217.43.98:11434/api/generate"
+OLLAMA_MODEL="llama3"           # Modèle Ollama à utiliser
+OLLAMA_URL="http://localhost:11434/api/generate"
 
 # Vérification des dépendances
 for cmd in git curl jq gh; do
@@ -28,7 +28,7 @@ if [ -z "$COMMITS" ]; then
 fi
 
 # 🧠 Préparation prompt pour Ollama
-PROMPT="Voici une liste de commits d'une Pull Request : [$COMMITS], Génère une description claire, professionnelle, concise et orientée utilisateur de cette PR. Écris en français."
+PROMPT="Voici une liste de commits d'une Pull Request : [$COMMITS], Génère une description claire, professionnelle, concise et orientée utilisateur de cette PR. Écris en français. Format Markdown. Sans Résonnement"
 echo $PROMPT
 
 # 📤 Envoi à Ollama

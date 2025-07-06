@@ -6,6 +6,10 @@ namespace App\Models\Tiers;
 
 use App\Enums\Tiers\TiersNature;
 use App\Enums\Tiers\TiersType;
+use App\Models\Commerce\Avoir;
+use App\Models\Commerce\Commande;
+use App\Models\Commerce\Devis;
+use App\Models\Commerce\Facture;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -48,6 +52,26 @@ final class Tiers extends Model
     public function banks(): HasMany
     {
         return $this->hasMany(TiersBank::class);
+    }
+
+    public function devis()
+    {
+        return $this->hasMany(Devis::class);
+    }
+
+    public function commandes()
+    {
+        return $this->hasMany(Commande::class);
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(Facture::class);
+    }
+
+    public function avoirs()
+    {
+        return $this->hasMany(Avoir::class);
     }
 
     public function getNextId(): int|float

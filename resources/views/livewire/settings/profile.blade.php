@@ -9,6 +9,8 @@ use Livewire\Volt\Component;
 new class extends Component {
     public string $name = '';
     public string $email = '';
+    public string|null $phone_number = '';
+    public $notif_phone = false;
 
     /**
      * Mount the component.
@@ -17,6 +19,8 @@ new class extends Component {
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->phone_number = Auth::user()->phone_number;
+        $this->notif_phone = Auth::user()->notif_phone ? true : false;
     }
 
     /**
@@ -37,6 +41,7 @@ new class extends Component {
                 'max:255',
                 Rule::unique(User::class)->ignore($user->id)
             ],
+            'phone_number' => ['required', 'unique:users'],
         ]);
 
         $user->fill($validated);
@@ -96,6 +101,11 @@ new class extends Component {
                         @endif
                     </div>
                 @endif
+
+                <flux:input wire:model="phone" :label="__('Phone')" type="text" required />
+
+                <flux:checkbox wire:model="notif_phone" :label="__('Notification sur le téléphone')" />
+
             </div>
 
             <div class="flex items-center gap-4">

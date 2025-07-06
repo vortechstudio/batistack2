@@ -19,15 +19,19 @@ test('profile information can be updated', function () {
     $response = Volt::test('settings.profile')
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
+        ->set('phone_number', '+33799999999')
+        ->set('notif_phone', false)
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();
 
     $user->refresh();
 
-    expect($user->name)->toEqual('Test User');
-    expect($user->email)->toEqual('test@example.com');
-    expect($user->email_verified_at)->toBeNull();
+    expect($user->name)->toEqual('Test User')
+        ->and($user->email)->toEqual('test@example.com')
+        ->and($user->phone_number)->toEqual('+33799999999')
+        ->and($user->notif_phone)->toEqual(false)
+        ->and($user->email_verified_at)->toBeNull();
 });
 
 test('email verification status is unchanged when email address is unchanged', function () {
@@ -38,6 +42,8 @@ test('email verification status is unchanged when email address is unchanged', f
     $response = Volt::test('settings.profile')
         ->set('name', 'Test User')
         ->set('email', $user->email)
+        ->set('phone_number', '+33799999999')
+        ->set('notif_phone', true)
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();
@@ -58,8 +64,8 @@ test('user can delete their account', function () {
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
-    expect($user->fresh())->toBeNull();
-    expect(auth()->check())->toBeFalse();
+    expect($user->fresh())->toBeNull()
+        ->and(auth()->check())->toBeFalse();
 });
 
 test('correct password must be provided to delete account', function () {

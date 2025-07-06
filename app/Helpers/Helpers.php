@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use App\Models\Commerce\Avoir;
+use App\Models\Commerce\Commande;
+use App\Models\Commerce\Devis;
+use App\Models\Commerce\Facture;
 use App\Models\Tiers\Tiers;
 
 final class Helpers
@@ -30,6 +34,34 @@ final class Helpers
         $latest = Tiers::where('nature', 'client')->orderBy('id', 'desc')->first();
 
         return $latest ? 'CUS'.now()->year.'-00'.$latest->id + 1 : 'CUS'.now()->year.'-001';
+    }
+
+    public static function generateCodeDevis(): string
+    {
+        $latest = Devis::orderBy('id', 'desc')->first();
+
+        return $latest ? 'DE'.now()->year.'-00'.$latest->id + 1 : 'DE'.now()->year.'-001';
+    }
+
+    public static function generateCodeCommande(): string
+    {
+        $latest = Commande::orderBy('id', 'desc')->first();
+
+        return $latest ? 'CMD'.now()->year.'-00'.$latest->id + 1 : 'CMD'.now()->year.'-001';
+    }
+
+    public static function generateCodeFacture(): string
+    {
+        $latest = Facture::orderBy('id', 'desc')->first();
+
+        return $latest ? 'FCT'.now()->year.'-00'.$latest->id + 1 : 'FCT'.now()->year.'-001';
+    }
+
+    public static function generateCodeAvoir(): string
+    {
+        $latest = Avoir::orderBy('id', 'desc')->first();
+
+        return $latest ? 'AV'.now()->year.'-00'.$latest->id + 1 : 'AV'.now()->year.'-001';
     }
 
     public static function getLastestVersion()
