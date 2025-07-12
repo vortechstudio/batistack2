@@ -2,8 +2,8 @@
 
 # Configuration
 PR_NUMBER="$1"                  # Numéro de la PR (en argument)
-OLLAMA_MODEL="llama3"           # Modèle Ollama à utiliser
-OLLAMA_URL="http://localhost:11434/api/generate"
+OLLAMA_MODEL="ai/llama3.1"           # Modèle Ollama à utiliser
+OLLAMA_URL="http://localhost:12434/engines/llama.cpp/v1/chat/completions"
 
 # Vérification des dépendances
 for cmd in git curl jq gh; do
@@ -28,32 +28,5 @@ if [ -z "$COMMITS" ]; then
 fi
 
 # 🧠 Préparation prompt pour Ollama
-PROMPT="Voici une liste de commits d'une Pull Request : [$COMMITS], Génère une description claire, professionnelle, concise et orientée utilisateur de cette PR. Écris en français. Format Markdown. Sans Résonnement"
+PROMPT="Voici une liste de commits d'une Pull Request : [$COMMITS], Génère une description claire, professionnelle, concise et orientée utilisateur de cette PR. Écris en français. Format Markdown. Sans Résonnement. Seul les commit (feat, fix, release, breaking) doivent être pris en compte."
 echo $PROMPT
-
-# 📤 Envoi à Ollama
-echo "🧠 Envoi des commits à Ollama ($OLLAMA_MODEL)..."
-DESCRIPTION=$(curl -s -X POST "$OLLAMA_URL" \
-  -H "Content-Type: application/json" \
-  -d '{
-        "model": "'"$OLLAMA_MODEL"'",
-        "prompt": "'"$(echo $PROMPT | sed 's/"/\\"/g')"'",
-        "stream": false
-      }' | jq -r '.response')
-
-# 📝 Affichage et confirmation
-echo -e "\n📝 Nouvelle description générée :\n---------------------------------"
-echo "$DESCRIPTION"
-echo "---------------------------------"
-
-read -p "Souhaitez-vous mettre à jour la description de la PR ? (o/n) : " CONFIRM
-if [[ "$CONFIRM" != "o" ]]; then
-    echo "❌ Opération annulée."
-    exit 0
-fi
-
-# 🚀 Mise à jour de la PR sur GitHub
-echo "🚀 Mise à jour de la PR sur GitHub..."
-gh pr edit "$PR_NUMBER" --body "$DESCRIPTION"
-
-echo "✅ PR #$PR_NUMBER mise à jour avec succès."

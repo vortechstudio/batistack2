@@ -1,50 +1,48 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: Configurer les variables d'environnement nécessaires
-set "OLLAMA_SERVER=http://86.217.43.98:11434"
+:: Configuration
+set PR_NUMBER=%1
+set OLLAMA_MODEL=ai/llama3.1
+set OLLAMA_URL=http://localhost:12434/engines/llama.cpp/v1/chat/completions
 
-:: Récupération des messages de commit de la PR
-for /f "delims=" %%A in ('gh pr view --json commits ^| jq -r ".commits[].messageHeadline"') do (
-    set "commit_messages=!commit_messages!%%A\n"
+:: Vérification des dépendances
+for %%c in (git curl jq gh) do (
+    where %%c >nul 2>&1 || (
+        echo ❌ Commande manquante : %%c
+        exit /b 1
+    )
 )
 
-:: Affiche les commits pour debug
-echo Commits :
-echo !commit_messages!
-
-:: Génération du résumé via Ollama
-:: Préparer le JSON (on remplace les " par \" pour JSON correct)
-set "PROMPT=Voici la liste des messages de commit pour une pull request GitHub : !commit_messages! Génère un résumé clair en français, en quelques lignes, de ce que cette PR contient."
-
-:: On écrit le JSON dans un fichier temporaire
-> body.json echo {
->> body.json echo   "model": "llama3",
->> body.json echo   "prompt": "!PROMPT!",
->> body.json echo   "stream": false
->> body.json echo }
-
-:: Appel à l’API
-curl -s %OLLAMA_SERVER%/api/generate ^
-  -H "Content-Type: application/json" ^
-  -d @body.json > response.json
-
-:: Extraire le résumé avec jq
-for /f "delims=" %%A in ('jq -r ".response" response.json') do (
-    set "summary=%%A"
+if "%PR_NUMBER%"=="" (
+    echo ❌ Utilisation : %0 ^<numero_pr^>
+    exit /b 1
 )
 
-:: Affiche le résumé pour debug
+:: Récupération des commits
+echo 📥 Récupération des commits de la PR #%PR_NUMBER%...
+for /f "delims=" %%a in ('gh pr view %PR_NUMBER% --json commits --jq ".commits[].messageHeadline"') do set "COMMITS=%%a"
+
+:: Génération du prompt
+set "PROMPT=Voici une liste de commits d'une Pull Request : [%COMMITS%], Génère une description claire, professionnelle, concise et orientée utilisateur de cette PR. Écris en français. Format Markdown. Sans Résonnement. Seul les commit (feat, fix, release, breaking) doivent être pris en compte."
+
+echo 🧠 Envoi des commits à Ollama (%OLLAMA_MODEL%)...
+for /f "delims=" %%d in ('curl --request POST --url %OLLAMA_URL% --header "Content-Type: application/json" --data "{\"model\":\"%OLLAMA_MODEL%\",\"messages\":[{\"role\":\"user\",\"content\":\"%PROMPT%\"}]}" ^| jq -r ".choices[0].message.content"') do set "DESCRIPTION=%%d"
+
 echo.
-echo Résumé généré :
-echo !summary!
+echo 📝 Nouvelle description générée :
+echo ---------------------------------
+echo !DESCRIPTION!
+echo ---------------------------------
 
-:: Mise à jour de la PR
-gh pr edit --body "!summary!"
+set /p CONFIRM="Souhaitez-vous mettre à jour la description de la PR ? (o/n) : "
+if /i not "%CONFIRM%"=="o" (
+    echo ❌ Opération annulée.
+    exit /b 0
+)
 
-:: Nettoyage
-del body.json
-del response.json
+echo 🚀 Mise à jour de la PR sur GitHub...
+gh pr edit %PR_NUMBER% --body "%DESCRIPTION%"
 
+echo ✅ PR #%PR_NUMBER% mise à jour avec succès.
 endlocal
-pause
