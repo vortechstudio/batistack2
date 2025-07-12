@@ -46,38 +46,13 @@ jobs:
       - name: Run tests
         run: php artisan test --parallel
 
-      - name: Création ticket GitHub
+      - name: Create Issue on Failure
         if: failure()
-        uses: actions/github-script@v7
+        uses: peter-evans/create-issue-from-file@v4
         with:
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '[CI] Échec des tests sur main - ' + new Date().toISOString(),
-              body: `### Échec des tests sur la branche main
-
-      **Contexte** :
-      - Workflow: ${{ github.workflow }}
-      - Commit: ${{ github.sha }}
-
-      **Résultats des tests** :
-      \\`\\`\\`
-      ${{ env.TEST_RESULTS }}
-      \\`\\`\\`
-
-      **Checklist investigation** :
-      \\`\\`\\`
-      [x] Vérifier les logs du workflow
-      [x] Reproduire localement
-      [ ] Analyser les changements récents
-      \\`\\`\\`
-
-      **Assignation automatique** :
-      @tech-lead @devops`,
-              labels: ['bug', 'ci'],
-              assignees: ['tech-lead']
-            })
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TEST_RESULTS: ${{ steps.run-tests.outputs.error }}
+          title: "🚨 CI Failed on ${{ github.workflow }} (#${{ github.run_number }})"
+          content-filepath: .github/ISSUE_TEMPLATE/ci-failure.md
+          labels: |
+            bug
+            CI
+          assignees: vortechstudio
