@@ -2,6 +2,7 @@
 
 namespace App\Models\RH;
 
+use App\Models\Chantiers\ChantierRessources;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +20,11 @@ class Employe extends Model
     public function info()
     {
         return $this->hasOne(EmployeInfo::class);
+    }
+
+    public function ressources()
+    {
+        return $this->hasMany(ChantierRessources::class);
     }
 
     protected function casts(): array

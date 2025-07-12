@@ -32,7 +32,7 @@
         @livewire('chantier.components.table.table-achats', ['chantier' => $chantier])
     </x-mary-card>
     <x-mary-card title="Ressources" shadow separator class="mb-5">
-        @livewire('chantier.components.table.table-achats', ['chantier' => $chantier])
+        @livewire('chantier.components.table.table-ressource', ['chantier' => $chantier])
     </x-mary-card>
     <x-filament-actions::modals />
 </div>
