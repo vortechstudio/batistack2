@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Core\Bank;
-use App\Services\Bridge;
+use App\Services\Powens;
 use Illuminate\Console\Command;
 
 final class InstallBankCommand extends Command
@@ -17,23 +17,23 @@ final class InstallBankCommand extends Command
     public function handle(): void
     {
         if (Bank::count() === 0) {
-            $bridge = new Bridge;
-            $banks = $bridge->get('/providers?limit=500&country_code=FR');
+            $powens = new Powens();
+            $banks = $powens->get('connectors', ["country_codes" => "fr"]);
             $bar = $this->output->createProgressBar(count($banks));
             $bar->start();
 
-            foreach ($banks['resources'] as $bank) {
+            foreach ($banks['connectors'] as $bank) {
                 Bank::updateOrCreate([
-                    'bridge_id' => $bank['id'],
+                    "powens_uuid" => $bank['uuid']
                 ], [
-                    'name' => $bank['name'],
-                    'group_name' => $bank['group_name'] ?? null,
-                    'logo' => $bank['images']['logo'],
-                    'status_aggregate' => $bank['health_status']['aggregation']['status'] ?? null,
-                    'status_payment' => $bank['health_status']['single_payment']['status'] ?? null,
+                    "powens_uuid" => $bank['uuid'],
+                    "name" => $bank['name'],
+                    "status" => $bank['stability']['status'],
                 ]);
+
                 $bar->advance();
             }
+
             $bar->finish();
         }
     }

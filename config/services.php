@@ -54,4 +54,10 @@ return [
         'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
     ],
 
+    'powens' => [
+        "api_endpoint" => env('POWENS_API_URL'),
+        "client_id" => env('POWENS_CLIENT_ID'),
+        "client_secret" => env('POWENS_CLIENT_SECRET'),
+    ],
+
 ];
