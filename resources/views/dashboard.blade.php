@@ -1,5 +1,5 @@
 <x-layouts.app :title="__('Dashboard')">
-    @if(\QCod\Settings\Setting\Setting::where('name', 'dashboard_message_active')->first()->val == 1)
+    @if(\QCod\Settings\Setting\Setting::where('name', 'dashboard_message_active')->exists() && \QCod\Settings\Setting\Setting::where('name', 'dashboard_message_active')->first()->val == 1)
         @if(!empty(\QCod\Settings\Setting\Setting::where('name', 'dashboard_message_date_start')->first()->val) && \QCod\Settings\Setting\Setting::where('name', 'dashboard_message_date_start')->first()->val >= now() && \QCod\Settings\Setting\Setting::where('name', 'dashboard_message_date_end')->first()->val <= now())
             <div role="alert" class="alert alert-vertical mb-5 sm:alert-horizontal">
                 <div>

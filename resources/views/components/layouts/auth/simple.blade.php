@@ -17,6 +17,9 @@
                 </div>
             </div>
         </div>
+        @filamentScripts
+        @livewire('notifications')
+        @vite('resources/js/app.js')
         @fluxScripts
     </body>
 </html>
