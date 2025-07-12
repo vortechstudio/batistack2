@@ -1,0 +1,58 @@
+name: Auto-Close Issues
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  close-linked-issues:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check PR Merge Status
+      id: check-merge
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const pr = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number
+          })
+          return pr.data.merged
+
+    - name: Get Linked Issues
+      if: steps.check-merge.outputs.result == 'true'
+      id: get-issues
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const body = context.payload.pull_request.body
+          const issueNumbers = body.match(/#\d+/g) || []
+          return issueNumbers.map(num => num.slice(1))
+
+    - name: Close Issues
+      if: steps.get-issues.outputs.result != '[]'
+      uses: actions/github-script@v7
+      env:
+        DRY_RUN: false
+      with:
+        script: |
+          const issues = JSON.parse('${{ steps.get-issues.outputs.result }}')
+          issues.forEach(async number => {
+            if (process.env.DRY_RUN === 'false') {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: number,
+                state: 'closed'
+              })
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: number,
+                body: `Fermeture automatique : Résolu par PR #${{ github.event.pull_request.number }}`
+              })
+            }
+          })
