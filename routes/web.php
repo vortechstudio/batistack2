@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Services\Powens;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -10,8 +11,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/test', function () {
-    $mdx = new App\Services\Mailbox;
-    dd($mdx->getMessageBody(1));
+    $powens = new Powens();
+    dd($powens->get('connectors/3da1697b-59b0-5bb4-8ec8-08125c3390ce', ["country_codes" => "fr"]));
 });
 
 Route::view('dashboard', 'dashboard')

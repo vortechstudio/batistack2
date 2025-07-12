@@ -21,6 +21,7 @@ use App\Models\Commerce\FactureLigne;
 use App\Models\Commerce\FacturePaiement;
 use App\Models\Core\Company;
 use App\Models\Core\ModeReglement;
+use App\Models\RH\Paie\ProfilPaie;
 use App\Models\Tiers\Tiers;
 use App\Models\Tiers\TiersAddress;
 use App\Models\Tiers\TiersBank;
@@ -28,6 +29,7 @@ use App\Models\Tiers\TiersClient;
 use App\Models\Tiers\TiersContact;
 use App\Models\Tiers\TiersFournisseur;
 use App\Models\User;
+use Database\Seeders\Paie\ProfilPaieSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -174,6 +176,10 @@ final class DatabaseSeeder extends Seeder
                     'avoir_id' => $avoir->id,
                 ]);
             }
+        }
+
+        if(ProfilPaie::count() === 0) {
+            $this->call(ProfilPaieSeeder::class);
         }
     }
 }
