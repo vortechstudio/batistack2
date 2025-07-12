@@ -12,6 +12,7 @@ use App\Models\Commerce\Commande;
 use App\Models\Commerce\Devis;
 use App\Models\Commerce\Facture;
 use App\Models\RH\Employe;
+use Creativeorange\Gravatar\Facades\Gravatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -111,5 +112,10 @@ final class User extends Authenticatable
             'role' => UserRole::class,
             'notif_phone' => 'boolean',
         ];
+    }
+
+    public function getAvatarAttribute()
+    {
+        return Gravatar::get($this->email);
     }
 }
