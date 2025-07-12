@@ -32,8 +32,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/app', App\Livewire\Settings\SettingsApp::class)->name('settings.app');
     Route::get('settings/pcg', App\Livewire\Settings\Plan::class)->name('settings.pcg');
     Route::get('settings/pcg/create', App\Livewire\Settings\CreatePlan::class)->name('settings.pcg.create');
-    Route::get('settings/bank', App\Livewire\Settings\Bank::class)->name('settings.bank');
-    Route::get('settings/bank/create', App\Livewire\Settings\CreateBank::class)->name('settings.bank.create');
 
     Route::prefix('account')->group(function () {
         Route::get('/')->name('account.dashboard');

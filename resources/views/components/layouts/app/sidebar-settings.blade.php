@@ -17,7 +17,6 @@
                     <flux:navlist.item icon="home-modern" :href="route('settings.company')" :current="request()->routeIs('settings.company')" wire:navigate>{{ __('Paramètre de la société') }}</flux:navlist.item>
                     <flux:navlist.item icon="cog" :href="route('settings.app')" :current="request()->routeIs('settings.app')" wire:navigate>{{ __("Paramètre de l'application") }}</flux:navlist.item>
                     <flux:navlist.item icon="queue-list" :href="route('settings.pcg')" :current="request()->routeIs('settings.pcg')" wire:navigate>{{ __('Plan Comptable') }}</flux:navlist.item>
-                    <flux:navlist.item icon="banknotes" :href="route('settings.bank')" :current="request()->routeIs('settings.bank')" wire:navigate>{{ __('Banques') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
