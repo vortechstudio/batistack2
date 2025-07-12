@@ -1,3 +1,20 @@
+# [1.4.0](https://github.com/vortechstudio/batistack2/compare/v1.3.0...v1.4.0) (2025-07-12)
+
+
+### Bug Fixes
+
+* **auth:** add missing scripts to auth layout ([748fa83](https://github.com/vortechstudio/batistack2/commit/748fa8327f169e55b42f58d376bd5fcfc62e7e5b))
+
+
+### Features
+
+* **android:** add Android project configuration and resources ([0f40870](https://github.com/vortechstudio/batistack2/commit/0f40870a22685dbb18c43d84594b688983ff87a9))
+* **chantier:** add rentability tab with charts and expense tracking ([b2a59af](https://github.com/vortechstudio/batistack2/commit/b2a59afc74d05e366ee2d2e91d30df14979b3d11))
+* **commerce:** add supplier invoice and expense models with migrations ([2af319b](https://github.com/vortechstudio/batistack2/commit/2af319b5d4739ff3956d2c3ca0ff57f77aabe6b7))
+* **powens:** add powens service integration and update banks table ([244df56](https://github.com/vortechstudio/batistack2/commit/244df56efd1fcca3e6cb6e4cdf4f9c294d261866))
+* **rh:** add payroll system with employee management models and migrations ([0b06c58](https://github.com/vortechstudio/batistack2/commit/0b06c580e4ccce20afc1ffbf7d23bf7c433c7c5f))
+* **settings:** add dashboard message configuration and notifications ([3b2a86c](https://github.com/vortechstudio/batistack2/commit/3b2a86c00931fe299b77eedae8bd730b9181e3dc))
+
 # [1.3.0](https://github.com/vortechstudio/batistack2/compare/v1.2.0...v1.3.0) (2025-07-06)
 
 
