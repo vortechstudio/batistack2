@@ -12,6 +12,6 @@ ${{ process.env.TEST_RESULTS }}
 - [ ] Analyser les changements récents
 
 **Assignation automatique** :
-@tech-lead @devops`,
+@tech-lead @devops,
 labels: ['bug', 'ci'],
 assignees: ['tech-lead', 'vortechstudio']
