@@ -11,6 +11,7 @@ use App\Models\Commerce\Avoir;
 use App\Models\Commerce\Commande;
 use App\Models\Commerce\Devis;
 use App\Models\Commerce\Facture;
+use App\Models\RH\Employe;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -90,6 +91,11 @@ final class User extends Authenticatable
     public function avoirs()
     {
         return $this->hasMany(Avoir::class);
+    }
+
+    public function employe()
+    {
+        return $this->hasOne(Employe::class);
     }
 
     /**

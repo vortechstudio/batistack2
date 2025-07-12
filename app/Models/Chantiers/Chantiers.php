@@ -43,6 +43,11 @@ final class Chantiers extends Model
         return $this->hasMany(ChantierIntervention::class);
     }
 
+    public function depenses()
+    {
+        return $this->hasMany(ChantierDepense::class);
+    }
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
@@ -78,6 +83,11 @@ final class Chantiers extends Model
         return $this->hasMany(Avoir::class);
     }
 
+    public function ressources()
+    {
+        return $this->hasMany(ChantierRessources::class);
+    }
+
     public function getAvancements(): array
     {
         $total_task = $this->tasks->count();
@@ -105,19 +115,19 @@ final class Chantiers extends Model
     public function calculerBudgetEstime(): float
     {
         // Budget estimé = somme des montants des devis et commandes
-        $totalDevis = $this->devis()->sum('montant_ttc');
-        $totalCommandes = $this->commandes()->sum('montant_ttc');
+        $totalDevis = $this->devis()->sum('amount_ht');
+        $totalCommandes = $this->commandes()->sum('amount_ht');
 
-        return max($totalDevis, $totalCommandes);
+        return (float) max($totalDevis, $totalCommandes);
     }
 
     public function calculerBudgetReel(): float
     {
         // Budget réel = somme des montants des factures + dépenses
-        $totalFactures = $this->factures()->sum('montant_ttc');
+        $totalFactures = $this->factures()->sum('amount_ht');
         $totalDepenses = $this->hasMany(ChantierDepense::class)->sum('montant');
 
-        return $totalFactures + $totalDepenses;
+        return (float) $totalFactures + $totalDepenses;
     }
 
     public function mettreAJourBudgets(): void
@@ -135,4 +145,10 @@ final class Chantiers extends Model
         }
         return round((($this->budget_reel - $this->budget_estime) / $this->budget_estime) * 100, 2);
     }
+
+    public function getMargeChantierAttribute(): float
+    {
+        return $this->calculerBudgetEstime() - $this->calculerBudgetReel();
+    }
+
 }

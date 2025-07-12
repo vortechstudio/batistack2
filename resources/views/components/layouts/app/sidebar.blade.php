@@ -77,7 +77,7 @@
         </flux:header>
 
         {{ $slot }}
-
+        @livewire('notifications')
         @fluxScripts
     </body>
 </html>
