@@ -184,20 +184,5 @@ final class DatabaseSeeder extends Seeder
         if(ProfilPaie::count() === 0) {
             $this->call(ProfilPaieSeeder::class);
         }
-
-        if (Employe::count() === 0) {
-            Employe::factory(rand(1, 10))->create();
-
-            foreach(Employe::all() as $employe) {
-                $employe->user->create([
-                    "name" => $employe->nom." ".$employe->prenom,
-                    "email" => $employe->email,
-                    "password" => Hash::make('password'),
-                    "role" => UserRole::SALARIE,
-                    "phone_number" => $employe->portable,
-                    "notif_phone" => false,
-                ]);
-            }
-        }
     }
 }
