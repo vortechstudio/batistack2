@@ -1,3 +1,19 @@
+# [1.5.0](https://github.com/vortechstudio/batistack2/compare/v1.4.0...v1.5.0) (2025-07-14)
+
+
+### Bug Fixes
+
+* **Chantiers:** add main_oeuvre attribute to calculate labor costs ([f585c96](https://github.com/vortechstudio/batistack2/commit/f585c968679103ead97eb88df772fa7a738eea81))
+* **Employe:** add contrat relationship ([efa5b88](https://github.com/vortechstudio/batistack2/commit/efa5b882abf97e84550f146b594178c426a03bfd))
+
+
+### Features
+
+* **gallery:** add photo gallery tab for construction sites ([71b3895](https://github.com/vortechstudio/batistack2/commit/71b3895d84bc3f9805f19cafd49087d52fb8e5c5))
+* **Rentability:** add form fields for new purchase action ([f24be5d](https://github.com/vortechstudio/batistack2/commit/f24be5ddd264f22b9878c7dbdc688f9dc526c5fb))
+* **TableRessource:** add avatar column and improve resource display ([5fedaf1](https://github.com/vortechstudio/batistack2/commit/5fedaf1e178df610c912edc8f83ef72b8fc171c2))
+* **user:** add gravatar support for user avatars ([0c091b2](https://github.com/vortechstudio/batistack2/commit/0c091b2f35fd2b26e554e48af5e7193d4d11c73b))
+
 # [1.4.0](https://github.com/vortechstudio/batistack2/compare/v1.3.0...v1.4.0) (2025-07-12)
 
 
