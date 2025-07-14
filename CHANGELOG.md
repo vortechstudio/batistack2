@@ -1,3 +1,19 @@
+# [1.6.0](https://github.com/vortechstudio/batistack2/compare/v1.5.0...v1.6.0) (2025-07-14)
+
+
+### Bug Fixes
+
+* **ChantierDepense:** add justify file attributes and table column ([3ad1e17](https://github.com/vortechstudio/batistack2/commit/3ad1e17f344f9b85cae193360a01bcbda729df86))
+* **Chantiers:** update budget calculations and observer logic ([6fa7fa0](https://github.com/vortechstudio/batistack2/commit/6fa7fa011cc5654bf2382f787820756252cddc09))
+* **Employe:** add full name attribute accessor ([5e0be88](https://github.com/vortechstudio/batistack2/commit/5e0be8888be7cd1d12aad66274729c0bc06f84e0))
+* **TableAchats:** add create action for new expenses ([0db3e35](https://github.com/vortechstudio/batistack2/commit/0db3e357cf14869861755bb241af0a8507c4d237))
+
+
+### Features
+
+* **chantier:** add staff table component for construction site view ([1165ccb](https://github.com/vortechstudio/batistack2/commit/1165ccb2fd6010b88a7d625f02e7d574161c723e))
+* **logging:** add github monolog integration for error tracking ([4419b89](https://github.com/vortechstudio/batistack2/commit/4419b897c4c535f0a350bd8322979e2d84ff36af))
+
 # [1.5.0](https://github.com/vortechstudio/batistack2/compare/v1.4.0...v1.5.0) (2025-07-14)
 
 
