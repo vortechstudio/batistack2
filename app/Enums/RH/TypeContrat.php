@@ -8,4 +8,15 @@ enum TypeContrat: string
     case CDD = 'cdd';
     case INTERIM = 'interim';
     case APPRENTI = 'apprenti';
+
+
+    public static function array()
+    {
+         return collect(self::cases())->map(function($type) {
+            return [
+                'value' => $type->value,
+                'label' => $type->name,
+            ];
+         });
+    }
 }

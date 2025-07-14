@@ -3,6 +3,7 @@
 namespace App\Livewire\Humans\Components\Tables;
 
 use App\Enums\RH\TypeContrat;
+use App\Helpers\RH\CreateEmploye;
 use App\Models\Core\City;
 use App\Models\Core\Country;
 use App\Models\RH\Employe;
@@ -10,6 +11,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -88,7 +90,7 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                                 ->required(),
 
                                             TextInput::make('portable')
-                                                ->label('Mobile'),    
+                                                ->label('Mobile'),
 
                                             TextInput::make('email')
                                                 ->label('Email')
@@ -104,9 +106,8 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                             DatePicker::make('date_naissance')
                                                 ->label('Date de naissance'),
 
-                                            Select::make('lieu_naissance')
-                                                ->label('Lieu de naissance')
-                                                ->options(City::all()->pluck('city', 'city')->toArray()),
+                                            TextInput::make('lieu_naissance')
+                                                ->label('Lieu de Naissance'),
 
                                             Select::make('pays_naisance')
                                                 ->label('Pays de naissance')
@@ -117,32 +118,55 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
 
                                             TextInput::make('num_secu')
                                                 ->label('Numéro de Sécurité Social'),
-                                                
-                                            TextInput::make('num_passport')    
+
+                                            TextInput::make('num_passport')
                                                 ->label('Numéro de passport'),
                                         ]),
 
-                                        Grid::make()
-                                            ->schema([
+                                    Grid::make()
+                                        ->schema([
                                                 TextInput::make('num_permis_btp')
                                                     ->label('Numéro de permis BTP'),
 
                                                 TextInput::make('exp_permis_btp')
                                                     ->label('Date d\'expiration du permis BTP'),
-                                            ])
+                                        ])
                                 ]),
 
                             Step::make('Information de contrat')
-                                ->icon('tni-contract')
+                                ->icon(Heroicon::Document)
                                 ->schema([
                                     Select::make('type')
                                         ->label('Type de Contrat')
-                                        ->options(TypeContrat::cases()),
+                                        ->options(TypeContrat::array()->pluck('label', 'value')->toArray())
+                                        ->required(),
+
+                                    TextInput::make('poste')
+                                        ->label('Poste'),
+
+                                    Grid::make()
+                                        ->schema([
+                                            DateTimePicker::make('date_debut')
+                                                ->label("Date d'embauche")
+                                                ->required(),
+
+                                            DateTimePicker::make('date_fin')
+                                                ->label('Date de fin de contrat'),
+
+                                            TextInput::make('salaire_horaire')
+                                                ->label('Salaire Horaire')
+                                                ->suffix('€')
+                                                ->hint('Salaire Horaire brut de l\'heure'),
+
+                                            TextInput::make('heure_travail')
+                                                ->label('Heure de travail')
+                                                ->suffix('h/Semaine'),
+                                        ])
                                 ])
                         ])
                     ])
-                    ->using(function (array $data) {
-
+                    ->using(function (array $data, CreateEmploye $employe) {
+                        $employe->create($data);
                     }),
             ])
             ->columns([
