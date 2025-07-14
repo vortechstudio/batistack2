@@ -213,7 +213,6 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
 
                 EditAction::make('edit')
                     ->mutateRecordDataUsing(function (array $data, Model $record) {
-                        $data['address'] = $record->adresse;
                         $data['date_naissance'] = $record->info->date_naissance;
                         $data['lieu_naissance'] = $record->info->lieu_naissance;
                         $data['pays_naissance'] = $record->info->pays_naissance;
@@ -257,7 +256,7 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                                 ->required(),
                                     ]),
 
-                                    Textarea::make('address')
+                                    Textarea::make('adresse')
                                         ->label('Adresse Postal')
                                         ->default(fn (Model $record) => $record->adresse)
                                         ->required(),
