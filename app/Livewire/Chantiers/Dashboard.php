@@ -38,6 +38,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Spatie\LaravelPdf\Enums\Format;
@@ -242,9 +243,9 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
     }
 
     #[Title('Tableau de Bord - Chantiers')]
+    #[Layout('components.layouts.chantiers')]
     public function render()
     {
-        return view('livewire.chantiers.dashboard')
-            ->layout('components.layouts.chantiers');
+        return view('livewire.chantiers.dashboard');
     }
 }

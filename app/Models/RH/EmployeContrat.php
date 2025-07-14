@@ -2,6 +2,8 @@
 
 namespace App\Models\RH;
 
+use App\Enums\RH\StatusContrat;
+use App\Enums\RH\TypeContrat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,6 +22,8 @@ class EmployeContrat extends Model
         return [
             'date_debut' => 'date',
             'date_fin' => 'date',
+            'type' => TypeContrat::class,
+            'status' => StatusContrat::class,
         ];
     }
 }
