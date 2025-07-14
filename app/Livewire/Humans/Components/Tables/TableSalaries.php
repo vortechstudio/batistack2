@@ -25,6 +25,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
 class TableSalaries extends Component implements HasActions, HasSchemas, HasTable
@@ -173,7 +175,12 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                 TextColumn::make('full_name')
                     ->label('Identifiant')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(function(?Model $record) {
+                        return new HtmlString(
+                            $record->full_name."<br>".$record->email
+                        );
+                    }),
 
                 TextColumn::make('telephone')
                     ->label('Coordonnées'),
