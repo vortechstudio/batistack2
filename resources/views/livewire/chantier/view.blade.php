@@ -6,13 +6,15 @@
             @livewire('chantier.components.tab.resum', ['chantier' => $chantier])
         </div>
 
-        <input type="radio" name="my_tabs_2" class="tab" aria-label="Rentabilité" checked="checked" />
+        <input type="radio" name="my_tabs_2" class="tab" aria-label="Rentabilité" />
         <div class="tab-content border-base-300 bg-base-100 p-10">
             @livewire('chantier.components.tab.rentability', ['chantier' => $chantier])
         </div>
 
-        <input type="radio" name="my_tabs_2" class="tab" aria-label="Galerie" />
-        <div class="tab-content border-base-300 bg-base-100 p-10">Tab content 3</div>
+        <input type="radio" name="my_tabs_2" class="tab" aria-label="Galerie" checked="checked" />
+        <div class="tab-content border-base-300 bg-base-100 p-10">
+            @livewire('chantier.components.tab.gallery', ['chantier' => $chantier])
+        </div>
 
         <input type="radio" name="my_tabs_2" class="tab" aria-label="Equipe" />
         <div class="tab-content border-base-300 bg-base-100 p-10">Tab content 3</div>

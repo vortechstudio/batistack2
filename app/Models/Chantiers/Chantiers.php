@@ -151,4 +151,9 @@ final class Chantiers extends Model
         return $this->calculerBudgetEstime() - $this->calculerBudgetReel();
     }
 
+    public function getMainOeuvreAttribute(): float
+    {
+        return $this->ressources()->sum('amount_fee');
+    }
+
 }

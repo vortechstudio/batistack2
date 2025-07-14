@@ -22,6 +22,11 @@ class Employe extends Model
         return $this->hasOne(EmployeInfo::class);
     }
 
+    public function contrat()
+    {
+        return $this->hasOne(EmployeContrat::class);
+    }
+
     public function ressources()
     {
         return $this->hasMany(ChantierRessources::class);
