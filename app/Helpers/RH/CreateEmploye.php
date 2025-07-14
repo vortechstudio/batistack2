@@ -65,7 +65,7 @@ class CreateEmploye
             "date_fin" => $data['date_fin'],
             "salaire_horaire" => $data['salaire_horaire'],
             "heure_travail" => $data['heure_travail'],
-            "status" => 'inactif',
+            "status" => 'draft',
         ]);
     }
 }
