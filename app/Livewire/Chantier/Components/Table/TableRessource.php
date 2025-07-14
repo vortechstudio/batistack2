@@ -4,11 +4,16 @@ namespace App\Livewire\Chantier\Components\Table;
 
 use App\Models\Chantiers\ChantierRessources;
 use App\Models\Chantiers\Chantiers;
+use App\Models\RH\Employe;
 use Creativeorange\Gravatar\Facades\Gravatar;
 use Exception;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
@@ -37,6 +42,30 @@ class TableRessource extends Component implements HasActions, HasSchemas, HasTab
     {
         return $table
             ->query(ChantierRessources::where('chantiers_id', $this->chantier->id))
+            ->headerActions([
+                CreateAction::make('create')
+                    ->schema([
+                        Select::make('employe_id')
+                            ->label('Ressources')
+                            ->options(Employe::all()->pluck('full_name', 'id'))
+                            ->required(),
+
+                        TextInput::make('role')
+                            ->label('Role')
+                            ->required(),
+
+                        DateTimePicker::make('date_affectation')
+                            ->label('Date affectation')
+                            ->required(),
+
+                        DateTimePicker::make('date_fin')
+                            ->label("Date fin")
+                            ->required(),
+                    ])
+                    ->using(function (array $data) {
+                        dd($data);
+                    }),
+            ])
             ->columns([
                 ImageColumn::make('employe.user.avatar')
                     ->label('')
