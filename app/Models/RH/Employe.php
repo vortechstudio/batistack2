@@ -39,4 +39,9 @@ class Employe extends Model
             'date_sortie' => 'date',
         ];
     }
+
+    public function getFullNameAttribute()
+    {
+        return $this->nom." ".$this->prenom;
+    }
 }
