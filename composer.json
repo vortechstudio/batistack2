@@ -12,6 +12,7 @@
         "blade-ui-kit/blade-heroicons": "^2.6",
         "bugsnag/bugsnag-laravel": "^2.29",
         "codeat3/blade-solar-icons": "^1.2",
+        "codeat3/blade-teeny-icons": "*",
         "creativeorange/gravatar": "~1.0",
         "filament/filament": "~4.0",
         "intervention/image": "^3.11",

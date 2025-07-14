@@ -16,7 +16,7 @@
                 <flux:navlist.group :heading="__('RH')" class="grid">
                     <flux:navlist.item icon="arrow-left" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Retour') }}</flux:navlist.item>
                     <flux:navlist.item icon="circle-gauge" :href="route('humans.dashboard')" :current="request()->routeIs('humans.dashboard')" wire:navigate>{{ __('Tableau de Bord') }}</flux:navlist.item>
-                    <flux:navlist.item icon="users" :href="route('chantiers.dashboard')" :current="request()->routeIs('chantiers.dashboard')" wire:navigate>{{ __('Salariés') }}</flux:navlist.item>
+                    <flux:navlist.item icon="users" :href="route('humans.salaries.index')" :current="request()->routeIs('humans.salaries.index')" wire:navigate>{{ __('Salariés') }}</flux:navlist.item>
                     <flux:navlist.item icon="calendar-date-range" :href="route('chantiers.dashboard')" :current="request()->routeIs('chantiers.dashboard')" wire:navigate>{{ __('Congés & Abscences') }}</flux:navlist.item>
                     <flux:navlist.item icon="wallet" :href="route('chantiers.dashboard')" :current="request()->routeIs('chantiers.dashboard')" wire:navigate>{{ __('Notes de frais') }}</flux:navlist.item>
                 </flux:navlist.group>
