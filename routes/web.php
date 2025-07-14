@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Livewire\Humans\Dashboard;
 use App\Services\Powens;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -59,6 +60,10 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('chantiers')->group(function () {
         Route::get('/', App\Livewire\Chantiers\Dashboard::class)->name('chantiers.dashboard');
         Route::get('{id}', App\Livewire\Chantier\View::class)->name('chantiers.view');
+    });
+
+    Route::prefix('humans')->group(function() {
+        Route::get('/', Dashboard::class)->name('humans.dashboard');
     });
 });
 
