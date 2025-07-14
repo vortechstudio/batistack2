@@ -20,12 +20,14 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -111,6 +113,11 @@ class TableAchats extends Component implements HasTable, HasForms, HasActions
                     ->date('d/m/Y')
                     ->label('Date de depense'),
 
+                IconColumn::make('has_justify')
+                    ->label('Justificatifs')
+                    ->boolean()
+                    ->tooltip(fn (?Model $record) => $record->justify),
+
                 TextColumn::make('type_depense')
                     ->sortable()
                     ->label('Type de depense'),
@@ -119,6 +126,8 @@ class TableAchats extends Component implements HasTable, HasForms, HasActions
                     ->label('Montant')
                     ->money('EUR')
                     ->summarize(Sum::make()->money('EUR')->label('Total de depense')),
+
+
             ])
             ->filters([
                 SelectFilter::make('type_depense')
