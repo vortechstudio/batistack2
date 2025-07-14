@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class EmployeInfo extends Model
 {
     use HasFactory;
+    protected $guarded = [];
 
     public function employe(): BelongsTo
     {

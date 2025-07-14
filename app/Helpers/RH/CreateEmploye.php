@@ -29,7 +29,7 @@ class CreateEmploye
             'civility' => $data['civility'],
             'nom' => $data['nom'],
             'prenom' => $data['prenom'],
-            'address' => $data['address'],
+            'adresse' => $data['address'],
             'code_postal' => $data['code_postal'],
             'ville' => $data['ville'],
             'telephone' => $data['telephone'],
@@ -44,7 +44,7 @@ class CreateEmploye
             'user_id' => $user->id,
         ]);
 
-        $salarie = Employe::orderBy('id', 'desc')->first();
+        $salarie = Employe::latest()->first();
 
         EmployeInfo::create([
             'employe_id' => $salarie->id,

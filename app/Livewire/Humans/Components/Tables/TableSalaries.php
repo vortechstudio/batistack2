@@ -50,7 +50,7 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                 ->schema([
                                     Grid::make(3)
                                         ->schema([
-                                            Select::make('civilite')
+                                            Select::make('civility')
                                                 ->label('Civilite')
                                                 ->options([
                                                     'Monsieur' => 'Monsieur',
@@ -109,7 +109,7 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                             TextInput::make('lieu_naissance')
                                                 ->label('Lieu de Naissance'),
 
-                                            Select::make('pays_naisance')
+                                            Select::make('pays_naissance')
                                                 ->label('Pays de naissance')
                                                 ->options(Country::all()->pluck('name', 'name')->toArray()),
 
