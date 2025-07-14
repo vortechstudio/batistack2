@@ -16,6 +16,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -99,8 +100,12 @@ final class Company extends Component implements HasSchemas
 
     public function create(): void
     {
-        $this->company->update($this->form->getState());
-        toastr()->success('Les informations de la société ont été mise à jours');
+        try {
+            $this->company->update($this->form->getState());
+            toastr()->success('Les informations de la société ont été mise à jours');
+        } catch(Exception $ex) {
+            Log::channel('github')->emergency($ex);
+        }
     }
 
     public function uploadLogo(): void
@@ -116,9 +121,8 @@ final class Company extends Component implements HasSchemas
                 name: 'logo_wide.png',
             );
 
-            toastr()->success('Le logo est enregistré');
         } catch (Exception $e) {
-            toastr()->error($e->getMessage());
+            Log::channel('github')->emergency($e);
         }
     }
 

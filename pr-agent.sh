@@ -2,8 +2,8 @@
 
 # Configuration
 PR_NUMBER="$1"                  # Numéro de la PR (en argument)
-OLLAMA_MODEL="ai/llama3.1"           # Modèle Ollama à utiliser
-OLLAMA_URL="http://localhost:12434/engines/llama.cpp/v1/chat/completions"
+OLLAMA_MODEL="llama3"           # Modèle Ollama à utiliser
+OLLAMA_URL="http://localhost:11434/api/generate"
 
 # Vérification des dépendances
 for cmd in git curl jq gh; do

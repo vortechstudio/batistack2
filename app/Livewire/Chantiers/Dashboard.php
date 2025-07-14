@@ -11,6 +11,7 @@ use App\Models\Commerce\Devis;
 use App\Models\Commerce\Facture;
 use App\Models\Tiers\Tiers;
 use App\Models\User;
+use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -35,6 +36,7 @@ use Filament\Tables\Filters\QueryBuilder;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -99,47 +101,55 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                             ->label('Le chantier est à une adresse différente de celle du client'),
                     ])
                     ->using(function (array $data) {
-                        $chantier = Chantiers::create([
-                            'libelle' => $data['libelle'],
-                            'description' => $data['description'],
-                            'date_debut' => $data['date_debut'],
-                            'date_fin_prevu' => $data['date_fin'],
-                            'responsable_id' => $data['responsable_id'],
-                            'tiers_id' => $data['tiers_id'],
-                            'budget_estime' => 0,
-                            'budget_reel' => 0,
-                        ]);
-
-                        foreach ($data['intervenants'] as $intervenant) {
-                            $chantier->users()->attach($intervenant);
-                        }
-
-                        if (! $data['other_address']) {
-                            $chantier->addresses()->create([
-                                'address' => $chantier->tiers()->first()->addresses()->first()->address,
-                                'code_postal' => $chantier->tiers()->first()->addresses()->first()->code_postal,
-                                'ville' => $chantier->tiers()->first()->addresses()->first()->ville,
-                                'pays' => $chantier->tiers()->first()->addresses()->first()->pays,
-                                'chantiers_id' => $chantier->id,
+                        try {
+                            $chantier = Chantiers::create([
+                                'libelle' => $data['libelle'],
+                                'description' => $data['description'],
+                                'date_debut' => $data['date_debut'],
+                                'date_fin_prevu' => $data['date_fin'],
+                                'responsable_id' => $data['responsable_id'],
+                                'tiers_id' => $data['tiers_id'],
+                                'budget_estime' => 0,
+                                'budget_reel' => 0,
                             ]);
-                        }
 
-                        return $chantier;
+                            foreach ($data['intervenants'] as $intervenant) {
+                                $chantier->users()->attach($intervenant);
+                            }
+
+                            if (! $data['other_address']) {
+                                $chantier->addresses()->create([
+                                    'address' => $chantier->tiers()->first()->addresses()->first()->address,
+                                    'code_postal' => $chantier->tiers()->first()->addresses()->first()->code_postal,
+                                    'ville' => $chantier->tiers()->first()->addresses()->first()->ville,
+                                    'pays' => $chantier->tiers()->first()->addresses()->first()->pays,
+                                    'chantiers_id' => $chantier->id,
+                                ]);
+                            }
+
+                            return $chantier;
+                        } catch(Exception $ex) {
+                            Log::channel('github')->emergency($ex);
+                        }
                     }),
 
                 Action::make('print')
                     ->label('Imprimer')
                     ->color('secondary')
                     ->action(function (Table $table) {
-                        $pdfBuilder = Pdf::view('pdf.chantier.listing_chantier', ['chantiers' => $table->getRecords()->all()])
-                            ->format(Format::A4)
-                            ->landscape()
-                            ->margins(1, 2, 2, 2, Unit::Centimeter)
-                            ->name('listing_chantier.pdf');
+                        try {
+                            $pdfBuilder = Pdf::view('pdf.chantier.listing_chantier', ['chantiers' => $table->getRecords()->all()])
+                                ->format(Format::A4)
+                                ->landscape()
+                                ->margins(1, 2, 2, 2, Unit::Centimeter)
+                                ->name('listing_chantier.pdf');
 
-                        return response()->streamDownload(function () use ($pdfBuilder) {
-                            echo base64_decode($pdfBuilder->download()->base64());
-                        }, 'listing_chantier.pdf');
+                            return response()->streamDownload(function () use ($pdfBuilder) {
+                                echo base64_decode($pdfBuilder->download()->base64());
+                            }, 'listing_chantier.pdf');
+                        } catch(Exception $ex) {
+                            Log::channel('github')->emergency($ex);
+                        }
                     }),
             ])
             ->query(Chantiers::query())
