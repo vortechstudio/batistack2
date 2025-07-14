@@ -99,6 +99,7 @@ class TableAchats extends Component implements HasTable, HasForms, HasActions
                                 'tiers_id' => $data['tiers_id'],
                                 'chantiers_id' => $this->chantier->id,
                             ]);
+                            $this->chantier->mettreAJourBudgets();
                         } catch (Exception $ex) {
                             Log::channel('github')->emergency($ex);
                         }
