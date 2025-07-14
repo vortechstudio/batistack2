@@ -1,8 +1,4 @@
 <div>
-    <div class="flex flex-row justify-end gap-5 mb-5">
-        {{ $this->newAchatAction }}
-        {{ $this->newTimesheetAction }}
-    </div>
     <div class="hero bg-base-200 min-h-3/12 mb-10">
         <div class="hero-content flex-col justify-start lg:flex-row lg:justify-start">
             <x-mary-chart wire:model="chartRentability" />
@@ -34,5 +30,5 @@
     <x-mary-card title="Ressources" shadow separator class="mb-5">
         @livewire('chantier.components.table.table-ressource', ['chantier' => $chantier])
     </x-mary-card>
-    <x-filament-actions::modals />
+<x-filament-actions::modals />
 </div>
