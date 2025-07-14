@@ -209,7 +209,8 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                 ViewAction::make('view')
                     ->tooltip('Fiche du salarié')
                     ->iconButton()
-                    ->color('info'),
+                    ->color('info')
+                    ->url(fn (Model $record) => route('humans.salaries.view', $record->id)),
 
                 EditAction::make('edit')
                     ->mutateRecordDataUsing(function (array $data, Model $record) {

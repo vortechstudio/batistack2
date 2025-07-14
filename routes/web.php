@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Livewire\Humans\Dashboard;
 use App\Livewire\Humans\Salarie\Index;
+use App\Livewire\Humans\Salarie\View;
 use App\Services\Powens;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -68,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('salaries')->group(function() {
             Route::get('/', Index::class)->name('humans.salaries.index');
+            Route::get('{id}', View::class)->name('humans.salaries.view');
         });
     });
 });
