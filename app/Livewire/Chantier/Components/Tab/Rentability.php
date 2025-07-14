@@ -2,12 +2,17 @@
 
 namespace App\Livewire\Chantier\Components\Tab;
 
+use App\Enums\Chantiers\TypeDepenseChantier;
 use App\Models\Chantiers\Chantiers;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Grid;
 use Livewire\Component;
 
 class Rentability extends Component implements HasForms, HasActions
@@ -15,6 +20,7 @@ class Rentability extends Component implements HasForms, HasActions
     use InteractsWithForms, InteractsWithActions;
     public Chantiers $chantier;
     public array $chartRentability = [];
+    public ?array $dataAchat = [];
 
     public function mount(): void
     {
@@ -41,10 +47,7 @@ class Rentability extends Component implements HasForms, HasActions
     {
         return Action::make('new_achat')
             ->label('Nouvelle Achat')
-            ->color('info')
-            ->schema([
-
-            ]);
+            ->color('info');
     }
 
     public function newTimesheetAction(): Action

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\RH;
 
 use App\Models\Chantiers\Chantiers;
 use App\Models\RH\Employe;

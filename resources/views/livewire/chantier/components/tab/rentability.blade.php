@@ -13,7 +13,7 @@
                 </div>
                 <div class="flex flex-row items-center gap-10">
                     <div class="flex flex-col">
-                        <span class="text-xl font-bold">{{ Number::currency(2500, 'EUR', 'fr') }}</span>
+                        <span class="text-xl font-bold">{{ Number::currency($this->chantier->main_oeuvre, 'EUR', 'fr') }}</span>
                         <span class="text-sm italic text-gray-500"><div aria-label="status" class="status status-md bg-cyan-400 me-2"></div> Main d'oeuvre</span>
                     </div>
                     <div class="flex flex-col">
