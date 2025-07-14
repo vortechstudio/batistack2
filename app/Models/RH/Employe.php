@@ -2,6 +2,8 @@
 
 namespace App\Models\RH;
 
+use App\Enums\RH\StatusEmploye;
+use App\Enums\RH\TypeContrat;
 use App\Models\Chantiers\ChantierRessources;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,6 +39,8 @@ class Employe extends Model
         return [
             'date_embauche' => 'date',
             'date_sortie' => 'date',
+            'type_contrat' => TypeContrat::class,
+            'status' => StatusEmploye::class,
         ];
     }
 

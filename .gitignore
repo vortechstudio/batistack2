@@ -24,3 +24,5 @@ yarn-error.log
 batistack.test.pem
 batistack.test-key.pem
 .release_temp/prompt.txt
+_ide_helper.php
+_ide_helper_models.php

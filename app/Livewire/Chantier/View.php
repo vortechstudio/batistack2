@@ -7,6 +7,7 @@ namespace App\Livewire\Chantier;
 use App\Models\Chantiers\Chantiers;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -22,9 +23,9 @@ final class View extends Component implements HasSchemas
     }
 
     #[Title('Chantier')]
+    #[Layout('components.layouts.chantiers')]
     public function render()
     {
-        return view('livewire.chantier.view')
-            ->layout('components.layouts.chantiers');
+        return view('livewire.chantier.view');
     }
 }
