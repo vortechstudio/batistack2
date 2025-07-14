@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Settings;
 
 use App\Models\Core\PlanComptable;
+use Exception;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -12,6 +13,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -43,9 +45,12 @@ final class CreatePlan extends Component implements HasSchemas
 
     public function createPlan(): void
     {
-        PlanComptable::create($this->form->getState());
-        toastr()->success('Le compte à été créer avec succès');
-        $this->redirect(route('settings.pcg'));
+        try {
+            PlanComptable::create($this->form->getState());
+            $this->redirect(route('settings.pcg'));
+        } catch (Exception $e) {
+            Log::channel('github')->emergency($e);
+        }
     }
 
     #[Title("Création d'un compte")]

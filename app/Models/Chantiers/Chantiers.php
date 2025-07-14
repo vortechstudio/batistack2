@@ -115,7 +115,7 @@ final class Chantiers extends Model
     public function calculerBudgetEstime(): float
     {
         // Budget estimé = somme des montants des devis et commandes
-        $totalDevis = $this->devis()->sum('amount_ht');
+        $totalDevis = $this->devis()->where('status', 'accepted')->sum('amount_ht');
         $totalCommandes = $this->commandes()->sum('amount_ht');
 
         return (float) max($totalDevis, $totalCommandes);
@@ -125,7 +125,7 @@ final class Chantiers extends Model
     {
         // Budget réel = somme des montants des factures + dépenses
         $totalFactures = $this->factures()->sum('amount_ht');
-        $totalDepenses = $this->hasMany(ChantierDepense::class)->sum('montant');
+        $totalDepenses = $this->depenses()->sum('montant');
 
         return (float) $totalFactures + $totalDepenses;
     }

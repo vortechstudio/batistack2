@@ -9,16 +9,17 @@ use App\Models\Chantiers\Chantiers;
 use App\Models\Commerce\Commande;
 use App\Models\Commerce\Devis;
 use App\Models\Commerce\Facture;
+use Illuminate\Support\Facades\Auth;
 
 final class ChantierObserver
 {
-    public function created(Chantiers $chantier): void
+    public function created(Chantiers|ChantierDepense $chantier): void
     {
         $chantier->logs()->create([
             'libelle' => 'Création',
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::user()->id,
         ]);
-        $model->chantiers->mettreAJourBudgets();
+        $chantier->chantiers->mettreAJourBudgets();
     }
 
     public function saved(Devis|Commande|Facture|ChantierDepense $model): void

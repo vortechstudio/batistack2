@@ -17,6 +17,7 @@ use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -94,6 +95,7 @@ final class SettingsApp extends Component implements HasForms
                 ->send();
         }catch (\Exception $exception){
             report($exception);
+            Log::channel('github')->emergency($exception);
             Notification::make()
                 ->danger()
                 ->title("Configuration de l'application")

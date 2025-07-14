@@ -5,6 +5,7 @@ namespace App\Livewire\Chantier\Components\Table;
 use App\Models\Chantiers\ChantierRessources;
 use App\Models\Chantiers\Chantiers;
 use Creativeorange\Gravatar\Facades\Gravatar;
+use Exception;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\DeleteAction;
@@ -21,6 +22,7 @@ use Filament\Tables\Table;
 use Flasher\Toastr\Laravel\Facade\Toastr;
 use Highlight\Mode;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class TableRessource extends Component implements HasActions, HasSchemas, HasTable
@@ -36,9 +38,6 @@ class TableRessource extends Component implements HasActions, HasSchemas, HasTab
         return $table
             ->query(ChantierRessources::where('chantiers_id', $this->chantier->id))
             ->columns([
-
-
-
                 ImageColumn::make('employe.user.avatar')
                     ->label('')
                     ->circular()
@@ -65,8 +64,11 @@ class TableRessource extends Component implements HasActions, HasSchemas, HasTab
                     ->color('danger')
                     ->requiresConfirmation()
                     ->action(function (ChantierRessources $ressource) {
-                        $ressource->delete();
-                        Toastr::addSuccess("Ressource Supprimer");
+                        try {
+                            $ressource->delete();
+                        } catch(Exception $ex) {
+                            Log::channel('github')->emergency($ex);
+                        }
                     }),
             ]);
     }
