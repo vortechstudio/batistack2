@@ -9,6 +9,7 @@
         "php": "^8.2",
         "ext-imap": "*",
         "barryvdh/laravel-dompdf": "^3.1",
+        "binarytorch/larecipe": "^2.8",
         "blade-ui-kit/blade-heroicons": "^2.6",
         "bugsnag/bugsnag-laravel": "^2.29",
         "codeat3/blade-solar-icons": "^1.2",
