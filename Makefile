@@ -67,9 +67,6 @@ reset:
 	php artisan install:condition-reglement
 	php artisan install:mode-reglement
 	php artisan db:seed
-	php artisan db:seed --class=Paie\CotisationPaieSeeder --force
-	php artisan db:seed --class=Paie\ParametrePaieSeeder --force
-	php artisan db:seed --class=Paie\RubriquePaieSeeder --force
 	php artisan db:seed --class=Paie\ProfilPaieSeeder --force
 	php artisan optimize:clear
 
