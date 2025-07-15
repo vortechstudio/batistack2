@@ -34,7 +34,30 @@ Le module RH permet de gérer l'ensemble du cycle de vie des collaborateurs :
 - Alternance
 
 ### Workflow de validation
-1. Brouillon → 2. En validation → 3. Actif
+1. **Création de la fiche employé**
+2. **Dépôt des documents obligatoires** :
+   - Contrat de travail
+   - Pièce d'identité
+   - RIB
+3. **Demande de DAE** (Validation par l'expert RH/API)
+4. **Établissement du contrat** :
+   - Rédaction
+   - Vérification juridique
+5. **Alerte employé** :
+   - Notification email
+   - Échéancier de signature (72h)
+6. **Activation du compte** :
+   - Génération identifiants
+   - Configuration accès
+7. **Envoi des informations** :
+   - Email de bienvenue
+   - Guide utilisateur
+8. **État Actif** :
+   - Contrat signé
+   - Documents validés
+   - Compte opérationnel
+
+*Les étapes 5 et 7 sont automatiques après validation*
 
 ## 📊 Tableau de bord
 Accédez aux indicateurs clés :
