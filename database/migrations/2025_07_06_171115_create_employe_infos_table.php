@@ -20,6 +20,11 @@ return new class extends Migration {
             $table->string('pays_naissance')->nullable();
             $table->string('num_permis_btp')->nullable();
             $table->string('exp_permis_btp')->nullable();
+            $table->string('process')->default('creating');
+            $table->boolean('cni_transmit')->default(false);
+            $table->boolean('btp_card_transmit')->default(false);
+            $table->boolean('vital_card_transmit')->default(false);
+            $table->boolean('rib_transmit')->default(false);
             $table->timestamps();
         });
     }

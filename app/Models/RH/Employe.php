@@ -2,6 +2,7 @@
 
 namespace App\Models\RH;
 
+use App\Enums\RH\ProcessEmploye;
 use App\Enums\RH\StatusEmploye;
 use App\Enums\RH\TypeContrat;
 use App\Models\Chantiers\ChantierRessources;
@@ -47,5 +48,10 @@ class Employe extends Model
     public function getFullNameAttribute()
     {
         return $this->nom." ".$this->prenom;
+    }
+
+    public function getFullAddressAttribute()
+    {
+        return $this->adresse.", ".$this->code_postal." ".$this->ville;
     }
 }

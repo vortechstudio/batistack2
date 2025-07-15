@@ -2,6 +2,7 @@
 
 namespace App\Models\RH;
 
+use App\Enums\RH\ProcessEmploye;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,7 @@ class EmployeInfo extends Model
     {
         return [
             'date_naissance' => 'date',
+            'process' => ProcessEmploye::class,
         ];
     }
 }
