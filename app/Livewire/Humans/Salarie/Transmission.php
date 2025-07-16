@@ -33,6 +33,7 @@ class Transmission extends Component implements HasSchemas
     public Employe $salarie;
     public ?array $transmitData = [];
     public ?array $validatingData = [];
+    public ?array $sendingData = [];
 
     public function mount(int $id)
     {
@@ -44,6 +45,7 @@ class Transmission extends Component implements HasSchemas
         return [
             'transmitForm',
             'validatingForm',
+            'sendingForm',
         ];
     }
 
@@ -107,6 +109,15 @@ class Transmission extends Component implements HasSchemas
             ->statePath('validatingData');
     }
 
+    public function sendingForm(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+
+            ])
+            ->statePath('sendingData');
+    }
+
     public function transmit()
     {
         $this->salarie->info->update([
@@ -131,9 +142,7 @@ class Transmission extends Component implements HasSchemas
         $dp = new GenerateDPAE();
         $dpae_name = 'dpae_'.$this->salarie->nom.'_'.$this->salarie->prenom.'_'.now()->format('Ymd_His').'.xml';
         $dp->generate($this->salarie, $dpae_name);
-        Mail::to(settings()->get('expert_comptable_paie_email'))
-            ->send(new TransmitDpae($this->salarie, Storage::disk('public')->url('rh/salarie/'.$this->salarie->id.'/documents/'.$dpae_name)));
-
+    
         $this->salarie->info->update([
             'process' => ProcessEmploye::SENDING_EXP
         ]);

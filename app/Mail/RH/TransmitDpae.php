@@ -23,7 +23,7 @@ class TransmitDpae extends Mailable
      */
     public function __construct(
         public Employe $salarie,
-        public string $dpaePath
+        public string $nameDpae
     )
     {
         //
@@ -58,7 +58,7 @@ class TransmitDpae extends Mailable
     public function attachments(): array
     {
         return [
-            Attachment::fromPath($this->dpaePath),
+            Attachment::fromPath(Storage::disk('public')->path('rh/salarie/'.$this->salarie->id.'/documents/'.$this->nameDpae)),
             Attachment::fromPath(Storage::disk('public')->path('rh/salarie/'.$this->salarie->id.'/documents/cni-recto.jpg')),
             Attachment::fromPath(Storage::disk('public')->path('rh/salarie/'.$this->salarie->id.'/documents/cni-verso.jpg')),
             Attachment::fromPath(Storage::disk('public')->path('rh/salarie/'.$this->salarie->id.'/documents/carte-vital.jpg')),

@@ -2,8 +2,10 @@
 
 namespace App\Helpers\RH;
 
+use App\Mail\RH\TransmitDpae;
 use App\Models\Core\Company;
 use App\Models\RH\Employe;
+use Mail;
 use Spatie\ArrayToXml\ArrayToXml;
 use Storage;
 
@@ -57,5 +59,7 @@ class GenerateDPAE
         ]);
 
         Storage::disk('public')->put('rh/salarie/'.$salarie->id.'/documents/'.$nameDpae, $xml);
+        Mail::to(settings()->get('expert_comptable_paie_email'))
+            ->send(new TransmitDpae($salarie, $nameDpae));
     }
 }

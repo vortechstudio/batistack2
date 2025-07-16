@@ -29,15 +29,14 @@
 
     @if($this->salarie->info->process->value === 'dpae')
         <div class="bg-gray-100 rounded p-5 mb-10">
-            <x-mary-alert title="DPAE Généré" class="alert-info" icon="o-exclamation-triangle" description="La DPAE à été générer et est pret à l'envoie à votre expert RH, cliquez sur le bouton pour démarrer l'envoie.">
-
-
-                <form wire:submit="sending">
+            <form wire:submit="sending">
+                <x-mary-alert title="DPAE Généré" class="alert-info" icon="o-exclamation-triangle" description="La DPAE à été générer et est pret à l'envoie à votre expert RH, cliquez sur le bouton pour démarrer l'envoie.">
+                    {{ $this->sendingForm }}
                     <x-slot:actions>
-                        <x-mary-button class="btn-primary" label="Transmettre" spinner="sending" />
+                        <x-mary-button type="submit" class="btn-primary" label="Transmettre" spinner="sending" />
                     </x-slot:actions>
-                </form>
-            </x-mary-alert>
+                </x-mary-alert>
+            </form>
         </div>
     @endif
 </div>
