@@ -86,31 +86,6 @@ class Transmission extends Component implements HasSchemas
             'rib_transmit' => true,
             'process' => ProcessEmploye::VALIDATING,
         ]);
-
-        Bus::chain([
-            new VerifyCNI($this->salarie, $this->form->getState()['cni_recto']),
-            new VerifyCarteVital($this->salarie, $this->form->getState()['vital_card']),
-        ])
-        ->dispatch();
-
-        if(!empty($this->form->getState()['btp_card'])) {
-            $this->salarie->info->update([
-                'btp_card_transmit' => true,
-            ]);
-
-            Bus::chain([
-                new VerifyBTPCard($this->salarie, $this->form->getState()['btp_card']),
-            ])
-            ->dispatch();
-        }
-
-
-        Notification::make()
-            ->title('Vérification OCR en cours.')
-            ->info()
-            ->send();
-
-        $this->redirect(route('humans.salaries.view', $this->salarie->id));
     }
 
     #[Title('Fiche d\'un Salarie')]

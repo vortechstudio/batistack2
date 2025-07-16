@@ -8,4 +8,7 @@
             </div>
         </form>
     </div>
+    @if($this->salarie->info->process === 'validating')
+        Lorem
+    @endif
 </div>
