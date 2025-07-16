@@ -18,6 +18,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -105,9 +106,9 @@ final class SettingsApp extends Component implements HasForms
     }
 
     #[Title("Paramètre de l'application")]
+    #[Layout('components.layouts.settings')]
     public function render()
     {
-        return view('livewire.settings.settings-app')
-            ->layout('components.layouts.settings');
+        return view('livewire.settings.settings-app');
     }
 }
