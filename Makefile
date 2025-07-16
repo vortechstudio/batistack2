@@ -78,7 +78,7 @@ pr:
 	sh pr-agent.sh
 
 deploy-testing:
-    ssh debian "cd /www/wwwroot/beta.batistack.io/ && git pull origin master && make install"
+    php artisan horizon:terminate
     @if [ -f composer.lock ]; then \
 		php artisan down; \
 		composer update; \
