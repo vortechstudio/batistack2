@@ -41,6 +41,7 @@
         "robsontenorio/mary": "^2.4",
         "salahhusa9/laravel-updater": "^1.3",
         "sentry/sentry-laravel": "^4.15",
+        "spatie/array-to-xml": "^3.4",
         "spatie/browsershot": "^5.0",
         "spatie/laravel-pdf": "^1.6",
         "spatie/simple-excel": "^3.7",

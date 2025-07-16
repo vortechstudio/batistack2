@@ -3,13 +3,17 @@
 namespace App\Livewire\Humans\Salarie;
 
 use App\Enums\RH\ProcessEmploye;
+use App\Helpers\RH\GenerateDPAE;
 use App\Jobs\RH\VerifyBTPCard;
 use App\Jobs\RH\VerifyCarteVital;
 use App\Jobs\RH\VerifyCNI;
+use App\Mail\RH\TransmitDpae;
 use App\Models\RH\Employe;
 use App\Services\TesseractService;
 use Bus;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
@@ -19,6 +23,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Mail;
 use Storage;
 
 class Transmission extends Component implements HasSchemas
@@ -26,15 +31,25 @@ class Transmission extends Component implements HasSchemas
     use InteractsWithSchemas;
 
     public Employe $salarie;
-    public ?array $data = [];
+    public ?array $transmitData = [];
+    public ?array $validatingData = [];
+    public ?array $sendingData = [];
 
     public function mount(int $id)
     {
         $this->salarie = Employe::find($id);
-        $this->form->fill();
     }
 
-    public function form(Schema $schema): Schema
+    protected function getForms(): array
+    {
+        return [
+            'transmitForm',
+            'validatingForm',
+            'sendingForm',
+        ];
+    }
+
+    public function transmitForm(Schema $schema): Schema
     {
         return $schema
             ->components([
@@ -75,7 +90,32 @@ class Transmission extends Component implements HasSchemas
                             ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'rib.'.$file->getClientOriginalExtension()),
                     ]),
             ])
-            ->statePath('data');
+            ->statePath('transmitData');
+    }
+
+    public function validatingForm(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Grid::make(2)
+                    ->schema([
+                        Toggle::make('cni_validate')
+                            ->label('Valider la carte Identité'),
+
+                        Toggle::make('carte_vital_validate')
+                            ->label('Valider la carte Vital'),
+                    ])
+            ])
+            ->statePath('validatingData');
+    }
+
+    public function sendingForm(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+
+            ])
+            ->statePath('sendingData');
     }
 
     public function transmit()
@@ -86,31 +126,26 @@ class Transmission extends Component implements HasSchemas
             'rib_transmit' => true,
             'process' => ProcessEmploye::VALIDATING,
         ]);
+    }
 
-        Bus::chain([
-            new VerifyCNI($this->salarie, $this->form->getState()['cni_recto']),
-            new VerifyCarteVital($this->salarie, $this->form->getState()['vital_card']),
-        ])
-        ->dispatch();
+    public function validating()
+    {
+        $this->salarie->info->update([
+            'cni_verified_at' => $this->validatingForm->getState()['cni_validate'] ? now() : null,
+            'vital_verified_at' => $this->validatingForm->getState()['carte_vital_validate'] ? now() : null,
+            'process' => ProcessEmploye::DPAE,
+        ]);
+    }
 
-        if(!empty($this->form->getState()['btp_card'])) {
-            $this->salarie->info->update([
-                'btp_card_transmit' => true,
-            ]);
-
-            Bus::chain([
-                new VerifyBTPCard($this->salarie, $this->form->getState()['btp_card']),
-            ])
-            ->dispatch();
-        }
-
-
-        Notification::make()
-            ->title('Vérification OCR en cours.')
-            ->info()
-            ->send();
-
-        $this->redirect(route('humans.salaries.view', $this->salarie->id));
+    public function sending()
+    {
+        $dp = new GenerateDPAE();
+        $dpae_name = 'dpae_'.$this->salarie->nom.'_'.$this->salarie->prenom.'_'.now()->format('Ymd_His').'.xml';
+        $dp->generate($this->salarie, $dpae_name);
+    
+        $this->salarie->info->update([
+            'process' => ProcessEmploye::SENDING_EXP
+        ]);
     }
 
     #[Title('Fiche d\'un Salarie')]

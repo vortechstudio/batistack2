@@ -32,20 +32,18 @@ class Index extends Component implements HasForms
                 Section::make('Expert Comptable (Paie)')
                     ->schema([
                         TextInput::make('expert_comptable_paie_email')
-                            ->label('Email')
-                            ->email(),
+                            ->label('Email'),
 
                         TextInput::make('expert_comptable_paie_phone')
-                            ->label('Téléphone')
-                            ->tel(),
+                            ->label('Téléphone'),
 
                         TextInput::make('expert_comptable_paie_name')
-                            ->label('Nom')
-                            ->required(),
+                            ->label('Nom'),
 
                     ])
                     ->collapsed(),
-            ]);
+            ])
+            ->statePath('data');
     }
 
     public function update()

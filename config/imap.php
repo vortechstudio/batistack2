@@ -153,8 +153,8 @@ return [
     */
     'options' => [
         'delimiter' => '/',
-        'fetch' => Webklex\PHPIMAP\IMAP::FT_PEEK,
-        'sequence' => Webklex\PHPIMAP\IMAP::ST_UID,
+        'fetch' => (int) env('IMAP_FETCH_MODE', 2), // Remplacer la constante de classe
+        'sequence' => (int) env('IMAP_SEQUENCE_TYPE', 1), // Par des valeurs environnementales
         'fetch_body' => true,
         'fetch_flags' => true,
         'soft_fail' => false,
