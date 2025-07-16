@@ -1,3 +1,35 @@
+# [1.7.0](https://github.com/vortechstudio/batistack2/compare/v1.6.0...v1.7.0) (2025-07-16)
+
+
+### Bug Fixes
+
+* **HorizonServiceProvider:** add test email to horizon access gate ([b798e17](https://github.com/vortechstudio/batistack2/commit/b798e17e57a19630d70f26b4f959cef1cb8b088e))
+* **HorizonServiceProvider:** add test email to horizon access gate ([82b8a1a](https://github.com/vortechstudio/batistack2/commit/82b8a1aefacfb0225c54f5b0ce0ac7e1a55642c7))
+* **salarie:** conditionally update btp card verification ([3073a7f](https://github.com/vortechstudio/batistack2/commit/3073a7f68e3d334e749a670c1b6fb4da6378f073))
+* **TableRessource:** add create action with form schema for resources ([c09476e](https://github.com/vortechstudio/batistack2/commit/c09476e976862bc79d2768eac1e065000152483c))
+* use correct field for filtering invoices by date ([6936832](https://github.com/vortechstudio/batistack2/commit/69368322fcc45b76f59d4f6ad2527526430df7be))
+
+
+### Features
+
+* add Laravel Horizon for queue monitoring ([5a214a4](https://github.com/vortechstudio/batistack2/commit/5a214a463730a63af755da52c10f42ead07e0cd4))
+* **contract:** change default status to draft and add status enum ([f04986e](https://github.com/vortechstudio/batistack2/commit/f04986ee83e79c05161649b8e992fbbc14b9856a))
+* **docs:** add LaRecipe documentation package with initial content ([81f2012](https://github.com/vortechstudio/batistack2/commit/81f2012e587ee2ab0f98118634ae020e33cd83e8))
+* **employe:** add mass assignment protection and update field names ([59a03e7](https://github.com/vortechstudio/batistack2/commit/59a03e712527b807837c574444abaaf703b6872b))
+* **hr:** add configuration form for payroll accountant ([5069da5](https://github.com/vortechstudio/batistack2/commit/5069da5ba8982d9dcc7dcc20bfe71ca920923646))
+* **humans/dashboard:** add title and layout components to HR dashboard ([ea3b78a](https://github.com/vortechstudio/batistack2/commit/ea3b78acb694c125f64b28b8cc8c9c72fad9b005))
+* **Humans/Tables:** display email below full name in salaries table ([19c1256](https://github.com/vortechstudio/batistack2/commit/19c1256ce5ed2a4366b1bb15906d9957c98035cf))
+* **humans:** add humans resources module with dashboard and layout ([05d40a2](https://github.com/vortechstudio/batistack2/commit/05d40a20e2817692e0442f29ef82bd661a6ad625))
+* **rh:** add configuration page to humans module ([80fbf1a](https://github.com/vortechstudio/batistack2/commit/80fbf1a001d614a39704607cefedd7809b5ce557))
+* **rh:** add document verification system for employees ([25a67b7](https://github.com/vortechstudio/batistack2/commit/25a67b772cbc67bdc919a38f00883c1eac4cce3d))
+* **rh:** add DPAE generation and transmission workflow ([2dd2a8a](https://github.com/vortechstudio/batistack2/commit/2dd2a8aefbcd346e6895666bd579a4ae423cebb7))
+* **rh:** add email sending for DPAE transmission ([2861f26](https://github.com/vortechstudio/batistack2/commit/2861f26b545f6af5a614fd7f8f500468d29bf3cd))
+* **rh:** add employee creation helper and contract type array method ([5a49571](https://github.com/vortechstudio/batistack2/commit/5a4957120ca2155cd0b224362c5b9aa33c1cd078))
+* **RH:** add employee onboarding process tracking ([0268aa9](https://github.com/vortechstudio/batistack2/commit/0268aa9faefb11935ea9d8003ba137c9740db2a0))
+* **rh:** implement employee management system ([f9571e3](https://github.com/vortechstudio/batistack2/commit/f9571e34f9531a1ffa4a4a45e2859fdd7e9d9c47))
+* **salaries:** add view page for individual salary records ([c120004](https://github.com/vortechstudio/batistack2/commit/c1200040c3828bb3ed5207d01365c630889539c5))
+* **TableSalaries:** enhance employee table with CRUD actions and styling ([c8fe41b](https://github.com/vortechstudio/batistack2/commit/c8fe41b0feb5e5a248d754a42ae82fffbc98c5e9))
+
 # [1.6.0](https://github.com/vortechstudio/batistack2/compare/v1.5.0...v1.6.0) (2025-07-14)
 
 
