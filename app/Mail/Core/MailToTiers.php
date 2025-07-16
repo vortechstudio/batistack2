@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mail\Core;
 
+use Auth;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
@@ -32,7 +33,7 @@ final class MailToTiers extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(auth()->user()->email, auth()->user()->name),
+            from: new Address(Auth::user()->email, Auth::user()->name),
             subject: $this->object,
         );
     }
