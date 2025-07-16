@@ -33,7 +33,7 @@ class CountAllSalaries extends StatsOverviewWidget
 
     private function calcMasseSalariale()
     {
-        $ca = Facture::whereDate('created_at', '>=', now()->subYear())->sum('amount_ht');
+        $ca = Facture::whereDate('date_facture', '>=', now()->subYear())->sum('amount_ht');
         $brut = FichePaie::whereDate('periode', '>=', now()->subYear())->sum('salaire_brut');
         $cotisation = FichePaie::whereDate('periode', '>=', now()->subYear())->sum('total_cotisation');
 
