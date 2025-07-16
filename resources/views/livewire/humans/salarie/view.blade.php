@@ -22,7 +22,7 @@
             icon="s-exclamation-triangle"
             class="alert-info">
             <x-slot:actions>
-                <x-mary-button label="Transmettre les documents" link="" />
+                <x-mary-button label="Transmettre les documents" link="{{ route('humans.salaries.transmission', $salarie->id) }}" />
             </x-slot:actions>
         </x-mary-alert>
     @endif

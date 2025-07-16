@@ -22,6 +22,9 @@ class EmployeInfo extends Model
         return [
             'date_naissance' => 'date',
             'process' => ProcessEmploye::class,
+            'cni_verified_at' => 'datetime',
+            'vital_verified_at' => 'datetime',
+            'btp_card_verified_at' => 'datetime',
         ];
     }
 }

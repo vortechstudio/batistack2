@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 use App\Livewire\Humans\Dashboard;
 use App\Livewire\Humans\Salarie\Index;
+use App\Livewire\Humans\Salarie\Transmission;
 use App\Livewire\Humans\Salarie\View;
-use App\Services\Powens;
+use App\Services\TesseractService;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -14,8 +15,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/test', function () {
-    $powens = new Powens();
-    dd($powens->get('connectors/3da1697b-59b0-5bb4-8ec8-08125c3390ce', ["country_codes" => "fr"]));
+
 });
 
 Route::view('dashboard', 'dashboard')
@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('salaries')->group(function() {
             Route::get('/', Index::class)->name('humans.salaries.index');
             Route::get('{id}', View::class)->name('humans.salaries.view');
+            Route::get('{id}/transmission', Transmission::class)->name('humans.salaries.transmission');
         });
     });
 });
