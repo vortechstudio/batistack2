@@ -2,7 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Services\Powens;
+use App\Livewire\Humans\Config\Index as ConfigIndex;
+use App\Livewire\Humans\Dashboard;
+use App\Livewire\Humans\Salarie\Index;
+use App\Livewire\Humans\Salarie\Transmission;
+use App\Livewire\Humans\Salarie\View;
+use App\Services\TesseractService;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -11,8 +16,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/test', function () {
-    $powens = new Powens();
-    dd($powens->get('connectors/3da1697b-59b0-5bb4-8ec8-08125c3390ce', ["country_codes" => "fr"]));
+
 });
 
 Route::view('dashboard', 'dashboard')
@@ -59,6 +63,20 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('chantiers')->group(function () {
         Route::get('/', App\Livewire\Chantiers\Dashboard::class)->name('chantiers.dashboard');
         Route::get('{id}', App\Livewire\Chantier\View::class)->name('chantiers.view');
+    });
+
+    Route::prefix('humans')->group(function() {
+        Route::get('/', Dashboard::class)->name('humans.dashboard');
+
+        Route::prefix('salaries')->group(function() {
+            Route::get('/', Index::class)->name('humans.salaries.index');
+            Route::get('{id}', View::class)->name('humans.salaries.view');
+            Route::get('{id}/transmission', Transmission::class)->name('humans.salaries.transmission');
+        });
+
+        Route::prefix('config')->group(function () {
+            Route::get('/', App\Livewire\Humans\Config\Index::class)->name('humans.config.index');
+        });
     });
 });
 

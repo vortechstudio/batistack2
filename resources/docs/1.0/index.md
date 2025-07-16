@@ -1,0 +1,3 @@
+- ## Batistack
+    - [Bienvenue](/{{route}}/{{version}}/overview)
+    - [Ressource Humaine](/{{route}}/{{version}}/hr)

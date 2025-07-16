@@ -11,10 +11,7 @@ install: vendor/autoload.php .env public/storage public/build/manifest.json
 	php artisan install:condition-reglement
 	php artisan install:mode-reglement
 	php artisan db:seed --force
-	php artisan db:seed --class=Paie\CotisationPaieSeeder --force
-	php artisan db:seed --class=Paie\ParametrePaieSeeder --force
-	php artisan db:seed --class=Paie\RubriquePaieSeeder --force
-	php artisan db:seed --class=Paie\ProfilPaieSeeder --force
+	php artisan db:seed --class=Database\Seeders\Paie\ProfilPaieSeeder --force
 	php artisan filament:optimize
 	php artisan filament:optimize-clear
 	php artisan optimize
@@ -61,16 +58,12 @@ public/build/manifest.json: package.json
 reset:
 	php artisan migrate:fresh
 	php artisan install:bank
-	php artisan install:cities
 	php artisan install:country
 	php artisan install:pcg
 	php artisan install:condition-reglement
 	php artisan install:mode-reglement
 	php artisan db:seed
-	php artisan db:seed --class=Paie\CotisationPaieSeeder --force
-	php artisan db:seed --class=Paie\ParametrePaieSeeder --force
-	php artisan db:seed --class=Paie\RubriquePaieSeeder --force
-	php artisan db:seed --class=Paie\ProfilPaieSeeder --force
+	php artisan db:seed --class=Database\Seeders\Paie\ProfilPaieSeeder --force
 	php artisan optimize:clear
 
 clear:
@@ -83,3 +76,34 @@ clear:
 
 pr:
 	sh pr-agent.sh
+
+deploy-testing:
+    php artisan horizon:terminate
+    @if [ -f composer.lock ]; then \
+		php artisan down; \
+		composer update; \
+	else \
+		composer install; \
+	fi
+	touch vendor/autoload.php
+    cp .env.master .env
+	php artisan key:generate
+	@echo "\nConfiguration des variables d'environnement..."
+	bash config.sh
+    php artisan storage:link
+    npm i
+	npm run build
+    php artisan cache:clear
+    php artisan migrate --force
+	php artisan install:cities
+	php artisan install:country
+	php artisan install:pcg
+	php artisan install:bank
+	php artisan install:condition-reglement
+	php artisan install:mode-reglement
+	php artisan db:seed --force
+	php artisan db:seed --class=Database\Seeders\Paie\ProfilPaieSeeder --force
+	php artisan filament:optimize
+	php artisan filament:optimize-clear
+	php artisan optimize
+	php artisan up
