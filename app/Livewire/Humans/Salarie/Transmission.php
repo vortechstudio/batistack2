@@ -82,7 +82,6 @@ class Transmission extends Component implements HasSchemas
     {
         $this->salarie->info->update([
             'cni_transmit' => true,
-            'btp_card_transmit' => !empty($this->form->getState()['btp_card']),
             'vital_card_transmit' => true,
             'rib_transmit' => true,
             'process' => ProcessEmploye::VALIDATING,
@@ -91,9 +90,19 @@ class Transmission extends Component implements HasSchemas
         Bus::chain([
             new VerifyCNI($this->salarie, $this->form->getState()['cni_recto']),
             new VerifyCarteVital($this->salarie, $this->form->getState()['vital_card']),
-            new VerifyBTPCard($this->salarie, $this->form->getState()['btp_card']),
         ])
         ->dispatch();
+
+        if(!empty($this->form->getState()['btp_card'])) {
+            $this->salarie->info->update([
+                'btp_card_transmit' => true,
+            ]);
+
+            Bus::chain([
+                new VerifyBTPCard($this->salarie, $this->form->getState()['btp_card']),
+            ])
+            ->dispatch();
+        }
 
 
         Notification::make()
