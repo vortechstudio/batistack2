@@ -60,4 +60,9 @@ return [
         "client_secret" => env('POWENS_CLIENT_SECRET'),
     ],
 
+    'tesseract' => [
+        'bin_path' => env('TESSERACT_BIN_PATH', 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'),
+        'lang' => env('TESSERACT_LANG', 'fra'),
+    ]
+
 ];

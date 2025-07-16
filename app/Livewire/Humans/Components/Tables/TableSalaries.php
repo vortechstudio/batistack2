@@ -33,6 +33,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
+use Storage;
 
 class TableSalaries extends Component implements HasActions, HasSchemas, HasTable
 {
@@ -364,6 +365,7 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                     ->requiresConfirmation()
                     ->iconButton()
                     ->action(function (Model $record) {
+                        Storage::disk('public')->deleteDirectory('rh/salarie/'.$record->id);
                         $record->delete();
                     }),
 
