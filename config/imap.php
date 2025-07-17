@@ -156,6 +156,7 @@ return [
         'fetch' => (int) env('IMAP_FETCH_MODE', 2), // Remplacer la constante de classe
         'sequence' => (int) env('IMAP_SEQUENCE_TYPE', 1), // Par des valeurs environnementales
         'fetch_body' => true,
+
         'fetch_flags' => true,
         'soft_fail' => false,
         'rfc822' => true,
