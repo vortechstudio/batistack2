@@ -26,4 +26,15 @@
             </x-slot:actions>
         </x-mary-alert>
     @endif
+    @if($salarie->info->process->value === 'sending_exp')
+        <x-mary-alert
+            title="DPAE en cours de transmission"
+            description="Lorsque votre expert vous transmettra les documents (DPAE, Contrat de travail), Veuillez les transmettres par le service 'transmission'"
+            icon="s-exclamation-triangle"
+            class="alert-info">
+            <x-slot:actions>
+                <x-mary-button label="Transmettre les documents" link="{{ route('humans.salaries.transmission', $salarie->id) }}" />
+            </x-slot:actions>
+        </x-mary-alert>
+    @endif
 </div>

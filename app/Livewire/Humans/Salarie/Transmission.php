@@ -34,6 +34,7 @@ class Transmission extends Component implements HasSchemas
     public ?array $transmitData = [];
     public ?array $validatingData = [];
     public ?array $sendingData = [];
+    public ?array $sendingContractData = [];
 
     public function mount(int $id)
     {
@@ -46,6 +47,7 @@ class Transmission extends Component implements HasSchemas
             'transmitForm',
             'validatingForm',
             'sendingForm',
+            'sendingContractForm'
         ];
     }
 
@@ -118,6 +120,20 @@ class Transmission extends Component implements HasSchemas
             ->statePath('sendingData');
     }
 
+    public function sendingContractForm(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                FileUpload::make('contract')
+                    ->label('Contrat de travail')
+                    ->required()
+                    ->disk('public')
+                    ->directory('rh/salarie/'.$this->salarie->id.'/documents')
+                    ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'contract.'.$file->getClientOriginalExtension()),
+            ])
+            ->statePath('sendingContractData');
+    }
+
     public function transmit()
     {
         $this->salarie->info->update([
@@ -142,9 +158,20 @@ class Transmission extends Component implements HasSchemas
         $dp = new GenerateDPAE();
         $dpae_name = 'dpae_'.$this->salarie->nom.'_'.$this->salarie->prenom.'_'.now()->format('Ymd_His').'.xml';
         $dp->generate($this->salarie, $dpae_name);
-    
+
         $this->salarie->info->update([
             'process' => ProcessEmploye::SENDING_EXP
+        ]);
+    }
+
+    public function sendingContract()
+    {
+        $this->salarie->contrat->update([
+            'status' => 'draft'
+        ]);
+
+        $this->salarie->info->update([
+            'process' => ProcessEmploye::CONTRACT_DRAFT,
         ]);
     }
 
