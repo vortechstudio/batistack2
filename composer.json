@@ -49,6 +49,7 @@
         "twilio/sdk": "^8.6",
         "unisharp/laravel-filemanager": "^2.10",
         "vortechstudio/html2media": "^4.0",
+        "vortechstudio/signature-pad": "^1.0",
         "webklex/laravel-imap": "*"
     },
     "require-dev": {
