@@ -38,11 +38,17 @@
         </x-mary-alert>
     @endif
     @if($salarie->info->process->value === 'contract_draft')
-        <x-card title="Contrat de Travail" subtitle="Veuillez vérifier le contrat de travail pour le salarié et signé numériquement celui-ci" shadow separator>
+        <x-mary-card title="Contrat de Travail" subtitle="Veuillez vérifier le contrat de travail pour le salarié et signé numériquement celui-ci" shadow separator>
             <div class="h-[250px] mb-5">
                 <iframe src="https://docs.google.com/gview?url={{ Storage::disk('public')->url('rh/salarie/'.$salarie->id.'/documents/contract.pdf') }}&embedded=true" class="w-full h-full" frameborder="0"></iframe>
             </div>
-            {{ $this->contractValidatedForm }}
-        </x-card>
+            <form wire:submit="validateContract">
+                {{ $this->contractValidatedForm }}
+
+                <div class="flex justify-end">
+                    <x-mary-button type="submit" class="btn-primary" label="Valider le contrat" spinner="validateContract" />
+                </div>
+            </form>
+        </x-mary-card>
     @endif
 </div>

@@ -4,17 +4,9 @@ namespace App\Livewire\Humans\Salarie;
 
 use App\Enums\RH\ProcessEmploye;
 use App\Helpers\RH\GenerateDPAE;
-use App\Jobs\RH\VerifyBTPCard;
-use App\Jobs\RH\VerifyCarteVital;
-use App\Jobs\RH\VerifyCNI;
-use App\Mail\RH\TransmitDpae;
 use App\Models\RH\Employe;
-use App\Services\TesseractService;
-use Bus;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -23,8 +15,6 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Mail;
-use Storage;
 
 class Transmission extends Component implements HasSchemas
 {
@@ -129,7 +119,7 @@ class Transmission extends Component implements HasSchemas
                     ->required()
                     ->disk('public')
                     ->directory('rh/salarie/'.$this->salarie->id.'/documents')
-                    ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'contract.'.$file->getClientOriginalExtension()),
+                    ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'contrat_travail.'.$file->getClientOriginalExtension()),
             ])
             ->statePath('sendingContractData');
     }
