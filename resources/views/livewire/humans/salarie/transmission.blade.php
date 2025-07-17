@@ -39,4 +39,15 @@
             </form>
         </div>
     @endif
+
+    @if($this->salarie->info->process->value === 'sending_exp')
+        <div class="bg-gray-100 rounded p-5 mb-10">
+            <form wire:submit="sendingContract">
+                {{ $this->sendingContractForm }}
+                <div class="flex justify-end">
+                    <x-mary-button type="submit" class="btn-primary" label="Transmettre" spinner="sendingContract" />
+                </div>
+            </form>
+        </div>
+    @endif
 </div>

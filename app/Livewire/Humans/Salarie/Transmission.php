@@ -4,17 +4,9 @@ namespace App\Livewire\Humans\Salarie;
 
 use App\Enums\RH\ProcessEmploye;
 use App\Helpers\RH\GenerateDPAE;
-use App\Jobs\RH\VerifyBTPCard;
-use App\Jobs\RH\VerifyCarteVital;
-use App\Jobs\RH\VerifyCNI;
-use App\Mail\RH\TransmitDpae;
 use App\Models\RH\Employe;
-use App\Services\TesseractService;
-use Bus;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -23,8 +15,6 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Mail;
-use Storage;
 
 class Transmission extends Component implements HasSchemas
 {
@@ -34,6 +24,7 @@ class Transmission extends Component implements HasSchemas
     public ?array $transmitData = [];
     public ?array $validatingData = [];
     public ?array $sendingData = [];
+    public ?array $sendingContractData = [];
 
     public function mount(int $id)
     {
@@ -46,6 +37,7 @@ class Transmission extends Component implements HasSchemas
             'transmitForm',
             'validatingForm',
             'sendingForm',
+            'sendingContractForm'
         ];
     }
 
@@ -118,6 +110,20 @@ class Transmission extends Component implements HasSchemas
             ->statePath('sendingData');
     }
 
+    public function sendingContractForm(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                FileUpload::make('contract')
+                    ->label('Contrat de travail')
+                    ->required()
+                    ->disk('public')
+                    ->directory('rh/salarie/'.$this->salarie->id.'/documents')
+                    ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'contrat_travail.'.$file->getClientOriginalExtension()),
+            ])
+            ->statePath('sendingContractData');
+    }
+
     public function transmit()
     {
         $this->salarie->info->update([
@@ -142,9 +148,20 @@ class Transmission extends Component implements HasSchemas
         $dp = new GenerateDPAE();
         $dpae_name = 'dpae_'.$this->salarie->nom.'_'.$this->salarie->prenom.'_'.now()->format('Ymd_His').'.xml';
         $dp->generate($this->salarie, $dpae_name);
-    
+
         $this->salarie->info->update([
             'process' => ProcessEmploye::SENDING_EXP
+        ]);
+    }
+
+    public function sendingContract()
+    {
+        $this->salarie->contrat->update([
+            'status' => 'draft'
+        ]);
+
+        $this->salarie->info->update([
+            'process' => ProcessEmploye::CONTRACT_DRAFT,
         ]);
     }
 
