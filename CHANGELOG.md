@@ -1,3 +1,12 @@
+# [1.8.0](https://github.com/vortechstudio/batistack2/compare/v1.7.0...v1.8.0) (2025-07-17)
+
+
+### Features
+
+* **rh:** add contract transmission workflow for sending_exp state ([d51fa9f](https://github.com/vortechstudio/batistack2/commit/d51fa9f03bdf322f4eabbdc1bf085ac570081865))
+* **rh:** add signature pad for contract validation ([da49b5c](https://github.com/vortechstudio/batistack2/commit/da49b5c3734845953a7281055a2f4e00b0ee2a23))
+* **yousign:** add Yousign service integration ([d6e283b](https://github.com/vortechstudio/batistack2/commit/d6e283b87292985440c48b8a2fd56d83bc247b2a))
+
 # [1.7.0](https://github.com/vortechstudio/batistack2/compare/v1.6.0...v1.7.0) (2025-07-16)
 
 
