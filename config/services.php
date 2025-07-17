@@ -63,6 +63,11 @@ return [
     'tesseract' => [
         'bin_path' => env('TESSERACT_BIN_PATH', 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'),
         'lang' => env('TESSERACT_LANG', 'fra'),
-    ]
+    ],
+
+    'yousign' => [
+        'api_key' => env('YOUSIGN_API_KEY'),
+        'api_url' => env('YOUSIGN_API_URL'),
+    ],
 
 ];
