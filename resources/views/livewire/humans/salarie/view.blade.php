@@ -1,20 +1,4 @@
 <div>
-    <div class="flex flex-col bg-gray-100 rounded p-5 mb-10">
-        <div class="flex flex-row justify-between items-center">
-            <x-mary-avatar :image="$salarie->avatar" class="!w-22">
-                <x-slot:title class="text-3xl !font-bold pl-2">
-                    {{ $salarie->civility }} {{ $salarie->nom }} {{ $salarie->prenom }}
-                </x-slot:title>
-                <x-slot:subtitle class="flex items-center mt-2 pl-2 text-sm">
-                    @svg('heroicon-o-map-pin', ['class' => 'w-5 h-5 text-gray-300']) {{ $salarie->full_address }}
-                </x-slot:subtitle>
-            </x-mary-avatar>
-            <div class="flex flex-col gap-2">
-                <x-ui.badge :color="$salarie->status->color()" size="md" :text="$salarie->status->label()" />
-                <x-ui.badge :color="$salarie->info->process->color()" size="md" :text="$salarie->info->process->label()" />
-            </div>
-        </div>
-    </div>
     @if($salarie->info->process->value === 'creating')
         <x-mary-alert
             title="Salarié en cours de création"
@@ -51,4 +35,81 @@
             </form>
         </x-mary-card>
     @endif
+    <div class="flex flex-col bg-gray-100 rounded p-5 mb-10" x-data="{tabs: 'user'}">
+        <div class="flex flex-row justify-between items-center">
+            <x-mary-avatar :image="$salarie->avatar" class="!w-22">
+                <x-slot:title class="text-3xl !font-bold pl-2">
+                    {{ $salarie->civility }} {{ $salarie->nom }} {{ $salarie->prenom }}
+                </x-slot:title>
+                <x-slot:subtitle class="flex items-center mt-2 pl-2 text-sm">
+                    @svg('heroicon-o-map-pin', ['class' => 'w-5 h-5 text-gray-300']) {{ $salarie->full_address }}
+                </x-slot:subtitle>
+            </x-mary-avatar>
+            <div class="flex flex-col gap-2">
+                <x-ui.badge :color="$salarie->status->color()" size="md" :text="$salarie->status->label()" />
+                <x-ui.badge :color="$salarie->info->process->color()" size="md" :text="$salarie->info->process->label()" />
+                @if($salarie->info->process->value === 'contract_sign')
+                    <strong>Début du contrat: </strong> {{ $salarie->contrat->date_debut->diffForHumans() }}
+                @endif
+            </div>
+        </div>
+        <div class="flex flex-row justify-between items-center mb-10">
+            <div role="tablist" class="tabs tabs-border">
+                <a role="tab" :class="tabs === 'user' ? 'tab tab-active' : 'tab'" x-on:click="tabs = 'user'">Utilisateur</a>
+                <a role="tab" :class="tabs === 'contract' ? 'tab tab-active' : 'tab'" x-on:click="tabs = 'contract'">Contrats</a>
+                <a role="tab" :class="tabs === 'rh' ? 'tab tab-active' : 'tab'" x-on:click="tabs = 'rh'">RH & Banques</a>
+                <a role="tab" :class="tabs === 'planning' ? 'tab tab-active' : 'tab'" x-on:click="tabs = 'planning'">Plannings</a>
+            </div>
+            <!--Action-->
+        </div>
+        <div class="bg-white rounded m-5 p-5">
+            <div x-show="tabs === 'user'">
+                <div class="flex flex-row gap-5 justify-between items-center">
+                    <div class="flex flex-col w-1/2 gap-5">
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Matricule: </strong> {{ $salarie->nom }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Poste/Fonction: </strong> {{ $salarie->poste }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Heure de travail (Semaine): </strong> {{ $salarie->contrat->heure_travail }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Salaire: </strong> {{ Number::currency($salarie->salaire_base, 'EUR') }}
+                        </div>
+                    </div>
+                    <div class="flex flex-col w-1/2 gap-5">
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Nom: </strong> {{ $salarie->nom }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Nom: </strong> {{ $salarie->nom }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div x-show="tabs === 'contract'">
+                <div class="flex flex-row justify-between items-center">
+                    <div class="flex flex-col">
+                        <strong>Nom: </strong> {{ $salarie->nom }}
+                    </div>
+                </div>
+            </div>
+            <div x-show="tabs === 'rh'">
+                <div class="flex flex-row justify-between items-center">
+                    <div class="flex flex-col">
+                        <strong>Nom: </strong> {{ $salarie->nom }}
+                    </div>
+                </div>
+            </div>
+            <div x-show="tabs === 'planning'">
+                <div class="flex flex-row justify-between items-center">
+                    <div class="flex flex-col">
+                        <strong>Nom: </strong> {{ $salarie->nom }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
