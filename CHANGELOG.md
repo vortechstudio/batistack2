@@ -1,3 +1,17 @@
+# [1.9.0](https://github.com/vortechstudio/batistack2/compare/v1.8.0...v1.9.0) (2025-07-19)
+
+
+### Features
+
+* **portail-salarie:** add countdown timer for contract start date ([3709c2a](https://github.com/vortechstudio/batistack2/commit/3709c2a014cb861a31599b19b7e411c8ca81a5e8))
+* **portail-salarie:** add documents management and contract signing flow ([cf6793b](https://github.com/vortechstudio/batistack2/commit/cf6793b46276634e5e35133bdf80016ce8210240))
+* **portail-salarie:** add salarie dashboard and layout components ([84c9fd1](https://github.com/vortechstudio/batistack2/commit/84c9fd13b2087c049d2541bf34f4d0945e033c9d))
+* **portail-salarie:** implement contract signing workflow with OTP verification ([3b33779](https://github.com/vortechstudio/batistack2/commit/3b33779059fda3e39c313085ae6fea7651921146))
+* **rh-salarie:** add contract details view and related functionality ([65ecb97](https://github.com/vortechstudio/batistack2/commit/65ecb97b420184e96d1ab8905a57bf993352816c))
+* **rh-salarie:** add uuid field and matricule attribute ([906b207](https://github.com/vortechstudio/batistack2/commit/906b20785435ef357a5927248db4af2b9c357f58))
+* **rh-salarie:** implement contract validation and signing flow ([c9f3d8a](https://github.com/vortechstudio/batistack2/commit/c9f3d8a46efdec7b50313cdcf34074f0bf1237be))
+* **salarie:** add uuid field and tabbed view layout ([03468ce](https://github.com/vortechstudio/batistack2/commit/03468ce6c27ea92ed1b33f100d25bea609a10afd))
+
 # [1.8.0](https://github.com/vortechstudio/batistack2/compare/v1.7.0...v1.8.0) (2025-07-17)
 
 
