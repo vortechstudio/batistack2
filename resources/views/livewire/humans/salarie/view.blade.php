@@ -39,7 +39,7 @@
     @endif
     @if($salarie->info->process->value === 'contract_draft')
         <x-mary-card title="Contrat de Travail" subtitle="Veuillez vérifier le contrat de travail pour le salarié et signé numériquement celui-ci" shadow separator>
-            <div class="h-[250px] mb-5">
+            <div class="h-[450px] mb-5">
                 <iframe src="https://docs.google.com/gview?url={{ Storage::disk('public')->url('rh/salarie/'.$salarie->id.'/documents/contract.pdf') }}&embedded=true" class="w-full h-full" frameborder="0"></iframe>
             </div>
             <form wire:submit="validateContract">
