@@ -119,6 +119,7 @@ class Transmission extends Component implements HasSchemas
                     ->label('Contrat de travail')
                     ->required()
                     ->disk('public')
+                    ->visibility('public')
                     ->directory('rh/salarie/'.$this->salarie->id.'/documents')
                     ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'contrat_travail.'.$file->getClientOriginalExtension()),
             ])

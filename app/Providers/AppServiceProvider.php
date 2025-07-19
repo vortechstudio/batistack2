@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\Core\Company;
 use Illuminate\Support\ServiceProvider;
 use Opcodes\LogViewer\Facades\LogViewer;
+use View;
 
 final class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,11 @@ final class AppServiceProvider extends ServiceProvider
                 && in_array($request->user()->email, [
                     'test@example.com',
                 ]);
+        });
+
+        View::composer('*', function($view) {
+            $company = Company::first();
+            $view->with('company', $company);
         });
     }
 }
