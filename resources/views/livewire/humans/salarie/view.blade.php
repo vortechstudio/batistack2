@@ -101,15 +101,35 @@
                             </div>
                         </div>
                         <div class="flex flex-row justify-between items-center border-separate">
-                            <strong>Nom: </strong> {{ $salarie->nom }}
+                            <strong>Dernière connexion: </strong> {{ $salarie->user->updated_at->format("d/m/Y à H:i") }}
                         </div>
                     </div>
                 </div>
             </div>
             <div x-show="tabs === 'contract'">
-                <div class="flex flex-row justify-between items-center">
-                    <div class="flex flex-col">
-                        <strong>Nom: </strong> {{ $salarie->nom }}
+                <div class="flex flex-row gap-5 justify-between">
+                    <div class="flex flex-col w-1/2 gap-5">
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Type de Contrat: </strong> {{ $salarie->contrat->type->label() }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Date d'embauche: </strong> {{ $salarie->contrat->date_debut->format("d/m/Y") }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Date de fin: </strong> {{ $salarie->contrat->date_fin ? $salarie->contrat->date_fin->format("d/m/Y") : 'Aucune fin définie (CDI)' }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Nombre de jours de travail effectif: </strong> <x-mary-badge value="{{ $salarie->contrat->nombre_jours_travail ?? 0 }}" class="badge-primary" />
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Etat: </strong> <x-ui.badge :text="$salarie->contrat->status->label()" :color="$salarie->contrat->status->color()" />
+                        </div>
+                    </div>
+                    <div class="flex flex-col w-1/2 gap-5">
+                        <iframe src="https://docs.google.com/gview?url={{ Storage::disk('public')->url('rh/salarie/'.$salarie->id.'/documents/contract.pdf') }}&embedded=true" class="w-full h-full mb-5" frameborder="0"></iframe>
+                        <div class="flex flex-row justify-end">
+                            <x-mary-button label="Télécharger" type="button" class="btn-primary" :link="Storage::disk('public')->url('rh/salarie/'.$salarie->id.'/documents/contract.pdf')" />
+                        </div>
                     </div>
                 </div>
             </div>

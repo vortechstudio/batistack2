@@ -36,6 +36,11 @@ class Employe extends Model
         return $this->hasMany(ChantierRessources::class);
     }
 
+    public function pointages()
+    {
+        return $this->hasMany(EmployePointage::class);
+    }
+
     protected function casts(): array
     {
         return [

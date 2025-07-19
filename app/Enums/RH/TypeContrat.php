@@ -19,4 +19,9 @@ enum TypeContrat: string
             ];
          });
     }
+
+    public function label()
+    {
+        return self::array()->firstWhere('value', $this->value)['label'];
+    }
 }

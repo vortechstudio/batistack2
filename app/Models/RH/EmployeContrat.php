@@ -27,4 +27,9 @@ class EmployeContrat extends Model
             'signed_start_at' => 'datetime',
         ];
     }
+
+    public function getNombreJourTravailAttribute()
+    {
+        return $this->employe->pointages->count();
+    }
 }
