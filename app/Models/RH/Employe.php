@@ -9,6 +9,7 @@ use App\Models\Chantiers\ChantierRessources;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Str;
 
 class Employe extends Model
 {
@@ -35,6 +36,11 @@ class Employe extends Model
         return $this->hasMany(ChantierRessources::class);
     }
 
+    public function pointages()
+    {
+        return $this->hasMany(EmployePointage::class);
+    }
+
     protected function casts(): array
     {
         return [
@@ -53,5 +59,10 @@ class Employe extends Model
     public function getFullAddressAttribute()
     {
         return $this->adresse.", ".$this->code_postal." ".$this->ville;
+    }
+
+    public function getMatriculeAttribute()
+    {
+        return Str::upper(Str::limit($this->uuid, 8, ''));
     }
 }

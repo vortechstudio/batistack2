@@ -1,5 +1,5 @@
 <div>
-    @if($this->salarie->info->process->value === 'transmitting')
+    @if($this->salarie->info->process->value === 'creating')
     <div class="bg-gray-100 rounded p-5 mb-10">
         <form wire:submit="transmit">
             {{ $this->transmitForm }}
