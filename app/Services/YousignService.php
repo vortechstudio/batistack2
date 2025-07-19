@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 
 class YousignService
@@ -23,28 +24,40 @@ class YousignService
         ];
     }
 
-    public function createProcedure(array $data)
+    public function createSignatureRequest(array $data)
+    {
+        try {
+            return Http::withoutVerifying()
+                ->withHeaders($this->headers())
+                ->post("{$this->url}/signature_requests", $data)
+                ->json();
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public function createSignatureRequestDocument(string $uuid, array $data, string $filePath, string $fileName)
     {
         return Http::withoutVerifying()
             ->withHeaders($this->headers())
-            ->post("{$this->url}/procedures", $data)
-            ->json();
-    }
-
-    public function uploadFile(string $filePath, string $fileName)
-    {
-        return Http::withoutVerifying()
-            ->withToken($this->apiKey)
             ->attach('file', file_get_contents($filePath), $fileName)
-            ->post("{$this->url}/files")
+            ->post("{$this->url}/signature_requests/{$uuid}/documents", $data)
             ->json();
     }
 
-    public function createSignature(array $data)
+    public function addSignerToSignatureRequest(string $uuid, array $data)
     {
         return Http::withoutVerifying()
             ->withHeaders($this->headers())
-            ->post("{$this->url}/signature_requests", $data)
+            ->post("{$this->url}/signature_requests/{$uuid}/signers", $data)
+            ->json();
+    }
+
+    public function activateSignatureRequest(string $uuid)
+    {
+        return Http::withoutVerifying()
+            ->withHeaders($this->headers())
+            ->post("{$this->url}/signature_requests/{$uuid}/activate")
             ->json();
     }
 }

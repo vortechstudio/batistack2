@@ -15,6 +15,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Process;
 
 class Transmission extends Component implements HasSchemas
 {
@@ -163,6 +164,8 @@ class Transmission extends Component implements HasSchemas
         $this->salarie->info->update([
             'process' => ProcessEmploye::CONTRACT_DRAFT,
         ]);
+
+        $this->redirect(route('humans.salaries.view', $this->salarie->id));
     }
 
     #[Title('Fiche d\'un Salarie')]

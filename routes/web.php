@@ -7,6 +7,9 @@ use App\Livewire\Humans\Dashboard;
 use App\Livewire\Humans\Salarie\Index;
 use App\Livewire\Humans\Salarie\Transmission;
 use App\Livewire\Humans\Salarie\View;
+use App\Livewire\Portail\Salarie\Dashboard as SalarieDashboard;
+use App\Livewire\Portail\Salarie\Documents\Index as DocumentsIndex;
+use App\Livewire\Portail\Salarie\Documents\Signed;
 use App\Services\TesseractService;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -76,6 +79,17 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('config')->group(function () {
             Route::get('/', App\Livewire\Humans\Config\Index::class)->name('humans.config.index');
+        });
+    });
+
+    Route::prefix('portail')->group(function () {
+        Route::prefix('salarie')->group(function() {
+            Route::get('/', SalarieDashboard::class)->name('portail.salarie.dashboard');
+
+            Route::prefix('documents')->group(function() {
+                Route::get('/', DocumentsIndex::class)->name('portail.salarie.documents');
+                Route::get('/signed/{id}', Signed::class)->name('portail.salarie.documents.signed');
+            });
         });
     });
 });

@@ -24,6 +24,7 @@ class EmployeContrat extends Model
             'date_fin' => 'date',
             'type' => TypeContrat::class,
             'status' => StatusContrat::class,
+            'signed_start_at' => 'datetime',
         ];
     }
 }
