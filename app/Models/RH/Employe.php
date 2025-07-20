@@ -41,6 +41,11 @@ class Employe extends Model
         return $this->hasMany(EmployePointage::class);
     }
 
+    public function bank()
+    {
+        return $this->hasOne(EmployeBank::class);
+    }
+
     protected function casts(): array
     {
         return [

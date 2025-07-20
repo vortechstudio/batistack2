@@ -119,7 +119,9 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
 
                                             Select::make('pays_naissance')
                                                 ->label('Pays de naissance')
-                                                ->options(Country::all()->pluck('name', 'name')->toArray()),
+                                                ->options(Country::all()->pluck('name', 'name')->toArray())
+                                                ->searchable()
+                                                ->preload(),
 
                                             TextInput::make('num_cni')
                                                 ->label('Numéro de CNI'),
