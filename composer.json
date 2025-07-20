@@ -40,6 +40,7 @@
         "robsontenorio/mary": "^2.4",
         "spatie/array-to-xml": "^3.4",
         "spatie/browsershot": "^5.0",
+        "spatie/laravel-medialibrary": "^11.13",
         "spatie/laravel-pdf": "^1.6",
         "spatie/simple-excel": "^3.7",
         "twilio/sdk": "^8.6",
