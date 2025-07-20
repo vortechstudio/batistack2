@@ -6,6 +6,13 @@
             </x-slot:actions>
         </x-mary-alert>
     @endif
+    @if($user->employe->bank->count() === 0)
+        <x-mary-alert class="alert-warning" icon="o-exclamation-triangle" title="Veuillez renseigner vos informations bancaires" description="Veuillez renseigner vos informations bancaires pour pouvoir recevoir votre salaire.">
+            <x-slot:actions>
+                <x-mary-button label="Renseigner mes informations bancaires" class="btn-success" link="{{ route('portail.salarie.dashboard') }}" />
+            </x-slot:actions>
+        </x-mary-alert>
+    @endif
     @if($user->employe->info->process->value === 'contract_sign')
         @php
             $now = now();
