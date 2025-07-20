@@ -51,8 +51,7 @@ final readonly class Bridge
             return collect($request)->toArray();
         } catch (Exception $exception) {
             Log::emergency($exception);
-            Bugsnag::notifyException($exception);
-            toastr()->addError($exception->getMessage());
+            Log::channel('github')->emergency($exception);
 
             return null;
         }
@@ -87,8 +86,7 @@ final readonly class Bridge
             return collect($request)->toArray();
         } catch (Exception $exception) {
             Log::emergency($exception);
-            Bugsnag::notifyException($exception);
-            toastr()->addError($exception->getMessage());
+            Log::channel('github')->emergency($exception);
 
             return null;
         }

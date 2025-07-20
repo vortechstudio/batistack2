@@ -12,9 +12,11 @@ return new class extends Migration
     {
         Schema::create('banks', function (Blueprint $table): void {
             $table->id();
-            $table->uuid('powens_uuid');
+            $table->integer('bridge_id');
             $table->string('name');
-            $table->string('status')->nullable();
+            $table->string('logo_bank');
+            $table->string('status_aggegation')->nullable();
+            $table->string('status_payment')->nullable();
         });
     }
 
