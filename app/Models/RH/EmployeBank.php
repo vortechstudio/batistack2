@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Models\RH;
+
+use App\Models\Core\Bank;
+use Illuminate\Database\Eloquent\Model;
+
+class EmployeBank extends Model
+{
+    protected $guarded = [];
+
+    public function bank()
+    {
+        return $this->belongsTo(Bank::class);
+    }
+
+    public function employe()
+    {
+        return $this->belongsTo(Employe::class);
+    }
+}
