@@ -10,6 +10,7 @@ use App\Livewire\Humans\Salarie\View;
 use App\Livewire\Portail\Salarie\Dashboard as SalarieDashboard;
 use App\Livewire\Portail\Salarie\Documents\Index as DocumentsIndex;
 use App\Livewire\Portail\Salarie\Documents\Signed;
+use App\Services\Bridge;
 use App\Services\TesseractService;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -19,7 +20,10 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/test', function () {
-
+    $clt = app(Bridge::class)->post('/aggregation/users', [
+        'external_user_id' => '001'
+    ]);
+    dd($clt);
 });
 
 Route::view('dashboard', 'dashboard')
@@ -92,10 +96,6 @@ Route::middleware(['auth'])->group(function () {
             });
         });
     });
-});
-
-Route::group(['prefix' => 'documents', 'middleware' => ['web', 'auth']], function () {
-    UniSharp\LaravelFilemanager\Lfm::routes();
 });
 
 Route::get('/api/bank/connect', [App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');

@@ -7,6 +7,7 @@ namespace App\Livewire\Settings;
 use App\Models\Core\City;
 use App\Models\Core\Country;
 use App\Rules\VAT;
+use App\Services\Bridge;
 use Exception;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +18,7 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -101,10 +103,19 @@ final class Company extends Component implements HasSchemas
     public function create(): void
     {
         try {
+            $clt = app(Bridge::class)->post('/aggregation/users', [
+                'external_user_id' => 'CPT'.rand(10000,999999),
+            ]);
             $this->company->update($this->form->getState());
+            $this->company->update([
+                'bridge_client_id' => $clt['uuid']
+            ]);
+            app(Bridge::class)->getAccessToken();
+
             toastr()->success('Les informations de la société ont été mise à jours');
         } catch(Exception $ex) {
             Log::channel('github')->emergency($ex);
+            Log::emergency($ex);
         }
     }
 
@@ -127,9 +138,9 @@ final class Company extends Component implements HasSchemas
     }
 
     #[Title('Paramètre de la Société')]
+    #[Layout('components.layouts.settings')]
     public function render()
     {
-        return view('livewire.settings.company')
-            ->layout('components.layouts.settings');
+        return view('livewire.settings.company');
     }
 }
