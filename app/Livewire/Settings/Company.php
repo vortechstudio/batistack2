@@ -23,6 +23,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Log;
+use Storage;
 
 final class Company extends Component implements HasSchemas
 {
