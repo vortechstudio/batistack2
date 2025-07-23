@@ -9,23 +9,13 @@ jobs:
     container:
       image: kirschbaumdevelopment/laravel-test-runner:8.3
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: test
-        ports:
-          - 33306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-          extensions: pdo_mysql, mbstring
+          extensions: pdo_sqlite, mbstring, sqlite3
 
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist
