@@ -75,8 +75,6 @@ class CreateEmploye
             "status" => 'draft',
         ]);
 
-        $bridge->getAccessToken();
-
         $userBridge = $bridge->post('/aggregation/users', [
             'external_user_id' => $salarie->matricule
         ]);
