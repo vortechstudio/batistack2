@@ -25,6 +25,11 @@ jobs:
           cp .env.github .env
           php artisan key:generate
 
+      - name: Write secrets to .env
+        run: |
+          echo "BRIDGE_CLIENT_ID=${{ secrets.BRIDGE_CLIENT_ID }}" >> .env
+          echo "BRIDGE_CLIENT_SECRET=${{ secrets.BRIDGE_CLIENT_SECRET }}" >> .env
+
       - name: Run NPM Build Frontend Env
         run: |
           npm install

@@ -157,7 +157,7 @@ class Transmission extends Component implements HasSchemas
         $dp = new GenerateDPAE();
         $dpae_name = 'dpae_'.$this->salarie->nom.'_'.$this->salarie->prenom.'_'.now()->format('Ymd_His').'.xml';
         $dp->generate($this->salarie, $dpae_name);
-        app(GenerateDPAEPdf::class)->handle($this->salarie, 'dpae');
+        app(GenerateDPAEPdf::class)->handle($this->salarie);
 
         $this->salarie->info->update([
             'process' => ProcessEmploye::SENDING_EXP
