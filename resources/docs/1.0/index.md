@@ -1,3 +1,6 @@
 - ## Batistack
     - [Bienvenue](/{{route}}/{{version}}/overview)
-    - [Ressource Humaine](/{{route}}/{{version}}/hr)
+    - [Premiers Pas](/{{route}}/{{version}}/getting-started)
+    - [Module Tiers](/{{route}}/{{version}}/tiers)
+    - [Module Chantiers](/{{route}}/{{version}}/chantiers)
+    - [Module RH](/{{route}}/{{version}}/hr)
