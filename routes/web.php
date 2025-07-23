@@ -10,6 +10,7 @@ use App\Livewire\Humans\Salarie\View;
 use App\Livewire\Portail\Salarie\Dashboard as SalarieDashboard;
 use App\Livewire\Portail\Salarie\Documents\Index as DocumentsIndex;
 use App\Livewire\Portail\Salarie\Documents\Signed;
+use App\Models\RH\Employe;
 use App\Services\Bridge;
 use App\Services\TesseractService;
 use Illuminate\Support\Facades\Route;
@@ -20,10 +21,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/test', function () {
-    $clt = app(Bridge::class)->post('/aggregation/users', [
-        'external_user_id' => '001'
-    ]);
-    dd($clt);
+    $salarie = Employe::find(2);
+    return view('pdf.rh.contrat', compact('salarie'));
 });
 
 Route::view('dashboard', 'dashboard')

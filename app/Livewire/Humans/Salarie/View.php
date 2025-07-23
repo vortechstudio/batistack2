@@ -12,12 +12,12 @@ use Filament\Schemas\Components\View as ComponentsView;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
-use Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Storage;
-use Str;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class View extends Component implements HasSchemas
 {
@@ -68,7 +68,7 @@ class View extends Component implements HasSchemas
             'signed_code_otp' => rand(1000, 9999),
         ]);
 
-        Storage::disk('public')->copy('rh/salarie/'.$this->salarie->id.'/documents/contrat.pdf', 'files/'.$this->salarie->user->id.'/juridiques/contrat.pdf');
+        Storage::disk('public')->copy('rh/salarie/'.$this->salarie->id.'/documents/contrat.pdf', 'ged/'.$this->salarie->matricule.'/documents/rh/contrat.pdf');
 
         $this->salarie->user->notify(new NewSalarieNotification($this->salarie, $pass));
 
