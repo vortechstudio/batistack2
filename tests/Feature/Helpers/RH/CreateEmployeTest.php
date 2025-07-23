@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\RH\TypeContrat;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 
 test("Accès à l'interface salariés pour nouveau salarié", function() {
     $this->actingAs($user = User::factory()->create());
@@ -13,6 +14,7 @@ test("Accès à l'interface salariés pour nouveau salarié", function() {
 
 test("Création automatique d'un salariés", function() {
     $this->actingAs($user = User::factory()->create());
+    Artisan::call('install:country');
 
     Livewire::test(\App\Livewire\Humans\Components\Tables\TableSalaries::class)
         ->callTableAction('create', data: [

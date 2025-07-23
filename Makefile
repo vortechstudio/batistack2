@@ -11,7 +11,6 @@ install: vendor/autoload.php .env public/storage public/build/manifest.json
 	php artisan install:condition-reglement
 	php artisan install:mode-reglement
 	php artisan db:seed --force
-	php artisan db:seed --class=Database\Seeders\Paie\ProfilPaieSeeder --force
 	php artisan filament:optimize
 	php artisan filament:optimize-clear
 	php artisan optimize
@@ -63,7 +62,6 @@ reset:
 	php artisan install:condition-reglement
 	php artisan install:mode-reglement
 	php artisan db:seed
-	php artisan db:seed --class=Database\Seeders\Paie\ProfilPaieSeeder --force
 	php artisan optimize:clear
 
 clear:

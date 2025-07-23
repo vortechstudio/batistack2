@@ -7,12 +7,18 @@ use App\Models\RH\Employe;
 use App\Models\RH\EmployeContrat;
 use App\Models\RH\EmployeInfo;
 use App\Models\User;
+use App\Services\Bridge;
+use Exception;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Str;
 
 class CreateEmploye
 {
     public function create(array $data)
     {
+        $bridge = new Bridge();
         // Création de l'utilisateur
         $user = User::create([
             'name' => $data['nom']." ".$data['prenom'],
@@ -42,6 +48,7 @@ class CreateEmploye
             'salaire_base' => ($data['salaire_horaire'] * $data['heure_travail']) * 4,
             'status' => 'inactif',
             'user_id' => $user->id,
+            'uuid' => Str::uuid(),
         ]);
 
         $salarie = Employe::latest()->first();
@@ -67,5 +74,23 @@ class CreateEmploye
             "heure_travail" => $data['heure_travail'],
             "status" => 'draft',
         ]);
+
+        $userBridge = $bridge->post('/aggregation/users', [
+            'external_user_id' => $salarie->matricule
+        ]);
+
+        $salarie->update([
+            'bridge_user_id' => $userBridge['uuid'],
+        ]);
+
+        try {
+            if (!Storage::disk('ged')->exists($salarie->matricule)) {
+                Storage::disk('ged')->makeDirectory($salarie->matricule);
+                Storage::disk('ged')->makeDirectory($salarie->matricule.'/documents');
+                Storage::disk('ged')->makeDirectory($salarie->matricule.'/documents/rh');
+            }
+        } catch(Exception $ex) {
+            Log::emergency($ex->getMessage());
+        }
     }
 }

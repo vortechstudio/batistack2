@@ -54,20 +54,4 @@ return [
         'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
     ],
 
-    'powens' => [
-        "api_endpoint" => env('POWENS_API_URL'),
-        "client_id" => env('POWENS_CLIENT_ID'),
-        "client_secret" => env('POWENS_CLIENT_SECRET'),
-    ],
-
-    'tesseract' => [
-        'bin_path' => env('TESSERACT_BIN_PATH', 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'),
-        'lang' => env('TESSERACT_LANG', 'fra'),
-    ],
-
-    'yousign' => [
-        'api_key' => env('YOUSIGN_API_KEY'),
-        'api_url' => env('YOUSIGN_API_URL'),
-    ],
-
 ];

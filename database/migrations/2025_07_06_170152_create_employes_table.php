@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->string('type_contrat')->default('employee')->nullable();
             $table->decimal('salaire_base')->nullable();
             $table->string('status')->default('actif');
+            $table->string('bridge_user_id')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

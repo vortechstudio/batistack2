@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Humans\Salarie;
 
+use App\Actions\RH\GenerateDPAEPdf;
 use App\Enums\RH\ProcessEmploye;
 use App\Helpers\RH\GenerateDPAE;
 use App\Models\RH\Employe;
@@ -53,6 +54,7 @@ class Transmission extends Component implements HasSchemas
                             ->required()
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
+                            ->visibility('public')
                             ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'cni-recto.'.$file->getClientOriginalExtension()),
 
                         FileUpload::make('cni_verso')
@@ -60,12 +62,14 @@ class Transmission extends Component implements HasSchemas
                             ->required()
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
+                            ->visibility('public')
                             ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'cni-verso.'.$file->getClientOriginalExtension()),
 
                         FileUpload::make('btp_card')
                             ->label('Carte BTP')
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
+                            ->visibility('public')
                             ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'btp-card.'.$file->getClientOriginalExtension()),
 
                         FileUpload::make('vital_card')
@@ -73,6 +77,7 @@ class Transmission extends Component implements HasSchemas
                             ->required()
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
+                            ->visibility('public')
                             ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'carte-vital.'.$file->getClientOriginalExtension()),
 
                         FileUpload::make('rib')
@@ -80,6 +85,7 @@ class Transmission extends Component implements HasSchemas
                             ->required()
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
+                            ->visibility('public')
                             ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'rib.'.$file->getClientOriginalExtension()),
                     ]),
             ])
@@ -119,8 +125,8 @@ class Transmission extends Component implements HasSchemas
                     ->label('Contrat de travail')
                     ->required()
                     ->disk('public')
-                    ->visibility('public')
                     ->directory('rh/salarie/'.$this->salarie->id.'/documents')
+                    ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'contrat_travail.'.$file->getClientOriginalExtension()),
             ])
             ->statePath('sendingContractData');
@@ -150,6 +156,7 @@ class Transmission extends Component implements HasSchemas
         $dp = new GenerateDPAE();
         $dpae_name = 'dpae_'.$this->salarie->nom.'_'.$this->salarie->prenom.'_'.now()->format('Ymd_His').'.xml';
         $dp->generate($this->salarie, $dpae_name);
+        app(GenerateDPAEPdf::class)->handle($this->salarie);
 
         $this->salarie->info->update([
             'process' => ProcessEmploye::SENDING_EXP

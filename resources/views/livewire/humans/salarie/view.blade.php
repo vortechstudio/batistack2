@@ -134,9 +134,35 @@
                 </div>
             </div>
             <div x-show="tabs === 'rh'">
-                <div class="flex flex-row justify-between items-center">
-                    <div class="flex flex-col">
-                        <strong>Nom: </strong> {{ $salarie->nom }}
+                <div class="flex flex-row gap-5 justify-between">
+                    <div class="flex flex-col w-1/2 gap-5">
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Matricule: </strong> {{ $salarie->matricule }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Poste/Fonction: </strong> {{ $salarie->poste }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Heure de travail (Semaine): </strong> {{ $salarie->contrat->heure_travail }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Salaire: </strong> {{ Number::currency($salarie->salaire_base, 'EUR', 'fr') }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong class="tooltip" data-tip="Cette valeur sert dans le calcul des heures facturables sur un planning particulier">Tarif Horaire Moyen: <x-mary-icon name="s-information-circle" class="w-5 h-5 text-gray-200" /> </strong> {{ Number::currency($salarie->contrat->salaire_horaire, 'EUR', 'fr') }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Tarif Journalier moyen: </strong> {{ Number::currency($salarie->contrat->salaire_horaire*8.5, 'EUR', 'fr') }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Date d'embauche: </strong> {{ $salarie->date_embauche->format("d/m/Y") }}
+                        </div>
+                        <div class="flex flex-row justify-between items-center border-separate">
+                            <strong>Date de Naissance: </strong> {{ $salarie->info->date_naissance->format("d/m/Y") }}
+                        </div>
+                    </div>
+                    <div class="flex flex-col w-1/2 gap-5">
+                        
                     </div>
                 </div>
             </div>
