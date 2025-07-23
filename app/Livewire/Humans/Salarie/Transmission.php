@@ -140,6 +140,7 @@ class Transmission extends Component implements HasSchemas
             'rib_transmit' => true,
             'process' => ProcessEmploye::VALIDATING,
         ]);
+        dd($this->salarie, $this->transmitForm->getState());
     }
 
     public function validating()

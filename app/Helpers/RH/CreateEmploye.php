@@ -8,7 +8,10 @@ use App\Models\RH\EmployeContrat;
 use App\Models\RH\EmployeInfo;
 use App\Models\User;
 use App\Services\Bridge;
+use Exception;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Str;
 
 class CreateEmploye
@@ -81,5 +84,15 @@ class CreateEmploye
         $salarie->update([
             'bridge_user_id' => $userBridge['uuid'],
         ]);
+
+        try {
+            if (!Storage::disk('ged')->exists($salarie->matricule)) {
+                Storage::disk('ged')->makeDirectory($salarie->matricule);
+                Storage::disk('ged')->makeDirectory($salarie->matricule.'/documents');
+                Storage::disk('ged')->makeDirectory($salarie->matricule.'/documents/rh');
+            }
+        } catch(Exception $ex) {
+            Log::emergency($ex->getMessage());
+        }
     }
 }

@@ -3,8 +3,10 @@
 namespace App\Actions\RH;
 
 use App\Models\RH\Employe;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Storage;
+use Illuminate\Support\Facades\Storage as FacadesStorage;
+use Spatie\LaravelPdf\Enums\Format;
+use Spatie\LaravelPdf\Enums\Unit;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class GenerateDPAEPdf
 {
@@ -14,11 +16,14 @@ class GenerateDPAEPdf
     ): Employe
 {
         $employe->load('info', 'contrat');
-        $pdf = Pdf::loadView('pdf.rh.dpae_employe', compact('employe'));
-        if (Storage::directoryMissing($directory)) {
-            Storage::makeDirectory($directory);
-        }
-        $pdf->save($path = Storage::path($directory).DIRECTORY_SEPARATOR.'dpae_'.$employe->matricule.'.pdf');
+        $pdf = Pdf::view('pdf.rh.dpae_employe', compact('employe'))
+            ->format(Format::A4)
+            ->margins(1,2,2,2, Unit::Centimeter)
+            ->name('dpae_'.$employe->matricule.'.pdf')
+            ->disk('public');
+
+        $pdf->save($path = FacadesStorage::path($directory).DIRECTORY_SEPARATOR.'dpae_'.$employe->matricule.'.pdf');
+
         $employe
             ->addMedia($path)
             ->toMediaCollection();
