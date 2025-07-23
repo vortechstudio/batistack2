@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="flex flex-col">
-        <div class="card bg-base-300 w-10/12 card-md shadow-sm rounded-md mx-auto mb-5">
+        <div class="card bg-base-300 card-md shadow-sm rounded-md mx-auto mb-5">
             <div class="text-xl font-black mb-5 text-center">DECLARATION PREALABLE A L'EMBAUCHE</div>
             <div class="card-body">
                 <div class="card-title bg-gray-600 text-white p-5 rounded">A. ETABLISSEMENT EMPLOYEUR</div>
@@ -96,7 +96,7 @@
                 </div>
             </div>
         </div>
-        <div class="flex flex-row justify-between w-10/12 mx-auto mb-20">
+        <div class="flex flex-row justify-between mx-auto mb-20">
             <span>A Montaigu-Vendée</span>
             <span>Le 20/07/2025</span>
             <span>Doizy Corentin (Gérant SARL C2ME)</span>

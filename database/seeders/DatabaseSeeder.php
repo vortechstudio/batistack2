@@ -35,6 +35,7 @@ use Database\Seeders\Paie\ProfilPaieSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 final class DatabaseSeeder extends Seeder
 {
@@ -51,6 +52,10 @@ final class DatabaseSeeder extends Seeder
                 'email' => 'test@example.com',
                 'phone_number' => '+33745521533',
             ]);
+        }
+
+        if(!Storage::disk('public')->exists('company')) {
+            Storage::disk('public')->makeDirectory('company');
         }
 
         if (Company::count() === 0) {

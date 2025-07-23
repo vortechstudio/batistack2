@@ -23,6 +23,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Log;
+use Storage;
 
 final class Company extends Component implements HasSchemas
 {
@@ -93,7 +94,7 @@ final class Company extends Component implements HasSchemas
                                     ->label('Siret')
                                     ->mask('999 999 999 99999'),
 
-                                TextInput::make('vat')
+                                TextInput::make('num_tva')
                                     ->label('TVA'),
 
                                 TextInput::make('ape')
@@ -129,7 +130,25 @@ final class Company extends Component implements HasSchemas
     public function updateCompany()
     {
         try {
-            $this->company->update($this->form->getState());
+            $this->company->update([
+                "name" => $this->form->getState()['name'],
+                "address" => $this->form->getState()['address'],
+                "code_postal" => $this->form->getState()['code_postal'],
+                "ville" => $this->form->getState()['ville'],
+                "pays" => $this->form->getState()['pays'],
+                "phone" => $this->form->getState()['phone'],
+                "fax" => $this->form->getState()['fax'],
+                "email" => $this->form->getState()['email'],
+                "web" => $this->form->getState()['web'],
+                "siret" => $this->form->getState()['siret'],
+                "num_tva" => $this->form->getState()['num_tva'],
+                "ape" => $this->form->getState()['ape'],
+                "capital" => $this->form->getState()['capital'],
+                "rcs" => $this->form->getState()['rcs'],
+            ]);
+
+            $this->company->refresh();
+
             if (empty($this->company->bridge_client_id)) {
                 $clt = app(Bridge::class)->post('/aggregation/users', [
                     'external_user_id' => 'CPT'.rand(10000,999999),
