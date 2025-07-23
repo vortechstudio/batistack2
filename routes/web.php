@@ -7,6 +7,7 @@ use App\Livewire\Humans\Dashboard;
 use App\Livewire\Humans\Salarie\Index;
 use App\Livewire\Humans\Salarie\Transmission;
 use App\Livewire\Humans\Salarie\View;
+use App\Livewire\Portail\Salarie\Bank;
 use App\Livewire\Portail\Salarie\Dashboard as SalarieDashboard;
 use App\Livewire\Portail\Salarie\Documents\Index as DocumentsIndex;
 use App\Livewire\Portail\Salarie\Documents\Signed;
@@ -93,6 +94,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', DocumentsIndex::class)->name('portail.salarie.documents');
                 Route::get('/signed/{id}', Signed::class)->name('portail.salarie.documents.signed');
             });
+
+            Route::get('bank', Bank::class)->name('portail.salarie.bank');
         });
     });
 });

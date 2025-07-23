@@ -15,6 +15,7 @@
                 <flux:navlist.group :heading="__('Espace Salarie')" class="grid">
                     <flux:navlist.item icon="home" :href="route('portail.salarie.dashboard')" :current="request()->routeIs('portail.salarie.dashboard')" wire:navigate>{{ __('Tableau de Bord') }}</flux:navlist.item>
                     <flux:navlist.item icon="document" :href="route('portail.salarie.documents')" :current="request()->routeIs('portail.salarie.documents.*')" wire:navigate>{{ __('Documents') }}</flux:navlist.item>
+                    <flux:navlist.item icon="banknotes" :href="route('portail.salarie.bank')" :current="request()->routeIs('portail.salarie.bank')" wire:navigate>{{ __('Compte Bancaire') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
