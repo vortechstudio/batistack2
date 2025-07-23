@@ -1,3 +1,23 @@
+# [1.10.0](https://github.com/vortechstudio/batistack2/compare/v1.9.0...v1.10.0) (2025-07-23)
+
+
+### Bug Fixes
+
+* **portail-salarie:** replace Auth with Illuminate\Support\Facades\Auth and add bank info alert ([bb2829b](https://github.com/vortechstudio/batistack2/commit/bb2829b5dc45b50275fc64926667a073b4493b8d))
+* **rh:** remove unnecessary getAccessToken call in create method ([ef2f9a7](https://github.com/vortechstudio/batistack2/commit/ef2f9a702619c05fdbffb6b21c6deb1fefb3651d))
+* **tables:** update record selection logic and add max selectable records check ([5abc76a](https://github.com/vortechstudio/batistack2/commit/5abc76a258ec67e2e29405955221d44118af9bd2))
+
+
+### Features
+
+* **Core:** add spatie/laravel-medialibrary package ([154761f](https://github.com/vortechstudio/batistack2/commit/154761fb3d4b1be902d8ab9372a1db8abf501d39))
+* **employees:** add bridge integration for employee creation ([14d1dcc](https://github.com/vortechstudio/batistack2/commit/14d1dcc697d9e09cc46c1605a8a85d748e2352f7))
+* **portail/salarie/documents:** implement document management interface with categorization ([b8f0191](https://github.com/vortechstudio/batistack2/commit/b8f01913e063e75b14767cb59d52c62cd0835b08))
+* **rh-salarie:** add bank information relationship and view ([4543be5](https://github.com/vortechstudio/batistack2/commit/4543be5a571fa280f073ca2b4917469958b0ac6b))
+* **rh-salarie:** add GED storage setup for new employees ([f142f82](https://github.com/vortechstudio/batistack2/commit/f142f82448526521e477c61a4ec340d41c6df2dc))
+* **rh:** add employee contract generation and storage ([dc41e71](https://github.com/vortechstudio/batistack2/commit/dc41e71a14aeae194af34a3616c10bf40be597f2))
+* **rh:** add media library support and DPAE PDF generation ([9048160](https://github.com/vortechstudio/batistack2/commit/9048160c9be8c29fbe7181f700174303bcdcc90a))
+
 # [1.9.0](https://github.com/vortechstudio/batistack2/compare/v1.8.0...v1.9.0) (2025-07-19)
 
 
