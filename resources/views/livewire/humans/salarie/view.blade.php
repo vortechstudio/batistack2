@@ -134,7 +134,7 @@
                 </div>
             </div>
             <div x-show="tabs === 'rh'">
-                <div class="flex flex-row gap-5 justify-between">
+                <div class="flex flex-row gap-5 justify-between mb-5">
                     <div class="flex flex-col w-1/2 gap-5">
                         <div class="flex flex-row justify-between items-center border-separate">
                             <strong>Matricule: </strong> {{ $salarie->matricule }}
@@ -166,6 +166,7 @@
                         @livewire('humans.components.tables.table-conges', ['employe' => $salarie])
                     </div>
                 </div>
+                @livewire('humans.components.tables.table-bank', ['employe' => $salarie])
             </div>
             <div x-show="tabs === 'planning'">
                 <div class="flex flex-row justify-between items-center">
