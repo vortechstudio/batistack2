@@ -18,4 +18,9 @@ class EmployeBank extends Model
     {
         return $this->belongsTo(Employe::class);
     }
+
+    public function getBankNameAttribute()
+    {
+        return $this->bank->name;
+    }
 }

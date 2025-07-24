@@ -30,6 +30,7 @@ enum TiersNature: string
         return match ($this) {
             self::Fournisseur => 'red',
             self::Client => 'green',
+            default => 'gray',
         };
     }
 }

@@ -25,6 +25,7 @@ enum BankStatus: string
             self::Healthy => 'success',
             self::Degraded => 'amber-500',
             self::Down => 'danger',
+            default => 'gray',
         };
     }
 }

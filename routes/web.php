@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use App\Livewire\Humans\Config\Index as ConfigIndex;
+use App\Livewire\Humans\Conges\Index as CongesIndex;
 use App\Livewire\Humans\Dashboard;
 use App\Livewire\Humans\Salarie\Index;
 use App\Livewire\Humans\Salarie\Transmission;
 use App\Livewire\Humans\Salarie\View;
+use App\Livewire\Portail\Salarie\Bank;
 use App\Livewire\Portail\Salarie\Dashboard as SalarieDashboard;
 use App\Livewire\Portail\Salarie\Documents\Index as DocumentsIndex;
 use App\Livewire\Portail\Salarie\Documents\Signed;
@@ -80,6 +82,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('{id}/transmission', Transmission::class)->name('humans.salaries.transmission');
         });
 
+        Route::prefix('conges')->group(function () {
+            Route::get('/', CongesIndex::class)->name('humans.conges');
+        });
+
         Route::prefix('config')->group(function () {
             Route::get('/', App\Livewire\Humans\Config\Index::class)->name('humans.config.index');
         });
@@ -93,6 +99,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', DocumentsIndex::class)->name('portail.salarie.documents');
                 Route::get('/signed/{id}', Signed::class)->name('portail.salarie.documents.signed');
             });
+
+            Route::get('bank', Bank::class)->name('portail.salarie.bank');
         });
     });
 });

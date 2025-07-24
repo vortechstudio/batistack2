@@ -17,6 +17,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -73,9 +74,9 @@ final class ListSupply extends Component implements HasActions, HasForms, HasTab
     }
 
     #[Title('Liste des fournisseurs')]
+    #[Layout('components.layouts.tiers')]
     public function render()
     {
-        return view('livewire.tiers.supply.list-supply')
-            ->layout('components.layouts.tiers');
+        return view('livewire.tiers.supply.list-supply');
     }
 }
