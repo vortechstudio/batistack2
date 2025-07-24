@@ -9,6 +9,7 @@ use App\Models\RH\EmployeInfo;
 use App\Models\User;
 use App\Services\Bridge;
 use Exception;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -92,5 +93,29 @@ class CreateEmploye
         } catch(Exception $ex) {
             Log::emergency($ex->getMessage());
         }
+
+        $salarie->user->notify(
+            Notification::make()
+                ->success()
+                ->title('Création de compte')
+                ->body('Votre compte a été créé avec succès.')
+                ->toDatabase(),
+        );
+
+        $salarie->user->notify(
+            Notification::make()
+                ->info()
+                ->title('Signature de votre contrat')
+                ->body('Veuillez signer votre contrat en cliquant sur le bouton ci-dessous.')
+                ->toDatabase(),
+        );
+
+        $salarie->user->notify(
+            Notification::make()
+                ->info()
+                ->title('Compte Bancaire')
+                ->body('Veuillez configurer votre compte bancaire en cliquant sur le bouton ci-dessous.')
+                ->toDatabase(),
+        );
     }
 }
