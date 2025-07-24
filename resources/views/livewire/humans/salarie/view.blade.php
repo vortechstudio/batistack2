@@ -162,7 +162,8 @@
                         </div>
                     </div>
                     <div class="flex flex-col w-1/2 gap-5">
-                        
+                        @livewire('humans.components.tables.table-paie', ['employe' => $salarie])
+                        @livewire('humans.components.tables.table-conges', ['employe' => $salarie])
                     </div>
                 </div>
             </div>
