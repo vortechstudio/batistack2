@@ -5,6 +5,7 @@ namespace App\Livewire\Portail\Salarie;
 use App\Models\Core\Bank as CoreBank;
 use App\Models\RH\EmployeBank;
 use App\Services\Bridge;
+use App\Services\OpenIban;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -84,7 +85,8 @@ class Bank extends Component implements HasActions, HasSchemas, HasTable
                     "employe_id" => Auth::user()->employe->id,
                     "bank_id" => $bank->id,
                     "iban" => $account['iban'],
-                    "bridge_id" => $account['id']
+                    "bridge_id" => $account['id'],
+                    "bic" => app(OpenIban::class)->info($account['iban'])['bic'] ?? null,
                 ]);
             }
         }
