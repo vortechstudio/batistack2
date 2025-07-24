@@ -24,6 +24,7 @@
         "laravel/nightwatch": "^1.10",
         "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.10.1",
+        "laraveljutsu/zap": "^1.1",
         "livewire/flux": "^2.1.1",
         "livewire/livewire": "^3.6",
         "livewire/volt": "^1.7",
