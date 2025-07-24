@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Livewire\Humans\Config\Index as ConfigIndex;
+use App\Livewire\Humans\Conges\Index as CongesIndex;
 use App\Livewire\Humans\Dashboard;
 use App\Livewire\Humans\Salarie\Index;
 use App\Livewire\Humans\Salarie\Transmission;
@@ -79,6 +80,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', Index::class)->name('humans.salaries.index');
             Route::get('{id}', View::class)->name('humans.salaries.view');
             Route::get('{id}/transmission', Transmission::class)->name('humans.salaries.transmission');
+        });
+
+        Route::prefix('conges')->group(function () {
+            Route::get('/', CongesIndex::class)->name('humans.conges');
         });
 
         Route::prefix('config')->group(function () {
