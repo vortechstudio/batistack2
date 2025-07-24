@@ -30,6 +30,7 @@ enum StatusDevis: string
             self::SUBMIT => 'blue',
             self::ACCEPTED => 'green',
             self::REJECTED, self::CANCELLED => 'red',
+            default => 'gray',
         };
     }
 }

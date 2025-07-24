@@ -37,6 +37,7 @@ enum BankAccountType: string
             BankAccountType::BROKERAGE, BankAccountType::LOAN, BankAccountType::LIFE_INSURANCE => 'warning',
             BankAccountType::CARD => 'danger',
             BankAccountType::UNKNOWN => 'secondary',
+            default => 'gray',
         };
     }
 }

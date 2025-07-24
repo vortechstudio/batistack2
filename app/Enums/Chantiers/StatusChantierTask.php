@@ -40,6 +40,7 @@ enum StatusChantierTask: string
             self::Progress => 'warning',
             self::Finished => 'success',
             self::Blocked => 'danger',
+            default => 'gray',
         };
     }
 
