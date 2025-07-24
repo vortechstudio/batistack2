@@ -1,3 +1,20 @@
+# [1.11.0](https://github.com/vortechstudio/batistack2/compare/v1.10.0...v1.11.0) (2025-07-24)
+
+
+### Bug Fixes
+
+* **enums:** add default color case to all enum color methods ([3c5ee9c](https://github.com/vortechstudio/batistack2/commit/3c5ee9c028f59a402b92d81dbb08479636b1ae22))
+
+
+### Features
+
+* **bank:** add bank accounts table component for employees ([003883a](https://github.com/vortechstudio/batistack2/commit/003883a9a197249d45d7705531c7ffa1b25474fd))
+* **portail/salarie/bank:** add bic field to employe bank record using OpenIban ([5412897](https://github.com/vortechstudio/batistack2/commit/5412897d6b830e2d45bd59ae3088826672597e0c))
+* **portail/salarie:** add bank account management for employees ([2be3606](https://github.com/vortechstudio/batistack2/commit/2be360620ebf2bf91ca6608bdcbae725410dda74))
+* **rh/conges:** add leave management feature with Filament table ([e89eeb2](https://github.com/vortechstudio/batistack2/commit/e89eeb254e4e60b945e4a3a4ea7d676d5eb7bdfd))
+* **rh:** add notification system for new employee creation ([63e4522](https://github.com/vortechstudio/batistack2/commit/63e45220065091c0eaabb06d2a560e3093bfdf93))
+* **rh:** add payroll and leave management tables ([238ef4c](https://github.com/vortechstudio/batistack2/commit/238ef4c351a0cbd8c7b9f6f9c269019fdf2d8f7a))
+
 # [1.10.0](https://github.com/vortechstudio/batistack2/compare/v1.9.0...v1.10.0) (2025-07-23)
 
 
