@@ -28,5 +28,9 @@ if [ -z "$COMMITS" ]; then
 fi
 
 # 🧠 Préparation prompt pour Ollama
-PROMPT="Voici une liste de commits d'une Pull Request : [$COMMITS], Génère une description claire, professionnelle, concise et orientée utilisateur de cette PR. Écris en français. Format Markdown. Sans Résonnement. Seul les commit (feat, fix, release, breaking) doivent être pris en compte."
+PROMPT="Voici une liste de commits d'une Pull Request : [$COMMITS], Génère une description claire, professionnelle,
+concise et orientée utilisateur de cette PR.
+Écris en français. Format Markdown. Sans Résonnement.
+Seul les commit (feat, fix, release, breaking) doivent être pris en compte.
+Essaye de différencier les types de commit et met les en forme (ex: feat => Nouvelle fonctionnalité, etc...)"
 echo $PROMPT

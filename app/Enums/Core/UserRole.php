@@ -34,6 +34,7 @@ enum UserRole: string
             self::SALARIE => 'info',
             self::COMPTABILITE => 'primary',
             self::COUNTERMASTER => 'secondary',
+            default => 'gray',
         };
     }
 }

@@ -34,6 +34,7 @@ enum PriorityChantierTask: string
             self::Low => 'primary',
             self::Medium => 'warning',
             self::High => 'danger',
+            default => 'gray',
         };
     }
 }

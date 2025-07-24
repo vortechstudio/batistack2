@@ -28,6 +28,7 @@ enum StatusFacture: string
             self::P_PAYER => 'blue',
             self::PAYER => 'green',
             self::RETARD => 'red',
+            default => 'gray',
         };
     }
 }

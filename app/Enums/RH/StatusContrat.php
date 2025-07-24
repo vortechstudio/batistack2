@@ -39,6 +39,7 @@ enum StatusContrat: string
             self::ACTIF => 'green',
             self::SUSPENDED => 'amber',
             self::TERMINATED => 'red',
+            default => 'gray',
         };
     }
 }

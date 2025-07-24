@@ -33,6 +33,7 @@ enum StatusCommande: string
             self::WAITING => 'amber',
             self::DELIVERED => 'green',
             self::CANCELED => 'red',
+            default => 'gray',
         };
     }
 

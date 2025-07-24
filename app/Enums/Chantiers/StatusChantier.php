@@ -40,6 +40,7 @@ enum StatusChantier: string
             self::Progress => 'amber',
             self::Terminer => 'green',
             self::Annuler => 'red',
+            default => 'gray',
         };
     }
 

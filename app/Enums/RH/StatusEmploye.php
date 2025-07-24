@@ -26,6 +26,7 @@ enum StatusEmploye: string
             self::INACTIF => "gray",
             self::CONGE => "amber",
             self::ABSCENT => "red",
+            default => "gray",
          };
     }
 }

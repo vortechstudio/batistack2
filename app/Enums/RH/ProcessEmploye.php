@@ -34,6 +34,7 @@ enum ProcessEmploye: string
             self::VALIDATING => "amber",
             self::CONTRACT_DRAFT => "gray",
             self::CONTRACT_SIGN, self::CONTRACT_VALIDATE, self::TERMINATED => "green",
+            default => "gray",
         };
     }
 
