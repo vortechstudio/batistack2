@@ -18,7 +18,7 @@ class EmployeContratFactory extends Factory
             'date_fin' => null,
             'salaire_horaire' => $this->faker->randomFloat(2,9,25),
             'heure_travail' => 39,
-            'status' => $this->faker->randomElement(['actif', 'inactif']),
+            'status' => $this->faker->randomElement(['draft', 'checked', 'actif', 'suspended', 'terminated']),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

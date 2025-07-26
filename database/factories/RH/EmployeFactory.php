@@ -27,7 +27,7 @@ class EmployeFactory extends Factory
             'date_sortie' => $this->faker->boolean ? Carbon::now()->subDays(rand(10, 50)) : null,
             'type_contrat' => $this->faker->randomElement(['cdi', 'cdd', 'interim', 'apprenti']),
             'salaire_base' => $this->faker->randomFloat(2, 1000, 5000),
-            'status' => $this->faker->randomElement(['actif', 'inactif', 'congé', 'maladie']),
+            'status' => $this->faker->randomElement(['actif', 'inactif', 'conge', 'abscent']),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

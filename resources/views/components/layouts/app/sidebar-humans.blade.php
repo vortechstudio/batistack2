@@ -18,7 +18,7 @@
                     <flux:navlist.item icon="circle-gauge" :href="route('humans.dashboard')" :current="request()->routeIs('humans.dashboard')" wire:navigate>{{ __('Tableau de Bord') }}</flux:navlist.item>
                     <flux:navlist.item icon="users" :href="route('humans.salaries.index')" :current="request()->routeIs('humans.salaries.*')" wire:navigate>{{ __('Salariés') }}</flux:navlist.item>
                     <flux:navlist.item icon="calendar-date-range" :href="route('humans.conges')" :current="request()->routeIs('humans.conges.*')" wire:navigate>{{ __('Congés & Abscences') }}</flux:navlist.item>
-                    <flux:navlist.item icon="wallet" :href="route('chantiers.dashboard')" :current="request()->routeIs('chantiers.dashboard')" wire:navigate>{{ __('Notes de frais') }}</flux:navlist.item>
+                    <flux:navlist.item icon="wallet" :href="route('humans.frais')" :current="request()->routeIs('humans.frais.*')" wire:navigate>{{ __('Notes de frais') }}</flux:navlist.item>
                     <flux:navlist.item icon="cog" :href="route('humans.config.index')" :current="request()->routeIs('chantiers.config.*')" wire:navigate>{{ __('Configuration') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>

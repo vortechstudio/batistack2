@@ -5,11 +5,12 @@ namespace App\Enums\RH;
 enum ModePaiementFrais: string
 {
     case ESPECES = 'especes';
-    case CARTE_BANCAIRE = 'carte_bancaire';
+    case CARTE_BANCAIRE = 'carte';
     case CHEQUE = 'cheque';
     case VIREMENT = 'virement';
     case CARTE_ENTREPRISE = 'carte_entreprise';
     case AVANCE = 'avance';
+    case AUTRE = 'autre';
 
     public function label(): string
     {
@@ -20,6 +21,7 @@ enum ModePaiementFrais: string
             self::VIREMENT => 'Virement',
             self::CARTE_ENTREPRISE => 'Carte entreprise',
             self::AVANCE => 'Avance sur frais',
+            self::AUTRE => 'Autre',
         };
     }
 
@@ -32,6 +34,7 @@ enum ModePaiementFrais: string
             self::VIREMENT => 'heroicon-o-arrow-right-circle',
             self::CARTE_ENTREPRISE => 'heroicon-o-building-office',
             self::AVANCE => 'heroicon-o-arrow-up-circle',
+            self::AUTRE => 'heroicon-o-question-mark-circle',
         };
     }
 
