@@ -96,12 +96,21 @@ jobs:
 
           # Construire le JSON
           if [ ${#MODULES[@]} -gt 0 ]; then
-            # Utiliser jq pour créer un JSON valide
-            MODULES_JSON=$(printf '%s\n' "${MODULES[@]}" | jq -R . | jq -s .)
-            echo "modules=$MODULES_JSON" >> $GITHUB_OUTPUT
-            echo "has-changes=true" >> $GITHUB_OUTPUT
-            echo "📦 Modules détectés: ${MODULES[*]}"
-            echo "📦 JSON généré: $MODULES_JSON"
+            # Utiliser jq pour créer un JSON valide et compact
+            MODULES_JSON=$(printf '%s\n' "${MODULES[@]}" | jq -R . | jq -s -c .)
+
+            # Valider le JSON avant de l'écrire
+            if echo "$MODULES_JSON" | jq . > /dev/null 2>&1; then
+              echo "modules=$MODULES_JSON" >> $GITHUB_OUTPUT
+              echo "has-changes=true" >> $GITHUB_OUTPUT
+              echo "📦 Modules détectés: ${MODULES[*]}"
+              echo "📦 JSON généré: $MODULES_JSON"
+            else
+              echo "❌ Erreur: JSON invalide généré"
+              echo "modules=[]" >> $GITHUB_OUTPUT
+              echo "has-changes=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
           else
             echo "modules=[]" >> $GITHUB_OUTPUT
             echo "has-changes=false" >> $GITHUB_OUTPUT
