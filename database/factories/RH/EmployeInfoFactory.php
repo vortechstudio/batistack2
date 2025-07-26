@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\RH;
 
 use App\Models\RH\Employe;
@@ -7,7 +9,7 @@ use App\Models\RH\EmployeInfo;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class EmployeInfoFactory extends Factory
+final class EmployeInfoFactory extends Factory
 {
     protected $model = EmployeInfo::class;
 
@@ -22,7 +24,7 @@ class EmployeInfoFactory extends Factory
             'lieu_naissance' => $this->faker->city,
             'pays_naissance' => $this->faker->country(),
             'num_permis_btp' => $this->faker->boolean ? $this->faker->randomNumber(8) : null,
-            'exp_permis_btp' => $this->faker->boolean ? Carbon::now()->addYears(rand(1,5)) : null,
+            'exp_permis_btp' => $this->faker->boolean ? Carbon::now()->addYears(rand(1, 5)) : null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 

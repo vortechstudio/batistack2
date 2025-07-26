@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\RH\Employe;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,7 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(Employe::class)->constrained('employes')->cascadeOnDelete();
             $table->date('date_debut'); // Date de début de la période
             $table->date('date_fin'); // Date de fin de la période
-            $table->date('date_soumission'); // Date de soumission de la note
+            $table->date('date_soumission')->nullable(); // Date de soumission de la note
             $table->enum('statut', ['brouillon', 'soumise', 'validee', 'refusee', 'payee'])
                 ->default('brouillon');
             $table->text('motif_refus')->nullable(); // Motif en cas de refus

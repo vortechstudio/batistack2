@@ -9,12 +9,12 @@ test('Accès à l\'index de la page', function () {
     $this->get('/tiers')->assertOk();
 });
 
-test("Accès la section fournisseur", function() {
+test('Accès la section fournisseur', function () {
     $this->actingAs($user = User::factory()->create());
     $this->get('/tiers/supply')->assertOk();
 });
 
-test("Accès la section client", function() {
+test('Accès la section client', function () {
     $this->actingAs($user = User::factory()->create());
     $this->get('/tiers/customers')->assertOk();
 });

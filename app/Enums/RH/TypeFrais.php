@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\RH;
 
 enum TypeFrais: string
@@ -14,6 +16,13 @@ enum TypeFrais: string
     case FORMATION = 'formation';
     case COMMUNICATION = 'communication';
     case AUTRE = 'autre';
+
+    public static function getSelectOptions(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
+            ->toArray();
+    }
 
     public function label(): string
     {
@@ -54,13 +63,6 @@ enum TypeFrais: string
 
     public function requiresJustificatif(): bool
     {
-        return !in_array($this, [self::TRANSPORT]);
-    }
-
-    public static function getSelectOptions(): array
-    {
-        return collect(self::cases())
-            ->mapWithKeys(fn($type) => [$type->value => $type->label()])
-            ->toArray();
+        return ! in_array($this, [self::TRANSPORT]);
     }
 }

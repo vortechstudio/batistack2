@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Zap\Models\Concerns\HasSchedules;
@@ -26,7 +25,7 @@ use Zap\Models\Concerns\HasSchedules;
 final class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, InteractsWithMedia, HasSchedules;
+    use HasFactory, HasSchedules, InteractsWithMedia, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -103,6 +102,11 @@ final class User extends Authenticatable implements HasMedia
         return $this->hasOne(Employe::class);
     }
 
+    public function getAvatarAttribute()
+    {
+        return Gravatar::get($this->email);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -116,10 +120,5 @@ final class User extends Authenticatable implements HasMedia
             'role' => UserRole::class,
             'notif_phone' => 'boolean',
         ];
-    }
-
-    public function getAvatarAttribute()
-    {
-        return Gravatar::get($this->email);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Portail\Salarie;
 
 use App\Models\User;
@@ -8,7 +10,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class Dashboard extends Component
+final class Dashboard extends Component
 {
     public User $user;
 

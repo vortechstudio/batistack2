@@ -15,11 +15,11 @@ Schedule::command('telescope:clear')->hourly();
 Schedule::command('update:bank-mouvement')
     ->everyFourHours();
 
-Schedule::call(function() {
+Schedule::call(function () {
     $contracts = EmployeContrat::all();
 
     foreach ($contracts as $contract) {
-        if($contract->employe->info->process->value === 'contract_sign' && $contract->date_debut->startOfDay() >= now()->startOfDay()) {
+        if ($contract->employe->info->process->value === 'contract_sign' && $contract->date_debut->startOfDay() >= now()->startOfDay()) {
             $contract->employe->info->process = ProcessEmploye::TERMINATED;
             $contract->employe->info->save();
         }

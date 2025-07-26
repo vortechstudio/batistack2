@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\RH;
 
 use App\Models\Chantiers\Chantiers;
@@ -7,9 +9,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EmployePointage extends Model
+final class EmployePointage extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
     public function employe(): BelongsTo

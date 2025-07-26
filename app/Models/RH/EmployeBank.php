@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\RH;
 
 use App\Models\Core\Bank;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EmployeBank extends Model
+final class EmployeBank extends Model
 {
+    use HasFactory;
+
     protected $guarded = [];
 
     public function bank()

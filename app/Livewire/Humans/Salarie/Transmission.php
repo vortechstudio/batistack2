@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Salarie;
 
 use App\Actions\RH\GenerateDPAEPdf;
@@ -16,31 +18,24 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Process;
 
-class Transmission extends Component implements HasSchemas
+final class Transmission extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
 
     public Employe $salarie;
+
     public ?array $transmitData = [];
+
     public ?array $validatingData = [];
+
     public ?array $sendingData = [];
+
     public ?array $sendingContractData = [];
 
     public function mount(int $id)
     {
         $this->salarie = Employe::find($id);
-    }
-
-    protected function getForms(): array
-    {
-        return [
-            'transmitForm',
-            'validatingForm',
-            'sendingForm',
-            'sendingContractForm'
-        ];
     }
 
     public function transmitForm(Schema $schema): Schema
@@ -55,7 +50,7 @@ class Transmission extends Component implements HasSchemas
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
                             ->visibility('public')
-                            ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'cni-recto.'.$file->getClientOriginalExtension()),
+                            ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file): string => (string) 'cni-recto.'.$file->getClientOriginalExtension()),
 
                         FileUpload::make('cni_verso')
                             ->label('Carte Identité (Verso)')
@@ -63,14 +58,14 @@ class Transmission extends Component implements HasSchemas
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
                             ->visibility('public')
-                            ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'cni-verso.'.$file->getClientOriginalExtension()),
+                            ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file): string => (string) 'cni-verso.'.$file->getClientOriginalExtension()),
 
                         FileUpload::make('btp_card')
                             ->label('Carte BTP')
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
                             ->visibility('public')
-                            ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'btp-card.'.$file->getClientOriginalExtension()),
+                            ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file): string => (string) 'btp-card.'.$file->getClientOriginalExtension()),
 
                         FileUpload::make('vital_card')
                             ->label('Carte Vital')
@@ -78,7 +73,7 @@ class Transmission extends Component implements HasSchemas
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
                             ->visibility('public')
-                            ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'carte-vital.'.$file->getClientOriginalExtension()),
+                            ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file): string => (string) 'carte-vital.'.$file->getClientOriginalExtension()),
 
                         FileUpload::make('rib')
                             ->label('RIB')
@@ -86,7 +81,7 @@ class Transmission extends Component implements HasSchemas
                             ->disk('public')
                             ->directory('rh/salarie/'.$this->salarie->id.'/documents')
                             ->visibility('public')
-                            ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'rib.'.$file->getClientOriginalExtension()),
+                            ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file): string => (string) 'rib.'.$file->getClientOriginalExtension()),
                     ]),
             ])
             ->statePath('transmitData');
@@ -103,7 +98,7 @@ class Transmission extends Component implements HasSchemas
 
                         Toggle::make('carte_vital_validate')
                             ->label('Valider la carte Vital'),
-                    ])
+                    ]),
             ])
             ->statePath('validatingData');
     }
@@ -127,7 +122,7 @@ class Transmission extends Component implements HasSchemas
                     ->disk('public')
                     ->directory('rh/salarie/'.$this->salarie->id.'/documents')
                     ->visibility('public')
-                    ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => (string) 'contrat_travail.'.$file->getClientOriginalExtension()),
+                    ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file): string => (string) 'contrat_travail.'.$file->getClientOriginalExtension()),
             ])
             ->statePath('sendingContractData');
     }
@@ -159,14 +154,14 @@ class Transmission extends Component implements HasSchemas
         app(GenerateDPAEPdf::class)->handle($this->salarie);
 
         $this->salarie->info->update([
-            'process' => ProcessEmploye::SENDING_EXP
+            'process' => ProcessEmploye::SENDING_EXP,
         ]);
     }
 
     public function sendingContract()
     {
         $this->salarie->contrat->update([
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
 
         $this->salarie->info->update([
@@ -181,5 +176,15 @@ class Transmission extends Component implements HasSchemas
     public function render()
     {
         return view('livewire.humans.salarie.transmission');
+    }
+
+    protected function getForms(): array
+    {
+        return [
+            'transmitForm',
+            'validatingForm',
+            'sendingForm',
+            'sendingContractForm',
+        ];
     }
 }

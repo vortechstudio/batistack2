@@ -43,6 +43,24 @@ expect()->extend('toBeOne', function () {
 |
 */
 
+// Helper pour mesurer le temps d'exécution
+function measureExecutionTime(callable $callback): float
+{
+    $start = microtime(true);
+    $callback();
+
+    return microtime(true) - $start;
+}
+
+// Helper pour mesurer l'utilisation mémoire
+function measureMemoryUsage(callable $callback): int
+{
+    $memoryBefore = memory_get_usage(true);
+    $callback();
+
+    return memory_get_usage(true) - $memoryBefore;
+}
+
 function something()
 {
     // ..

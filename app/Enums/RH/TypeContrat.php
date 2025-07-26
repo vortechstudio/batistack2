@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\RH;
 
 enum TypeContrat: string
@@ -9,15 +11,14 @@ enum TypeContrat: string
     case INTERIM = 'interim';
     case APPRENTI = 'apprenti';
 
-
     public static function array()
     {
-         return collect(self::cases())->map(function($type) {
+        return collect(self::cases())->map(function ($type) {
             return [
                 'value' => $type->value,
                 'label' => $type->name,
             ];
-         });
+        });
     }
 
     public function label()

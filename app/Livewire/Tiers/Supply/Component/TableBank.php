@@ -50,7 +50,7 @@ final class TableBank extends Component implements HasActions, HasForms, HasTabl
                     ->schema([
                         Select::make('bank_id')
                             ->label('Banque')
-                            ->options(fn () => Bank::all()->pluck('name', 'id'))
+                            ->options(fn () => Bank::pluck('name', 'id'))
                             ->searchable(),
 
                         Grid::make()
@@ -77,7 +77,7 @@ final class TableBank extends Component implements HasActions, HasForms, HasTabl
                     ->schema([
                         Select::make('bank_id')
                             ->label('Banque')
-                            ->options(fn () => Bank::all()->pluck('name', 'id'))
+                            ->options(fn () => Bank::pluck('name', 'id'))
                             ->searchable(),
 
                         Grid::make()

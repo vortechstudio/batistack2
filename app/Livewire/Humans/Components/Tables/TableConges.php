@@ -1,22 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Components\Tables;
 
-use Livewire\Component;
 use App\Models\RH\Employe;
 use App\Models\RH\EmployeAbscence;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
-use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
+use Livewire\Component;
 
-class TableConges extends Component implements HasActions, HasSchemas, HasTable
+final class TableConges extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
 
@@ -36,19 +38,19 @@ class TableConges extends Component implements HasActions, HasSchemas, HasTable
                     ->formatStateUsing(fn (?Model $record) => $record->full_name),
 
                 TextColumn::make('type')
-                    ->label("Type")
+                    ->label('Type')
                     ->formatStateUsing(fn (?Model $record) => $record->type->label()),
 
                 TextColumn::make('date_debut')
-                    ->label("Date de début")
+                    ->label('Date de début')
                     ->date('d/m/Y'),
 
                 TextColumn::make('date_fin')
-                    ->label("Date de fin")
+                    ->label('Date de fin')
                     ->date('d/m/Y'),
 
                 TextColumn::make('status')
-                    ->label("Etat")
+                    ->label('Etat')
                     ->tooltip(fn (?Model $record) => $record->status->label())
                     ->formatStateUsing(function (?Model $record) {
                         return new HtmlString('<div aria-label="status" class="status status-xl bg-'.$record->status->color().'-100"></div>');

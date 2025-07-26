@@ -269,3 +269,25 @@ body:
         - Points d'attention
     validations:
       required: false
+
+  # Ajouter section pour les tests de performance
+  - type: checkboxes
+    id: performance_requirements
+    attributes:
+      label: Exigences de performance
+      options:
+        - label: "⚡ Tests de performance requis"
+        - label: "🔍 Vérification requêtes N+1"
+        - label: "💾 Optimisation mémoire"
+        - label: "📊 Métriques de monitoring"
+
+  # Ajouter section pour la sécurité
+  - type: checkboxes
+    id: security_requirements
+    attributes:
+      label: Exigences de sécurité
+      options:
+        - label: "🔒 Validation des entrées"
+        - label: "🛡️ Protection CSRF"
+        - label: "👤 Gestion des permissions"
+        - label: "🔐 Chiffrement des données sensibles"

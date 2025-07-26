@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\RH\Paie;
 
 use App\Models\RH\Employe;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class FichePaie extends Model
+final class FichePaie extends Model
 {
     protected $guarded = [];
+
     public function employe(): BelongsTo
     {
         return $this->belongsTo(Employe::class);

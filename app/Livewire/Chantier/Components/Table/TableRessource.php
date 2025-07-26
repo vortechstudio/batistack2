@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Chantier\Components\Table;
 
 use App\Models\Chantiers\ChantierRessources;
 use App\Models\Chantiers\Chantiers;
 use App\Models\RH\Employe;
-use Creativeorange\Gravatar\Facades\Gravatar;
 use Exception;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -17,20 +18,16 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Flasher\Toastr\Laravel\Facade\Toastr;
-use Highlight\Mode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
-class TableRessource extends Component implements HasActions, HasSchemas, HasTable
+final class TableRessource extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions;
     use InteractsWithSchemas;
@@ -59,7 +56,7 @@ class TableRessource extends Component implements HasActions, HasSchemas, HasTab
                             ->required(),
 
                         DateTimePicker::make('date_fin')
-                            ->label("Date fin")
+                            ->label('Date fin')
                             ->required(),
                     ])
                     ->using(function (array $data) {
@@ -80,7 +77,7 @@ class TableRessource extends Component implements HasActions, HasSchemas, HasTab
 
                 TextColumn::make('duration')
                     ->label('')
-                    ->formatStateUsing(fn (?Model $record) => $record->duration." H"),
+                    ->formatStateUsing(fn (?Model $record) => $record->duration.' H'),
 
                 TextColumn::make('amount_fee')
                     ->label('')
@@ -95,7 +92,7 @@ class TableRessource extends Component implements HasActions, HasSchemas, HasTab
                     ->action(function (ChantierRessources $ressource) {
                         try {
                             $ressource->delete();
-                        } catch(Exception $ex) {
+                        } catch (Exception $ex) {
                             Log::channel('github')->emergency($ex);
                         }
                     }),

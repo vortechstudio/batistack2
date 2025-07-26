@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\RH;
 
 use App\Models\Chantiers\Chantiers;
@@ -8,7 +10,7 @@ use App\Models\RH\EmployePointage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class EmployePointageFactory extends Factory
+final class EmployePointageFactory extends Factory
 {
     protected $model = EmployePointage::class;
 

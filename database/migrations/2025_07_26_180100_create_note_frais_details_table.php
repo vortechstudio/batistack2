@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\RH\NoteFrais;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -26,7 +28,7 @@ return new class extends Migration
                 'materiel',
                 'formation',
                 'telecommunication',
-                'autre'
+                'autre',
             ]);
             $table->string('libelle'); // Description du frais
             $table->decimal('montant_ht', 8, 2); // Montant HT

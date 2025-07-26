@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail\RH;
 
 use App\Models\RH\Employe;
-use Auth;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Attachment;
@@ -14,7 +14,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Storage;
 
-class TransmitDpae extends Mailable
+final class TransmitDpae extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -24,8 +24,7 @@ class TransmitDpae extends Mailable
     public function __construct(
         public Employe $salarie,
         public string $nameDpae
-    )
-    {
+    ) {
         //
     }
 
@@ -53,7 +52,7 @@ class TransmitDpae extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

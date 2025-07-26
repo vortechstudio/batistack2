@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Helpers\RH;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UpdateEmploye
+final class UpdateEmploye
 {
     public function update(array $data, Model $record)
     {

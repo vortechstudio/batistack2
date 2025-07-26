@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Conges;
 
 use App\Enums\RH\StatusAbsence;
@@ -31,7 +33,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class Index extends Component implements HasActions, HasSchemas, HasTable
+final class Index extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
 
@@ -49,7 +51,7 @@ class Index extends Component implements HasActions, HasSchemas, HasTable
                     ->action(fn (Collection $records) => $records->each->delete()),
 
                 BulkAction::make('validate')
-                    ->color("success")
+                    ->color('success')
                     ->icon(Heroicon::Check)
                     ->label('Valider')
                     ->action(fn (Collection $records) => $records->each->update(['status' => StatusAbsence::APPROVED])),
@@ -65,18 +67,18 @@ class Index extends Component implements HasActions, HasSchemas, HasTable
                             ->required(),
 
                         Select::make('type')
-                            ->label("Type")
+                            ->label('Type')
                             ->options(TypeAbsence::class)
                             ->required(),
 
                         Grid::make()
                             ->schema([
                                 DateTimePicker::make('date_debut')
-                                    ->label("Date de début")
+                                    ->label('Date de début')
                                     ->required(),
 
                                 DateTimePicker::make('date_fin')
-                                    ->label("Date de fin")
+                                    ->label('Date de fin')
                                     ->required(),
                             ]),
 
@@ -93,11 +95,11 @@ class Index extends Component implements HasActions, HasSchemas, HasTable
                     ->sortable(),
 
                 TextColumn::make('employe.full_name')
-                    ->label("Salarié")
+                    ->label('Salarié')
                     ->searchable(),
 
                 TextColumn::make('type')
-                    ->label("Type")
+                    ->label('Type')
                     ->sortable()
                     ->formatStateUsing(fn (?Model $record) => $record->type->label()),
 
@@ -105,19 +107,19 @@ class Index extends Component implements HasActions, HasSchemas, HasTable
                     ->label('Jours'),
 
                 TextColumn::make('date_debut')
-                    ->label("Date de début")
+                    ->label('Date de début')
                     ->sortable()
                     ->searchable(isIndividual: true)
                     ->date('d/m/Y'),
 
                 TextColumn::make('date_fin')
-                    ->label("Date de fin")
+                    ->label('Date de fin')
                     ->sortable()
                     ->searchable(isIndividual: true)
                     ->date('d/m/Y'),
 
                 TextColumn::make('status')
-                    ->label("Etat")
+                    ->label('Etat')
                     ->sortable()
                     ->tooltip(fn (?Model $record) => $record->status->label())
                     ->formatStateUsing(function (?Model $record) {
@@ -137,18 +139,18 @@ class Index extends Component implements HasActions, HasSchemas, HasTable
                             ->required(),
 
                         Select::make('type')
-                            ->label("Type")
+                            ->label('Type')
                             ->options(TypeAbsence::class)
                             ->required(),
 
                         Grid::make()
                             ->schema([
                                 DateTimePicker::make('date_debut')
-                                    ->label("Date de début")
+                                    ->label('Date de début')
                                     ->required(),
 
                                 DateTimePicker::make('date_fin')
-                                    ->label("Date de fin")
+                                    ->label('Date de fin')
                                     ->required(),
                             ]),
 
@@ -168,18 +170,18 @@ class Index extends Component implements HasActions, HasSchemas, HasTable
                             ->required(),
 
                         Select::make('type')
-                            ->label("Type")
+                            ->label('Type')
                             ->options(TypeAbsence::class)
                             ->required(),
 
                         Grid::make()
                             ->schema([
                                 DateTimePicker::make('date_debut')
-                                    ->label("Date de début")
+                                    ->label('Date de début')
                                     ->required(),
 
                                 DateTimePicker::make('date_fin')
-                                    ->label("Date de fin")
+                                    ->label('Date de fin')
                                     ->required(),
                             ]),
 

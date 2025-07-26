@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\RH;
 
 use App\Models\RH\Employe;
@@ -7,7 +9,7 @@ use App\Models\RH\EmployeAbscence;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class EmployeAbscenceFactory extends Factory
+final class EmployeAbscenceFactory extends Factory
 {
     protected $model = EmployeAbscence::class;
 
