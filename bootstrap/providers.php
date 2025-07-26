@@ -9,5 +9,4 @@ return [
     App\Providers\VoltServiceProvider::class,
     // Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
     QCod\AppSettings\AppSettingsServiceProvider::class,
-    Webklex\IMAP\Providers\LaravelServiceProvider::class,
 ];

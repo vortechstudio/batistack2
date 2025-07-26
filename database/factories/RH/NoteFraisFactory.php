@@ -33,7 +33,7 @@ final class NoteFraisFactory extends Factory
             'commentaire_employe' => $this->faker->optional(0.4)->paragraph(),
             'commentaire_validateur' => $this->faker->optional(0.3)->sentence(),
             'validateur_id' => $this->faker->optional(0.6)->randomElement([null, User::factory()]),
-            'date_validation' => $this->faker->optional(0.6)->dateTimeBetween($dateSoumission ?? $dateFin, 'now'),
+            'date_validation' => $this->faker->optional(0.6)->dateTimeBetween($dateSoumission, 'now'),
             'date_paiement' => $this->faker->optional(0.4)->dateTimeBetween('-1 month', 'now'),
             'reference_paiement' => $this->faker->optional(0.4)->regexify('VIR[0-9]{8}'),
             'metadata' => $this->faker->optional(0.2)->randomElements([
@@ -148,7 +148,7 @@ final class NoteFraisFactory extends Factory
     private function generateNumero(): string
     {
         $year = $this->faker->numberBetween(2024, 2025);
-        $sequence = $this->faker->numberBetween(1, 999);
+        $sequence = (string) $this->faker->numberBetween(1, 999);
 
         return 'NF-'.$year.'-'.mb_str_pad($sequence, 4, '0', STR_PAD_LEFT);
     }

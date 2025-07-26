@@ -17,7 +17,7 @@ final class EmployeBankFactory extends Factory
     {
         return [
             'employe_id' => Employe::factory(),
-            'bank_id' => Bank::inRandomOrder()->first()?->id ?? Bank::factory(),
+            'bank_id' => Bank::inRandomOrder()->first()?->id,
             'iban' => $this->generateFrenchIban(),
             'bic' => $this->generateBic(),
             'bridge_id' => $this->faker->uuid(),

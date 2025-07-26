@@ -64,7 +64,7 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                             ->label('Client')
                             ->searchable()
                             ->required()
-                            ->options(Tiers::where('nature', TiersNature::Client)->pluck('name', 'id')->toArray()),
+                            ->options(Tiers::where('nature', TiersNature::Client)->pluck('name', 'id')),
 
                         TextInput::make('libelle')
                             ->label('Nom du chantier')
@@ -89,13 +89,13 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                                 Select::make('responsable_id')
                                     ->label('Responsable')
                                     ->searchable()
-                                    ->options(User::all()->pluck('name', 'id')->toArray()),
+                                    ->options(User::pluck('name', 'id')),
 
                                 Select::make('intervenants')
                                     ->label('Intervenants')
                                     ->searchable()
                                     ->multiple()
-                                    ->options(User::all()->pluck('name', 'id')->toArray()),
+                                    ->options(User::pluck('name', 'id')),
                             ]),
 
                         Checkbox::make('other_address')
@@ -233,7 +233,7 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                     ->options(StatusChantier::array()),
 
                 SelectFilter::make('tiers_id')
-                    ->options(Tiers::all()->pluck('name', 'id')),
+                    ->options(Tiers::pluck('name', 'id')),
 
                 QueryBuilder::make()
                     ->constraints([

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Livewire\Core\Analyse\PhpStan;
 use App\Livewire\Humans\Config\Index as ConfigIndex;
 use App\Livewire\Humans\Conges\Index as CongesIndex;
 use App\Livewire\Humans\Dashboard;
@@ -110,5 +111,5 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/api/bank/connect', [App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');
-
+Route::get('/analyse/phpstan', PhpStan::class)->name('analyse.phpstan');
 require __DIR__.'/auth.php';

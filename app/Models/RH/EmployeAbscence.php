@@ -9,7 +9,14 @@ use App\Enums\RH\TypeAbsence;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property Carbon $date_debut
+ * @property Carbon $date_fin
+ * @property TypeAbsence $type
+ * @property StatusAbsence $status
+ */
 final class EmployeAbscence extends Model
 {
     use HasFactory;

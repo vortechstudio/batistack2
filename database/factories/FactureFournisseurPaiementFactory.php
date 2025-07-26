@@ -24,8 +24,8 @@ final class FactureFournisseurPaiementFactory extends Factory
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 
-            'facture_fournisseur_id' => FactureFournisseur::factory(),
-            'mode_reglement_id' => ModeReglement::factory(),
+            'facture_fournisseur_id' => FactureFournisseur::all()->random()->id,
+            'mode_reglement_id' => ModeReglement::all()->random()->id,
         ];
     }
 }

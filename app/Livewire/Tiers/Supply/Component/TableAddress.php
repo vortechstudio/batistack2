@@ -75,7 +75,7 @@ final class TableAddress extends Component implements HasActions, HasForms, HasT
 
                                 Select::make('pays')
                                     ->label('Pays')
-                                    ->options(Country::all()->pluck('name', 'name')),
+                                    ->options(Country::pluck('name', 'name')),
                             ]),
                     ]),
             ])

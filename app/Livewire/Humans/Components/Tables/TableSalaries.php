@@ -119,7 +119,7 @@ final class TableSalaries extends Component implements HasActions, HasSchemas, H
 
                                             Select::make('pays_naissance')
                                                 ->label('Pays de naissance')
-                                                ->options(Country::all()->pluck('name', 'name')->toArray())
+                                                ->options(Country::pluck('name', 'name'))
                                                 ->searchable()
                                                 ->preload(),
 
@@ -148,7 +148,7 @@ final class TableSalaries extends Component implements HasActions, HasSchemas, H
                                 ->schema([
                                     Select::make('type')
                                         ->label('Type de Contrat')
-                                        ->options(TypeContrat::array()->pluck('label', 'value')->toArray())
+                                        ->options(TypeContrat::array()->pluck('label', 'value'))
                                         ->required(),
 
                                     TextInput::make('poste')
@@ -304,7 +304,7 @@ final class TableSalaries extends Component implements HasActions, HasSchemas, H
 
                                             Select::make('pays_naissance')
                                                 ->label('Pays de naissance')
-                                                ->options(Country::all()->pluck('name', 'name')->toArray()),
+                                                ->options(Country::pluck('name', 'name')),
 
                                             TextInput::make('num_cni')
                                                 ->label('Numéro de CNI'),

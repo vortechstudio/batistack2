@@ -6,9 +6,17 @@ namespace App\Models\RH;
 
 use App\Enums\RH\StatusContrat;
 use App\Enums\RH\TypeContrat;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property StatusContrat $status
+ * @property TypeContrat $type
+ * @property Carbon|null $signed_start_at
+ * @property Carbon $date_debut
+ * @property Carbon|null $date_fin
+ */
 final class EmployeContrat extends Model
 {
     use HasFactory;

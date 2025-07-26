@@ -20,7 +20,7 @@ final class NbChantiersStats extends StatsOverviewWidget
             Stat::make('Nombre Total de chantiers', Chantiers::count())
                 ->icon('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWJyaWNrLXdhbGwtaWNvbiBsdWNpZGUtYnJpY2std2FsbCI+PHJlY3Qgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiB4PSIzIiB5PSIzIiByeD0iMiIvPjxwYXRoIGQ9Ik0xMiA5djYiLz48cGF0aCBkPSJNMTYgMTV2NiIvPjxwYXRoIGQ9Ik0xNiAzdjYiLz48cGF0aCBkPSJNMyAxNWgxOCIvPjxwYXRoIGQ9Ik0zIDloMTgiLz48cGF0aCBkPSJNOCAxNXY2Ii8+PHBhdGggZD0iTTggM3Y2Ii8+PC9zdmc+'),
 
-            Stat::make('Nombre total de tache active', ChantierTask::where('status', '!=', StatusChantierTask::Todo)->get()->count())
+            Stat::make('Nombre total de tache active', ChantierTask::where('status', '!=', StatusChantierTask::Todo)->count())
                 ->icon('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWxpc3QtdG9kby1pY29uIGx1Y2lkZS1saXN0LXRvZG8iPjxyZWN0IHg9IjMiIHk9IjUiIHdpZHRoPSI2IiBoZWlnaHQ9IjYiIHJ4PSIxIi8+PHBhdGggZD0ibTMgMTcgMiAyIDQtNCIvPjxwYXRoIGQ9Ik0xMyA2aDgiLz48cGF0aCBkPSJNMTMgMTJoOCIvPjxwYXRoIGQ9Ik0xMyAxOGg4Ii8+PC9zdmc+'),
 
             Stat::make('Total Dépense / Budget estimé', Number::currency((float) Chantiers::sum('budget_estime'), 'EUR', 'fr', 2).'/'.Number::currency((float) ChantierDepense::sum('montant'), 'EUR', 'fr', 2))

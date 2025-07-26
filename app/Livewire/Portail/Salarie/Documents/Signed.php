@@ -36,7 +36,7 @@ final class Signed extends Component implements HasActions, HasSchemas
     {
         $this->contrat = EmployeContrat::findOrFail($id);
         $this->form->fill();
-        if ($this->contrat->status->value === 'checked') {
+        if ($this->contrat->status === StatusContrat::CHECKED) {
             $this->contrat->employe->user->notify(new SendOTPCodeToSignContrat($this->contrat));
             $this->sendingOtp = true;
         }

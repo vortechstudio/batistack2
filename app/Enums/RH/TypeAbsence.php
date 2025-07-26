@@ -14,15 +14,11 @@ enum TypeAbsence: string implements HasLabel
     case INJUSTIFIED = 'injustified';
     case OTHER = 'other';
 
-    public static function array()
+    public static function getSelectOptions(): array
     {
-        return [
-            self::MALADIE => 'Maladie',
-            self::PAYED => 'Payé',
-            self::RTT => 'RTT',
-            self::INJUSTIFIED => 'Injustifiée',
-            self::OTHER => 'Autre',
-        ];
+        return collect(self::cases())
+            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
+            ->toArray();
     }
 
     public function getLabel(): ?string

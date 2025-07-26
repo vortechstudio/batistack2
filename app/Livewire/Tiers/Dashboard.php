@@ -11,6 +11,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -28,8 +29,8 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
 
     public function mount(): void
     {
-        $this->countClient = Tiers::where('nature', 'client')->get()->count();
-        $this->countFournisseur = Tiers::where('nature', 'fournisseur')->get()->count();
+        $this->countClient = Tiers::where('nature', 'client')->count();
+        $this->countFournisseur = Tiers::where('nature', 'fournisseur')->count();
         $this->tiers = Tiers::orderByDesc('id')->limit(5)->get();
         $this->statTiers = [
             'type' => 'pie',
@@ -45,9 +46,9 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
     }
 
     #[Title('Gestion des Tiers')]
+    #[Layout('components.layouts.tiers')]
     public function render()
     {
-        return view('livewire.tiers.dashboard')
-            ->layout('components.layouts.tiers');
+        return view('livewire.tiers.dashboard');
     }
 }
