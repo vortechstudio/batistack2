@@ -10,6 +10,11 @@ on:
       - "Semantic Release"
     types:
       - completed
+permissions:
+  issues: write
+  contents: read
+  actions: read
+  pull-requests: write
 
 jobs:
   create-failure-issue:
@@ -24,6 +29,7 @@ jobs:
         id: workflow-details
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const workflowRun = context.payload.workflow_run;
 
@@ -81,6 +87,7 @@ jobs:
         id: get-logs
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const workflowRun = context.payload.workflow_run;
 
@@ -132,6 +139,7 @@ jobs:
         id: check-existing
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const workflowRun = context.payload.workflow_run;
             const searchQuery = `repo:${context.repo.owner}/${context.repo.repo} is:issue is:open label:ci "[CI] Échec sur ${workflowRun.name}"`;
@@ -154,6 +162,7 @@ jobs:
         if: steps.check-existing.outputs.result == 'false'
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const workflowRun = context.payload.workflow_run;
             const details = ${{ steps.workflow-details.outputs.result }};
@@ -208,8 +217,8 @@ jobs:
               repo: context.repo.repo,
               title: `[CI] Échec sur ${workflowRun.name} - ${details.branch} (${details.commitSha})`,
               body: issueBody,
-              labels: ['bug', 'ci', 'urgent'],
-              assignees: ['vortechstudio']
+              labels: ['bug', 'ci', 'urgent']
+              // Supprimer ou corriger l'assignation : assignees: ['vortechstudio']
             });
 
             console.log(`Issue créée: ${issue.data.html_url}`);

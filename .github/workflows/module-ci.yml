@@ -24,22 +24,38 @@ jobs:
     name: 🔍 Détection des modules modifiés
     runs-on: ubuntu-latest
     outputs:
-      modules: ${{ steps.changes.outputs.modules }}
-      has-changes: ${{ steps.changes.outputs.has-changes }}
+      modules: ${{ steps.detect.outputs.modules }}
+      has-changes: ${{ steps.detect.outputs.has-changes }}
+      detection-success: ${{ steps.detect.outputs.detection-success }}
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 2
 
-      - name: Detect changed modules
-        id: changes
+      - name: Détecter les modules modifiés
+        id: detect
         run: |
-          # Récupérer les fichiers modifiés
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || git diff --name-only HEAD~1)
+          echo "🔍 Détection des modules modifiés..."
 
-          # Détecter les modules affectés
+          # Obtenir la liste des fichiers modifiés
+          if [ "${{ github.event_name }}" = "push" ]; then
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          else
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          fi
+
           MODULES=()
+          DETECTION_SUCCESS=true
+
+          echo "📁 Fichiers modifiés:"
+          echo "$CHANGED_FILES"
+
+          # Vérifier si on a des fichiers modifiés
+          if [[ -z "$CHANGED_FILES" ]]; then
+            echo "❌ Erreur: Aucun fichier modifié détecté"
+            DETECTION_SUCCESS=false
+          fi
 
           # Vérifier chaque module existant
           for module_dir in app/Models/*/; do
@@ -80,25 +96,67 @@ jobs:
             MODULES+=("contrats")
           fi
 
-          # Supprimer les doublons et convertir en JSON
+          # Supprimer les doublons
           UNIQUE_MODULES=($(printf "%s\n" "${MODULES[@]}" | sort -u))
-          MODULES_JSON=$(printf '%s\n' "${UNIQUE_MODULES[@]}" | jq -R . | jq -s .)
 
-          echo "modules=$MODULES_JSON" >> $GITHUB_OUTPUT
+          # Vérifier que la détection a fonctionné
+          if [[ ${#UNIQUE_MODULES[@]} -eq 0 ]]; then
+            echo "⚠️ Attention: Aucun module détecté"
+            echo "📋 Fichiers modifiés: $CHANGED_FILES"
+            # Ne pas faire échouer si c'est juste des fichiers de documentation ou de configuration
+            if echo "$CHANGED_FILES" | grep -E "\.(md|txt|yml|yaml|json|gitignore|env\.example)$" > /dev/null; then
+              echo "ℹ️ Changements détectés uniquement dans des fichiers de configuration/documentation"
+              echo "has-changes=false" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Erreur: Changements détectés mais aucun module identifié"
+              DETECTION_SUCCESS=false
+            fi
+          fi
 
+          # Créer le JSON correctement
           if [ ${#UNIQUE_MODULES[@]} -gt 0 ]; then
+            # Construire le JSON manuellement pour éviter les erreurs de format
+            MODULES_JSON="["
+            for i in "${!UNIQUE_MODULES[@]}"; do
+              if [ $i -gt 0 ]; then
+                MODULES_JSON+=","
+              fi
+              MODULES_JSON+="\"${UNIQUE_MODULES[$i]}\""
+            done
+            MODULES_JSON+="]"
+
+            # Valider le JSON généré
+            if ! echo "$MODULES_JSON" | python3 -m json.tool > /dev/null 2>&1; then
+              echo "❌ Erreur: JSON généré invalide: $MODULES_JSON"
+              DETECTION_SUCCESS=false
+            fi
+
+            echo "modules=$MODULES_JSON" >> $GITHUB_OUTPUT
             echo "has-changes=true" >> $GITHUB_OUTPUT
             echo "📦 Modules détectés: ${UNIQUE_MODULES[*]}"
+            echo "📦 JSON généré: $MODULES_JSON"
           else
-            echo "has-changes=false" >> $GITHUB_OUTPUT
-            echo "ℹ️ Aucun module spécifique détecté"
+            echo "modules=[]" >> $GITHUB_OUTPUT
+            if [[ "$DETECTION_SUCCESS" == "true" ]]; then
+              echo "has-changes=false" >> $GITHUB_OUTPUT
+              echo "ℹ️ Aucun module spécifique détecté"
+            fi
+          fi
+
+          echo "detection-success=$DETECTION_SUCCESS" >> $GITHUB_OUTPUT
+          echo "✅ Détection réussie: $DETECTION_SUCCESS"
+
+          # Arrêter le workflow si la détection a échoué
+          if [[ "$DETECTION_SUCCESS" == "false" ]]; then
+            echo "❌ Arrêt du workflow: La détection des modules a échoué"
+            exit 1
           fi
 
   module-tests:
     name: 🧪 Tests Module ${{ matrix.module }}
     runs-on: ubuntu-latest
     needs: detect-changed-modules
-    if: needs.detect-changed-modules.outputs.has-changes == 'true'
+    if: needs.detect-changed-modules.outputs.has-changes == 'true' && needs.detect-changed-modules.outputs.detection-success == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -151,7 +209,7 @@ jobs:
     name: 🔒 Analyse de sécurité
     runs-on: ubuntu-latest
     needs: detect-changed-modules
-    if: needs.detect-changed-modules.outputs.has-changes == 'true'
+    if: needs.detect-changed-modules.outputs.has-changes == 'true' && needs.detect-changed-modules.outputs.detection-success == 'true'
 
     steps:
       - uses: actions/checkout@v4
@@ -179,7 +237,7 @@ jobs:
     name: ⚡ Vérification des performances
     runs-on: ubuntu-latest
     needs: detect-changed-modules
-    if: needs.detect-changed-modules.outputs.has-changes == 'true'
+    if: needs.detect-changed-modules.outputs.has-changes == 'true' && needs.detect-changed-modules.outputs.detection-success == 'true'
 
     steps:
       - uses: actions/checkout@v4
@@ -217,7 +275,7 @@ jobs:
     name: 📊 Qualité du code
     runs-on: ubuntu-latest
     needs: detect-changed-modules
-    if: needs.detect-changed-modules.outputs.has-changes == 'true'
+    if: needs.detect-changed-modules.outputs.has-changes == 'true' && needs.detect-changed-modules.outputs.detection-success == 'true'
 
     steps:
       - uses: actions/checkout@v4
