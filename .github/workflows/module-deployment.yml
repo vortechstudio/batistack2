@@ -54,7 +54,7 @@ env:
 
 jobs:
   detect-changes:
-    name: 🔍 Détection des Changements
+    name: 🔍 Détection des changements
     runs-on: ubuntu-latest
     outputs:
       modules: ${{ steps.detect.outputs.modules }}
@@ -63,6 +63,7 @@ jobs:
       has-config: ${{ steps.detect.outputs.has-config }}
       deploy-staging: ${{ steps.detect.outputs.deploy-staging }}
       deploy-production: ${{ steps.detect.outputs.deploy-production }}
+      detection-success: ${{ steps.detect.outputs.detection-success }}
 
     steps:
       - uses: actions/checkout@v4
@@ -75,60 +76,118 @@ jobs:
           echo "🔍 Détection des changements..."
 
           # Détection des modules modifiés
-          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          if [ "${{ github.event_name }}" = "push" ]; then
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          else
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          fi
+
           MODULES=()
           HAS_MIGRATIONS=false
           HAS_FRONTEND=false
           HAS_CONFIG=false
+          DETECTION_SUCCESS=true
+
+          echo "📁 Fichiers modifiés:"
+          echo "$CHANGED_FILES"
+
+          # Vérifier si on a des fichiers modifiés (sauf pour le déclenchement manuel)
+          if [[ "${{ github.event_name }}" != "workflow_dispatch" ]] && [[ -z "$CHANGED_FILES" ]]; then
+            echo "❌ Erreur: Aucun fichier modifié détecté"
+            DETECTION_SUCCESS=false
+          fi
 
           # Analyse des fichiers modifiés
           while IFS= read -r file; do
-            echo "📁 Fichier modifié: $file"
+            if [ -n "$file" ]; then
+              echo "📁 Fichier modifié: $file"
 
-            # Détection des modules
-            if [[ $file =~ ^app/Models/([^/]+)/ ]]; then
-              MODULE="${BASH_REMATCH[1]}"
-              if [[ ! " ${MODULES[@]} " =~ " ${MODULE} " ]]; then
-                MODULES+=("$MODULE")
+              # Détection des modules
+              if [[ $file =~ ^app/Models/([^/]+)/ ]]; then
+                MODULE="${BASH_REMATCH[1]}"
+                MODULE_LOWER=$(echo "$MODULE" | tr '[:upper:]' '[:lower:]')
+                if [[ ! " ${MODULES[@]} " =~ " ${MODULE_LOWER} " ]]; then
+                  MODULES+=("$MODULE_LOWER")
+                fi
+              elif [[ $file =~ ^app/Livewire/([^/]+)/ ]]; then
+                MODULE="${BASH_REMATCH[1]}"
+                MODULE_LOWER=$(echo "$MODULE" | tr '[:upper:]' '[:lower:]')
+                if [[ ! " ${MODULES[@]} " =~ " ${MODULE_LOWER} " ]]; then
+                  MODULES+=("$MODULE_LOWER")
+                fi
+              elif [[ $file =~ ^app/(Actions|Services|Jobs|Events|Mail|Notifications|Enums)/([^/]+)/ ]]; then
+                MODULE="${BASH_REMATCH[2]}"
+                MODULE_LOWER=$(echo "$MODULE" | tr '[:upper:]' '[:lower:]')
+                if [[ ! " ${MODULES[@]} " =~ " ${MODULE_LOWER} " ]]; then
+                  MODULES+=("$MODULE_LOWER")
+                fi
               fi
-            elif [[ $file =~ ^app/Livewire/([^/]+)/ ]]; then
-              MODULE="${BASH_REMATCH[1]}"
-              if [[ ! " ${MODULES[@]} " =~ " ${MODULE} " ]]; then
-                MODULES+=("$MODULE")
-              fi
-            elif [[ $file =~ ^app/(Actions|Services|Jobs|Events|Mail|Notifications|Enums)/([^/]+)/ ]]; then
-              MODULE="${BASH_REMATCH[2]}"
-              if [[ ! " ${MODULES[@]} " =~ " ${MODULE} " ]]; then
-                MODULES+=("$MODULE")
-              fi
-            fi
 
-            # Détection des types de changements
-            if [[ $file =~ ^database/migrations/ ]]; then
-              HAS_MIGRATIONS=true
-            elif [[ $file =~ ^resources/(views|js|css)/ ]]; then
-              HAS_FRONTEND=true
-            elif [[ $file =~ ^(config|routes)/ ]]; then
-              HAS_CONFIG=true
+              # Détection des types de changements
+              if [[ $file =~ ^database/migrations/ ]]; then
+                HAS_MIGRATIONS=true
+              elif [[ $file =~ ^resources/(views|js|css)/ ]]; then
+                HAS_FRONTEND=true
+              elif [[ $file =~ ^(config|routes)/ ]]; then
+                HAS_CONFIG=true
+              fi
             fi
           done <<< "$CHANGED_FILES"
 
           # Gestion du déclenchement manuel
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             if [[ "${{ github.event.inputs.modules }}" == "all" ]]; then
-              MODULES=("Chantiers" "RH" "Tiers" "Commerce" "Core")
+              MODULES=("chantiers" "rh" "tiers" "commerce" "core")
             elif [[ "${{ github.event.inputs.modules }}" != "auto" ]]; then
-              IFS=',' read -ra MODULES <<< "${{ github.event.inputs.modules }}"
+              IFS=',' read -ra INPUT_MODULES <<< "${{ github.event.inputs.modules }}"
+              MODULES=()
+              for module in "${INPUT_MODULES[@]}"; do
+                module_clean=$(echo "$module" | tr '[:upper:]' '[:lower:]' | xargs)
+                if [[ -n "$module_clean" ]]; then
+                  MODULES+=("$module_clean")
+                fi
+              done
             fi
           fi
 
-          # Conversion en JSON
-          MODULES_JSON=$(printf '%s\n' "${MODULES[@]}" | jq -R . | jq -s .)
+          # Vérifier que la détection a fonctionné
+          if [[ "${{ github.event_name }}" != "workflow_dispatch" ]] && [[ ${#MODULES[@]} -eq 0 ]] && [[ "$HAS_MIGRATIONS" == "false" ]] && [[ "$HAS_FRONTEND" == "false" ]] && [[ "$HAS_CONFIG" == "false" ]]; then
+            echo "⚠️ Attention: Aucun module ou changement significatif détecté"
+            echo "📋 Fichiers modifiés: $CHANGED_FILES"
+            # Ne pas faire échouer si c'est juste des fichiers de documentation ou de configuration mineure
+            if echo "$CHANGED_FILES" | grep -E "\.(md|txt|yml|yaml|json)$" > /dev/null; then
+              echo "ℹ️ Changements détectés uniquement dans des fichiers de configuration/documentation"
+            else
+              echo "❌ Erreur: Changements détectés mais aucun module identifié"
+              DETECTION_SUCCESS=false
+            fi
+          fi
+
+          # Créer le JSON correctement
+          if [ ${#MODULES[@]} -gt 0 ]; then
+            MODULES_JSON="["
+            for i in "${!MODULES[@]}"; do
+              if [ $i -gt 0 ]; then
+                MODULES_JSON+=","
+              fi
+              MODULES_JSON+="\"${MODULES[$i]}\""
+            done
+            MODULES_JSON+="]"
+          else
+            MODULES_JSON="[]"
+          fi
+
+          # Valider le JSON généré
+          if ! echo "$MODULES_JSON" | python3 -m json.tool > /dev/null 2>&1; then
+            echo "❌ Erreur: JSON généré invalide: $MODULES_JSON"
+            DETECTION_SUCCESS=false
+          fi
 
           echo "modules=$MODULES_JSON" >> $GITHUB_OUTPUT
           echo "has-migrations=$HAS_MIGRATIONS" >> $GITHUB_OUTPUT
           echo "has-frontend=$HAS_FRONTEND" >> $GITHUB_OUTPUT
           echo "has-config=$HAS_CONFIG" >> $GITHUB_OUTPUT
+          echo "detection-success=$DETECTION_SUCCESS" >> $GITHUB_OUTPUT
 
           # Déterminer les environnements de déploiement
           if [[ "${{ github.ref }}" == "refs/heads/master" ]] || [[ "${{ github.event.inputs.environment }}" == "staging" ]]; then
@@ -144,16 +203,24 @@ jobs:
           fi
 
           echo "📊 Modules détectés: ${MODULES[*]}"
+          echo "📊 JSON généré: $MODULES_JSON"
           echo "🗄️ Migrations: $HAS_MIGRATIONS"
           echo "🎨 Frontend: $HAS_FRONTEND"
           echo "⚙️ Config: $HAS_CONFIG"
+          echo "✅ Détection réussie: $DETECTION_SUCCESS"
+
+          # Arrêter le workflow si la détection a échoué
+          if [[ "$DETECTION_SUCCESS" == "false" ]]; then
+            echo "❌ Arrêt du workflow: La détection des modules a échoué"
+            exit 1
+          fi
 
   deploy-staging:
     name: 📦 Déploiement Staging
     runs-on: ubuntu-latest
     environment: staging
     needs: detect-changes
-    if: needs.detect-changes.outputs.deploy-staging == 'true' && needs.detect-changes.outputs.modules != '[]'
+    if: needs.detect-changes.outputs.deploy-staging == 'true' && needs.detect-changes.outputs.modules != '[]' && needs.detect-changes.outputs.detection-success == 'true'
 
     strategy:
       matrix:
@@ -291,7 +358,7 @@ jobs:
       - name: Approbation manuelle requise
         uses: trstringer/manual-approval@v1
         with:
-          secret: ${{ secrets.GITHUB_TOKEN }}
+          secret: ${{ secrets.GH_TOKEN }}
           approvers: vortechstudio
           minimum-approvals: 1
           issue-title: "🏭 Déploiement Production - Module ${{ matrix.module }}"
