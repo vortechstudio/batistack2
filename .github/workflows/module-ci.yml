@@ -309,6 +309,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: detect-changed-modules
     if: needs.detect-changed-modules.outputs.has-changes == 'true' && needs.detect-changed-modules.outputs.detection-success == 'true'
+    outputs:
+      pint-status: ${{ steps.pint-check.outputs.status }}
+      phpstan-status: ${{ steps.phpstan-check.outputs.status }}
+      report-path: ${{ steps.generate-report.outputs.report-path }}
 
     steps:
       - uses: actions/checkout@v4
@@ -321,36 +325,266 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
+      - name: Create reports directory
+        run: mkdir -p reports/code-quality
+
       - name: Run Laravel Pint
+        id: pint-check
         run: |
+          echo "🎨 Exécution de Laravel Pint..."
+          PINT_STATUS="success"
+          PINT_OUTPUT=""
+
           if command -v ./vendor/bin/pint &> /dev/null; then
-            composer lint && composer test:lint
+            echo "✅ Laravel Pint détecté"
+
+            # Exécuter Pint avec capture de sortie
+            if ./vendor/bin/pint --test --format=json > reports/code-quality/pint-report.json 2>&1; then
+              echo "✅ Laravel Pint: Aucun problème de style détecté"
+              PINT_OUTPUT="✅ Code style conforme aux standards Laravel"
+            else
+              echo "❌ Laravel Pint: Problèmes de style détectés"
+              PINT_STATUS="failure"
+
+              # Générer un rapport lisible
+              ./vendor/bin/pint --test > reports/code-quality/pint-output.txt 2>&1 || true
+              PINT_OUTPUT=$(cat reports/code-quality/pint-output.txt | head -20)
+
+              echo "📋 Problèmes détectés:"
+              echo "$PINT_OUTPUT"
+            fi
           else
             echo "⚠️ Laravel Pint non configuré"
+            PINT_STATUS="skipped"
+            PINT_OUTPUT="⚠️ Laravel Pint non configuré dans le projet"
           fi
+
+          echo "status=$PINT_STATUS" >> $GITHUB_OUTPUT
+          echo "output<<EOF" >> $GITHUB_OUTPUT
+          echo "$PINT_OUTPUT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Run PHPStan
+        id: phpstan-check
         run: |
+          echo "🔍 Exécution de PHPStan..."
+          PHPSTAN_STATUS="success"
+          PHPSTAN_OUTPUT=""
+
           if [ -f "phpstan.neon.dist" ] && command -v ./vendor/bin/phpstan &> /dev/null; then
-            ./vendor/bin/phpstan analyse --memory-limit=2G
+            echo "✅ PHPStan détecté"
+
+            # Exécuter PHPStan avec capture de sortie
+            if ./vendor/bin/phpstan analyse --memory-limit=2G --error-format=json > reports/code-quality/phpstan-report.json 2>&1; then
+              echo "✅ PHPStan: Aucune erreur détectée"
+              PHPSTAN_OUTPUT="✅ Analyse statique réussie - Aucune erreur détectée"
+            else
+              echo "❌ PHPStan: Erreurs détectées"
+              PHPSTAN_STATUS="failure"
+
+              # Générer un rapport lisible
+              ./vendor/bin/phpstan analyse --memory-limit=2G > reports/code-quality/phpstan-output.txt 2>&1 || true
+              PHPSTAN_OUTPUT=$(cat reports/code-quality/phpstan-output.txt | head -30)
+
+              echo "📋 Erreurs détectées:"
+              echo "$PHPSTAN_OUTPUT"
+            fi
           else
             echo "⚠️ PHPStan non configuré"
+            PHPSTAN_STATUS="skipped"
+            PHPSTAN_OUTPUT="⚠️ PHPStan non configuré dans le projet"
           fi
 
-  summary:
-    name: 📋 Résumé des tests
-    runs-on: ubuntu-latest
-    needs: [detect-changed-modules, module-tests, security-scan, performance-check, code-quality]
-    if: always() && needs.detect-changed-modules.outputs.has-changes == 'true'
+          echo "status=$PHPSTAN_STATUS" >> $GITHUB_OUTPUT
+          echo "output<<EOF" >> $GITHUB_OUTPUT
+          echo "$PHPSTAN_OUTPUT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-    steps:
-      - name: Test Summary
+      - name: Generate Quality Report
+        id: generate-report
+        if: always()
         run: |
-          echo "## 📊 Résumé des tests des modules"
-          echo "Modules testés: ${{ needs.detect-changed-modules.outputs.modules }}"
+          REPORT_FILE="reports/code-quality/quality-report-$(date +%Y%m%d-%H%M%S).md"
+
+          cat > "$REPORT_FILE" << 'EOF'
+          # 📊 Rapport de Qualité du Code
+
+          **Date:** $(date '+%Y-%m-%d %H:%M:%S')
+          **Commit:** ${{ github.sha }}
+          **Branche:** ${{ github.ref_name }}
+          **Modules modifiés:** ${{ needs.detect-changed-modules.outputs.modules }}
+
+          ## 🎨 Laravel Pint (Code Style)
+          **Statut:** ${{ steps.pint-check.outputs.status }}
+
+          ```
+          ${{ steps.pint-check.outputs.output }}
+          ```
+
+          ## 🔍 PHPStan (Analyse Statique)
+          **Statut:** ${{ steps.phpstan-check.outputs.status }}
+
+          ```
+          ${{ steps.phpstan-check.outputs.output }}
+          ```
+
+          ## 📋 Résumé
+
+          | Outil | Statut | Description |
+          |-------|--------|-------------|
+          | Laravel Pint | ${{ steps.pint-check.outputs.status }} | Vérification du style de code |
+          | PHPStan | ${{ steps.phpstan-check.outputs.status }} | Analyse statique du code |
+
+          ## 🔧 Actions Recommandées
+
+          EOF
+
+          # Ajouter des recommandations basées sur les résultats
+          if [ "${{ steps.pint-check.outputs.status }}" = "failure" ]; then
+            echo "### 🎨 Corrections Laravel Pint" >> "$REPORT_FILE"
+            echo "- Exécutez \`./vendor/bin/pint\` pour corriger automatiquement les problèmes de style" >> "$REPORT_FILE"
+            echo "- Vérifiez la configuration dans \`pint.json\`" >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+          fi
+
+          if [ "${{ steps.phpstan-check.outputs.status }}" = "failure" ]; then
+            echo "### 🔍 Corrections PHPStan" >> "$REPORT_FILE"
+            echo "- Corrigez les erreurs d'analyse statique détectées" >> "$REPORT_FILE"
+            echo "- Ajoutez les annotations de type manquantes" >> "$REPORT_FILE"
+            echo "- Vérifiez la configuration dans \`phpstan.neon.dist\`" >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+          fi
+
+          echo "report-path=$REPORT_FILE" >> $GITHUB_OUTPUT
+
+          echo "📄 Rapport généré: $REPORT_FILE"
+          cat "$REPORT_FILE"
+
+      - name: Upload Quality Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-quality-report-${{ github.run_number }}
+          path: reports/code-quality/
+          retention-days: 30
+
+      - name: Create Issue on Failure
+        if: failure() && (steps.pint-check.outputs.status == 'failure' || steps.phpstan-check.outputs.status == 'failure')
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            // Lire le rapport généré
+            const reportPath = '${{ steps.generate-report.outputs.report-path }}';
+            let reportContent = '';
+
+            try {
+              reportContent = fs.readFileSync(reportPath, 'utf8');
+            } catch (error) {
+              reportContent = `Erreur lors de la lecture du rapport: ${error.message}`;
+            }
+
+            // Déterminer les labels basés sur les échecs
+            const labels = ['ci-failure', 'code-quality'];
+            if ('${{ steps.pint-check.outputs.status }}' === 'failure') {
+              labels.push('code-style');
+            }
+            if ('${{ steps.phpstan-check.outputs.status }}' === 'failure') {
+              labels.push('static-analysis');
+            }
+
+            // Créer le ticket
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Échec de la qualité du code - ${context.payload.head_commit?.message || 'Commit ' + context.sha.substring(0, 7)}`,
+              body: `## 🚨 Échec de la Qualité du Code
+
+            **Workflow:** ${context.workflow}
+            **Run ID:** ${context.runId}
+            **Commit:** ${context.sha}
+            **Branche:** ${context.ref.replace('refs/heads/', '')}
+            **Auteur:** @${context.actor}
+
+            ### 📊 Détails des Échecs
+
+            | Outil | Statut |
+            |-------|--------|
+            | Laravel Pint | ${{ steps.pint-check.outputs.status }} |
+            | PHPStan | ${{ steps.phpstan-check.outputs.status }} |
+
+            ### 📋 Rapport Complet
+
+            ${reportContent}
+
+            ### 🔗 Liens Utiles
+
+            - [Workflow Run](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            - [Commit](${context.payload.repository.html_url}/commit/${context.sha})
+
+            ### ✅ Critères d'Acceptation
+
+            - [ ] Corriger tous les problèmes de style Laravel Pint
+            - [ ] Résoudre toutes les erreurs PHPStan
+            - [ ] Vérifier que les tests passent
+            - [ ] Mettre à jour la documentation si nécessaire
+
+            ---
+
+            *Ce ticket a été créé automatiquement par le workflow CI/CD.*`,
+              labels: labels,
+              assignees: [context.actor]
+            });
+
+            console.log(`Ticket créé: ${issue.data.html_url}`);
+
+            // Ajouter un commentaire avec des détails supplémentaires
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.data.number,
+              body: `### 🔧 Guide de Résolution Rapide
+
+            #### Pour Laravel Pint:
+            \`\`\`bash
+            # Corriger automatiquement les problèmes de style
+            ./vendor/bin/pint
+
+            # Vérifier les corrections
+            ./vendor/bin/pint --test
+            \`\`\`
+
+            #### Pour PHPStan:
+            \`\`\`bash
+            # Analyser le code
+            ./vendor/bin/phpstan analyse --memory-limit=2G
+
+            # Générer un baseline (si nécessaire)
+            ./vendor/bin/phpstan analyse --generate-baseline
+            \`\`\`
+
+            #### Commandes utiles:
+            \`\`\`bash
+            # Exécuter tous les outils de qualité
+            composer lint
+            composer test:lint
+
+            # Tests complets
+            php artisan test
+            \`\`\`
+
+            @${context.actor} Merci de corriger ces problèmes avant de merger.`
+            });
+
+      - name: Fail job if quality checks failed
+        if: steps.pint-check.outputs.status == 'failure' || steps.phpstan-check.outputs.status == 'failure'
+        run: |
+          echo "❌ Échec des vérifications de qualité du code"
+          echo "📊 Laravel Pint: ${{ steps.pint-check.outputs.status }}"
+          echo "🔍 PHPStan: ${{ steps.phpstan-check.outputs.status }}"
           echo ""
-          echo "### Statuts:"
-          echo "- Tests modules: ${{ needs.module-tests.result }}"
-          echo "- Sécurité: ${{ needs.security-scan.result }}"
-          echo "- Performance: ${{ needs.performance-check.result }}"
-          echo "- Qualité: ${{ needs.code-quality.result }}"
+          echo "📄 Consultez le rapport détaillé dans les artifacts"
+          echo "🎫 Un ticket a été créé automatiquement pour le suivi"
+          exit 1
