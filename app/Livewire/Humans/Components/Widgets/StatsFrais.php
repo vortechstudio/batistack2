@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Components\Widgets;
 
 use App\Enums\RH\TypeFrais;
 use App\Models\RH\NoteFraisDetail;
 use Filament\Widgets\ChartWidget;
 
-class StatsFrais extends ChartWidget
+final class StatsFrais extends ChartWidget
 {
     protected ?string $heading = 'Stats Frais';
 
@@ -28,7 +30,7 @@ class StatsFrais extends ChartWidget
         $backgroundColors = [
             '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
             '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF',
-            '#4BC0C0', '#FF6384'
+            '#4BC0C0', '#FF6384',
         ];
 
         foreach ($stats as $index => $stat) {
@@ -46,8 +48,8 @@ class StatsFrais extends ChartWidget
                     'backgroundColor' => array_slice($backgroundColors, 0, count($data)),
                     'borderWidth' => 2,
                     'borderColor' => '#fff',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -71,9 +73,9 @@ class StatsFrais extends ChartWidget
                                 style: "currency",
                                 currency: "EUR"
                             }).format(context.parsed);
-                        }'
-                    ]
-                ]
+                        }',
+                    ],
+                ],
             ],
             'responsive' => true,
             'maintainAspectRatio' => false,

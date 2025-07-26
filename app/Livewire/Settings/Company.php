@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire\Settings;
 
 use App\Models\Core\Country;
-use App\Rules\VAT;
 use App\Services\Bridge;
 use Exception;
 use Filament\Forms\Components\FileUpload;
@@ -21,15 +20,14 @@ use Filament\Schemas\Schema;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Log;
-use Storage;
 
 final class Company extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
 
     public \App\Models\Core\Company $company;
+
     public ?array $data = [];
 
     public function mount(): void
@@ -85,7 +83,7 @@ final class Company extends Component implements HasSchemas
                     ]),
 
                 Section::make('Fiscalité')
-                    ->description("Information fiscale de la société")
+                    ->description('Information fiscale de la société')
                     ->aside()
                     ->schema([
                         Grid::make(4)
@@ -131,44 +129,43 @@ final class Company extends Component implements HasSchemas
     {
         try {
             $this->company->update([
-                "name" => $this->form->getState()['name'],
-                "address" => $this->form->getState()['address'],
-                "code_postal" => $this->form->getState()['code_postal'],
-                "ville" => $this->form->getState()['ville'],
-                "pays" => $this->form->getState()['pays'],
-                "phone" => $this->form->getState()['phone'],
-                "fax" => $this->form->getState()['fax'],
-                "email" => $this->form->getState()['email'],
-                "web" => $this->form->getState()['web'],
-                "siret" => $this->form->getState()['siret'],
-                "num_tva" => $this->form->getState()['num_tva'],
-                "ape" => $this->form->getState()['ape'],
-                "capital" => $this->form->getState()['capital'],
-                "rcs" => $this->form->getState()['rcs'],
+                'name' => $this->form->getState()['name'],
+                'address' => $this->form->getState()['address'],
+                'code_postal' => $this->form->getState()['code_postal'],
+                'ville' => $this->form->getState()['ville'],
+                'pays' => $this->form->getState()['pays'],
+                'phone' => $this->form->getState()['phone'],
+                'fax' => $this->form->getState()['fax'],
+                'email' => $this->form->getState()['email'],
+                'web' => $this->form->getState()['web'],
+                'siret' => $this->form->getState()['siret'],
+                'num_tva' => $this->form->getState()['num_tva'],
+                'ape' => $this->form->getState()['ape'],
+                'capital' => $this->form->getState()['capital'],
+                'rcs' => $this->form->getState()['rcs'],
             ]);
 
             $this->company->refresh();
 
             if (empty($this->company->bridge_client_id)) {
                 $clt = app(Bridge::class)->post('/aggregation/users', [
-                    'external_user_id' => 'CPT'.rand(10000,999999),
+                    'external_user_id' => 'CPT'.rand(10000, 999999),
                 ]);
                 $this->company->update([
-                    'bridge_client_id' => $clt['uuid']
+                    'bridge_client_id' => $clt['uuid'],
                 ]);
                 app(Bridge::class)->getAccessToken();
             }
 
             Notification::make()
                 ->success()
-                ->title("Paramètres mis à jour")
-                ->body("Les paramètres de la société ont été mis à jour avec succès.")
+                ->title('Paramètres mis à jour')
+                ->body('Les paramètres de la société ont été mis à jour avec succès.')
                 ->send();
-        }catch(Exception $ex) {
+        } catch (Exception $ex) {
             Log::emergency($ex->getMessage());
         }
     }
-
 
     #[Title('Paramètre de la Société')]
     #[Layout('components.layouts.settings')]

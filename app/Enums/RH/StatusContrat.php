@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\RH;
 
 enum StatusContrat: string
@@ -12,7 +14,7 @@ enum StatusContrat: string
 
     public static function array()
     {
-        return collect(self::cases())->map(function($type) {
+        return collect(self::cases())->map(function ($type) {
             return [
                 'value' => $type->value,
                 'label' => $type->name,
@@ -22,7 +24,7 @@ enum StatusContrat: string
 
     public function label()
     {
-        return match($this) {
+        return match ($this) {
             self::DRAFT => 'Brouillon',
             self::CHECKED => 'Validé',
             self::ACTIF => 'Actif',
@@ -33,7 +35,7 @@ enum StatusContrat: string
 
     public function color()
     {
-         return match($this) {
+        return match ($this) {
             self::DRAFT => 'gray',
             self::CHECKED => 'blue',
             self::ACTIF => 'green',

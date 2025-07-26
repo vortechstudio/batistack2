@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Components\Tables;
 
 use App\Enums\RH\TypeContrat;
 use App\Helpers\RH\CreateEmploye;
 use App\Helpers\RH\UpdateEmploye;
-use App\Models\Core\City;
 use App\Models\Core\Country;
 use App\Models\RH\Employe;
-use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
@@ -35,7 +35,7 @@ use Illuminate\Support\HtmlString;
 use Livewire\Component;
 use Storage;
 
-class TableSalaries extends Component implements HasActions, HasSchemas, HasTable
+final class TableSalaries extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
 
@@ -74,7 +74,7 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                             TextInput::make('prenom')
                                                 ->label('Prénom')
                                                 ->required(),
-                                    ]),
+                                        ]),
 
                                     Textarea::make('address')
                                         ->label('Adresse Postal')
@@ -89,7 +89,7 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                             TextInput::make('ville')
                                                 ->label('Ville')
                                                 ->required(),
-                                    ]),
+                                        ]),
 
                                     Grid::make(3)
                                         ->schema([
@@ -135,12 +135,12 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
 
                                     Grid::make()
                                         ->schema([
-                                                TextInput::make('num_permis_btp')
-                                                    ->label('Numéro de permis BTP'),
+                                            TextInput::make('num_permis_btp')
+                                                ->label('Numéro de permis BTP'),
 
-                                                TextInput::make('exp_permis_btp')
-                                                    ->label('Date d\'expiration du permis BTP'),
-                                        ])
+                                            TextInput::make('exp_permis_btp')
+                                                ->label('Date d\'expiration du permis BTP'),
+                                        ]),
                                 ]),
 
                             Step::make('Information de contrat')
@@ -171,9 +171,9 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                             TextInput::make('heure_travail')
                                                 ->label('Heure de travail')
                                                 ->suffix('h/Semaine'),
-                                        ])
-                                ])
-                        ])
+                                        ]),
+                                ]),
+                        ]),
                     ])
                     ->using(function (array $data, CreateEmploye $employe) {
                         $employe->create($data);
@@ -184,17 +184,17 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                     ->label('Identifiant')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(function(?Model $record) {
+                    ->formatStateUsing(function (?Model $record) {
                         return new HtmlString(
-                            $record->full_name."<br>".$record->email
+                            $record->full_name.'<br>'.$record->email
                         );
                     }),
 
                 TextColumn::make('telephone')
                     ->label('Coordonnées')
-                    ->formatStateUsing(function(?Model $record) {
+                    ->formatStateUsing(function (?Model $record) {
                         return new HtmlString(
-                            "Tel: ".$record->telephone."<br>Port: ".$record->portable
+                            'Tel: '.$record->telephone.'<br>Port: '.$record->portable
                         );
                     }),
 
@@ -258,7 +258,7 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                             TextInput::make('prenom')
                                                 ->label('Prénom')
                                                 ->required(),
-                                    ]),
+                                        ]),
 
                                     Textarea::make('adresse')
                                         ->label('Adresse Postal')
@@ -274,7 +274,7 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                             TextInput::make('ville')
                                                 ->label('Ville')
                                                 ->required(),
-                                    ]),
+                                        ]),
 
                                     Grid::make(3)
                                         ->schema([
@@ -318,12 +318,12 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
 
                                     Grid::make()
                                         ->schema([
-                                                TextInput::make('num_permis_btp')
-                                                    ->label('Numéro de permis BTP'),
+                                            TextInput::make('num_permis_btp')
+                                                ->label('Numéro de permis BTP'),
 
-                                                TextInput::make('exp_permis_btp')
-                                                    ->label('Date d\'expiration du permis BTP'),
-                                        ])
+                                            TextInput::make('exp_permis_btp')
+                                                ->label('Date d\'expiration du permis BTP'),
+                                        ]),
                                 ]),
 
                             Step::make('Information de contrat')
@@ -354,9 +354,9 @@ class TableSalaries extends Component implements HasActions, HasSchemas, HasTabl
                                             TextInput::make('heure_travail')
                                                 ->label('Heure de travail')
                                                 ->suffix('h/Semaine'),
-                                        ])
-                                ])
-                        ])
+                                        ]),
+                                ]),
+                        ]),
                     ])
                     ->using(function (array $data, UpdateEmploye $employe, ?Model $record) {
                         $employe->update($data, $record);

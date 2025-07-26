@@ -100,18 +100,6 @@ final class Chantiers extends Model
         ];
     }
 
-
-
-    protected function casts(): array
-    {
-        return [
-            'date_debut' => 'date',
-            'date_fin_prevu' => 'date',
-            'date_fin_reel' => 'date',
-            'status' => StatusChantier::class,
-        ];
-    }
-
     public function calculerBudgetEstime(): float
     {
         // Budget estimé = somme des montants des devis et commandes
@@ -134,15 +122,16 @@ final class Chantiers extends Model
     {
         $this->update([
             'budget_estime' => $this->calculerBudgetEstime(),
-            'budget_reel' => $this->calculerBudgetReel()
+            'budget_reel' => $this->calculerBudgetReel(),
         ]);
     }
 
     public function getEcartBudgetPercentAttribute(): ?float
     {
-        if ($this->budget_estime == 0) {
+        if ($this->budget_estime === 0) {
             return null; // Avoid division by zero
         }
+
         return round((($this->budget_reel - $this->budget_estime) / $this->budget_estime) * 100, 2);
     }
 
@@ -156,4 +145,13 @@ final class Chantiers extends Model
         return $this->ressources()->sum('amount_fee');
     }
 
+    protected function casts(): array
+    {
+        return [
+            'date_debut' => 'date',
+            'date_fin_prevu' => 'date',
+            'date_fin_reel' => 'date',
+            'status' => StatusChantier::class,
+        ];
+    }
 }

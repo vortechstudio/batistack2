@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\RH;
 
 use App\Models\Core\Bank;
@@ -7,7 +9,7 @@ use App\Models\RH\Employe;
 use App\Models\RH\EmployeBank;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EmployeBankFactory extends Factory
+final class EmployeBankFactory extends Factory
 {
     protected $model = EmployeBank::class;
 
@@ -20,43 +22,6 @@ class EmployeBankFactory extends Factory
             'bic' => $this->generateBic(),
             'bridge_id' => $this->faker->uuid(),
         ];
-    }
-
-    /**
-     * Génère un IBAN français valide
-     */
-    private function generateFrenchIban(): string
-    {
-        // Format IBAN français : FR76 XXXX XXXX XXXX XXXX XXXX XXX
-        $bankCode = $this->faker->numerify('####');
-        $branchCode = $this->faker->numerify('#####');
-        $accountNumber = $this->faker->numerify('###########');
-        
-        // Calcul de la clé de contrôle (simplifié pour les tests)
-        $checkDigits = $this->faker->numberBetween(10, 99);
-        
-        return "FR{$checkDigits} {$bankCode} {$branchCode} {$accountNumber}";
-    }
-
-    /**
-     * Génère un code BIC réaliste
-     */
-    private function generateBic(): string
-    {
-        $bankCodes = [
-            'BNPAFRPP', // BNP Paribas
-            'CEPAFRPP', // Crédit Agricole
-            'SOGEFRPP', // Société Générale
-            'CCBPFRPP', // Crédit Mutuel
-            'AGRIFRPP', // Crédit Agricole
-            'CMCIFRPP', // CIC
-            'BOUSFRPP', // Boursorama
-            'QNTOFRP1', // Crédit Mutuel Arkéa
-            'PSST FR PP', // La Banque Postale
-            'HELLOFRP', // Hello Bank
-        ];
-
-        return $this->faker->randomElement($bankCodes);
     }
 
     /**
@@ -133,5 +98,42 @@ class EmployeBankFactory extends Factory
             'bic' => $this->generateBic(),
             'bridge_id' => null, // Souvent ajouté manuellement
         ]);
+    }
+
+    /**
+     * Génère un IBAN français valide
+     */
+    private function generateFrenchIban(): string
+    {
+        // Format IBAN français : FR76 XXXX XXXX XXXX XXXX XXXX XXX
+        $bankCode = $this->faker->numerify('####');
+        $branchCode = $this->faker->numerify('#####');
+        $accountNumber = $this->faker->numerify('###########');
+
+        // Calcul de la clé de contrôle (simplifié pour les tests)
+        $checkDigits = $this->faker->numberBetween(10, 99);
+
+        return "FR{$checkDigits} {$bankCode} {$branchCode} {$accountNumber}";
+    }
+
+    /**
+     * Génère un code BIC réaliste
+     */
+    private function generateBic(): string
+    {
+        $bankCodes = [
+            'BNPAFRPP', // BNP Paribas
+            'CEPAFRPP', // Crédit Agricole
+            'SOGEFRPP', // Société Générale
+            'CCBPFRPP', // Crédit Mutuel
+            'AGRIFRPP', // Crédit Agricole
+            'CMCIFRPP', // CIC
+            'BOUSFRPP', // Boursorama
+            'QNTOFRP1', // Crédit Mutuel Arkéa
+            'PSST FR PP', // La Banque Postale
+            'HELLOFRP', // Hello Bank
+        ];
+
+        return $this->faker->randomElement($bankCodes);
     }
 }

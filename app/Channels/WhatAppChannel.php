@@ -9,6 +9,7 @@ use Log;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Rest\Api\V2010\Account\MessageInstance;
 use Twilio\Rest\Client;
+
 // @codeCoverageIgnoreStart
 final class WhatAppChannel
 {

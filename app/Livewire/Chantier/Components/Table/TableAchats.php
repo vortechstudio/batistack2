@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Chantier\Components\Table;
 
 use App\Enums\Chantiers\TypeDepenseChantier;
@@ -32,9 +34,9 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
-class TableAchats extends Component implements HasTable, HasForms, HasActions
+final class TableAchats extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
     public Chantiers $chantier;
 
@@ -69,24 +71,24 @@ class TableAchats extends Component implements HasTable, HasForms, HasActions
                                     ->required(),
                             ]),
 
-                            Textarea::make('description')
-                                ->required()
-                                ->label('Description'),
+                        Textarea::make('description')
+                            ->required()
+                            ->label('Description'),
 
-                            TextInput::make('invoice_ref')
-                                ->label('Numero de facture'),
+                        TextInput::make('invoice_ref')
+                            ->label('Numero de facture'),
 
-                            FileUpload::make('justificatifs')
-                                ->label('Justificatifs')
-                                ->multiple()
-                                ->required()
-                                ->visibility('public')
-                                ->panelLayout('grid')
-                                ->directory('chantiers/'.$this->chantier->id.'/justificatifs')
-                                ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
-                                    return "depense_".$get('tiers_id')."_".Carbon::createFromTimestamp(strtotime($get('date_depense')))->format('d_m_Y')."_".$get('type_depense').".".$file->getClientOriginalExtension();
-                                })
-                                ->disk('public'),
+                        FileUpload::make('justificatifs')
+                            ->label('Justificatifs')
+                            ->multiple()
+                            ->required()
+                            ->visibility('public')
+                            ->panelLayout('grid')
+                            ->directory('chantiers/'.$this->chantier->id.'/justificatifs')
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
+                                return 'depense_'.$get('tiers_id').'_'.Carbon::createFromTimestamp(strtotime($get('date_depense')))->format('d_m_Y').'_'.$get('type_depense').'.'.$file->getClientOriginalExtension();
+                            })
+                            ->disk('public'),
                     ])
                     ->using(function (array $data) {
                         try {
@@ -128,16 +130,15 @@ class TableAchats extends Component implements HasTable, HasForms, HasActions
                     ->money('EUR')
                     ->summarize(Sum::make()->money('EUR')->label('Total de depense')),
 
-
             ])
             ->filters([
                 SelectFilter::make('type_depense')
                     ->options([
-                        "materiel" => "Materiel",
-                        "main_oeuvre" => "Main d'Oeuvre",
-                        "sous_traitance" => "Sous traitance",
-                        "transport" => "Transport",
-                    ])
+                        'materiel' => 'Materiel',
+                        'main_oeuvre' => "Main d'Oeuvre",
+                        'sous_traitance' => 'Sous traitance',
+                        'transport' => 'Transport',
+                    ]),
             ]);
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Config;
 
 use Exception;
@@ -14,7 +16,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Log;
 
-class Index extends Component implements HasForms
+final class Index extends Component implements HasForms
 {
     use InteractsWithForms;
 
@@ -49,15 +51,15 @@ class Index extends Component implements HasForms
     public function update()
     {
         try {
-            !empty($this->form->getState()['expert_comptable_paie_email']) ? settings()->set('expert_comptable_paie_email', $this->form->getState()['expert_comptable_paie_email']) : settings()->set('expert_comptable_paie_email', '');
-            !empty($this->form->getState()['expert_comptable_paie_phone']) ? settings()->set('expert_comptable_paie_phone', $this->form->getState()['expert_comptable_paie_phone']) : settings()->set('expert_comptable_paie_phone', '');
-            !empty($this->form->getState()['expert_comptable_paie_name']) ? settings()->set('expert_comptable_paie_name', $this->form->getState()['expert_comptable_paie_name']) : settings()->set('expert_comptable_paie_name', '');
-        }catch(Exception $ex) {
+            ! empty($this->form->getState()['expert_comptable_paie_email']) ? settings()->set('expert_comptable_paie_email', $this->form->getState()['expert_comptable_paie_email']) : settings()->set('expert_comptable_paie_email', '');
+            ! empty($this->form->getState()['expert_comptable_paie_phone']) ? settings()->set('expert_comptable_paie_phone', $this->form->getState()['expert_comptable_paie_phone']) : settings()->set('expert_comptable_paie_phone', '');
+            ! empty($this->form->getState()['expert_comptable_paie_name']) ? settings()->set('expert_comptable_paie_name', $this->form->getState()['expert_comptable_paie_name']) : settings()->set('expert_comptable_paie_name', '');
+        } catch (Exception $ex) {
             report($ex);
             Log::channel('github')->emergency($ex);
             Notification::make()
                 ->danger()
-                ->title("Configuration RH")
+                ->title('Configuration RH')
                 ->body("Erreur lors de la mise à jour de la configuration de l'application")
                 ->send();
         }

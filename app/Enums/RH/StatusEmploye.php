@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\RH;
 
 enum StatusEmploye: string
@@ -11,22 +13,22 @@ enum StatusEmploye: string
 
     public function label()
     {
-         return match($this) {
-            self::ACTIF => "Actif",
-            self::INACTIF => "Inactif",
-            self::CONGE => "Congé",
-            self::ABSCENT => "Absent",
-         };
+        return match ($this) {
+            self::ACTIF => 'Actif',
+            self::INACTIF => 'Inactif',
+            self::CONGE => 'Congé',
+            self::ABSCENT => 'Absent',
+        };
     }
 
     public function color()
     {
-         return match($this) {
-            self::ACTIF => "green",
-            self::INACTIF => "gray",
-            self::CONGE => "amber",
-            self::ABSCENT => "red",
-            default => "gray",
-         };
+        return match ($this) {
+            self::ACTIF => 'green',
+            self::INACTIF => 'gray',
+            self::CONGE => 'amber',
+            self::ABSCENT => 'red',
+            default => 'gray',
+        };
     }
 }

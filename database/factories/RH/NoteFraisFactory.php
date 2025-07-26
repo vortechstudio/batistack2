@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\RH;
 
-use App\Enums\RH\StatusNoteFrais;
 use App\Models\RH\Employe;
 use App\Models\RH\NoteFrais;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class NoteFraisFactory extends Factory
+final class NoteFraisFactory extends Factory
 {
     protected $model = NoteFrais::class;
 
     public function definition(): array
     {
         $dateDebut = $this->faker->dateTimeBetween('-3 months', '-1 month');
-        $dateFin = (clone $dateDebut)->modify('+' . $this->faker->numberBetween(7, 30) . ' days');
+        $dateFin = (clone $dateDebut)->modify('+'.$this->faker->numberBetween(7, 30).' days');
         $dateSoumission = $this->faker->optional(0.8)->dateTimeBetween($dateFin, 'now');
-        
+
         return [
             'numero' => $this->generateNumero(),
             'employe_id' => Employe::factory(),
@@ -86,7 +87,7 @@ class NoteFraisFactory extends Factory
     {
         $dateSoumission = $this->faker->dateTimeBetween('-2 months', '-1 week');
         $dateValidation = $this->faker->dateTimeBetween($dateSoumission, 'now');
-        
+
         return $this->state(fn (array $attributes) => [
             'statut' => 'validee',
             'date_soumission' => $dateSoumission,
@@ -107,7 +108,7 @@ class NoteFraisFactory extends Factory
         $dateSoumission = $this->faker->dateTimeBetween('-3 months', '-1 month');
         $dateValidation = $this->faker->dateTimeBetween($dateSoumission, '-2 weeks');
         $datePaiement = $this->faker->dateTimeBetween($dateValidation, 'now');
-        
+
         return $this->state(fn (array $attributes) => [
             'statut' => 'payee',
             'date_soumission' => $dateSoumission,
@@ -127,7 +128,7 @@ class NoteFraisFactory extends Factory
     {
         $dateSoumission = $this->faker->dateTimeBetween('-2 months', '-1 week');
         $dateValidation = $this->faker->dateTimeBetween($dateSoumission, 'now');
-        
+
         return $this->state(fn (array $attributes) => [
             'statut' => 'refusee',
             'date_soumission' => $dateSoumission,
@@ -148,7 +149,7 @@ class NoteFraisFactory extends Factory
     {
         $year = $this->faker->numberBetween(2024, 2025);
         $sequence = $this->faker->numberBetween(1, 999);
-        
-        return 'NF-' . $year . '-' . str_pad($sequence, 4, '0', STR_PAD_LEFT);
+
+        return 'NF-'.$year.'-'.mb_str_pad($sequence, 4, '0', STR_PAD_LEFT);
     }
 }

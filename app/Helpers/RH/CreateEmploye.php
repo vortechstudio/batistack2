@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Helpers\RH;
 
 use App\Enums\Core\UserRole;
@@ -15,14 +17,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Str;
 
-class CreateEmploye
+final class CreateEmploye
 {
     public function create(array $data)
     {
         $bridge = new Bridge();
         // Création de l'utilisateur
         $user = User::create([
-            'name' => $data['nom']." ".$data['prenom'],
+            'name' => $data['nom'].' '.$data['prenom'],
             'email' => $data['email'],
             'password' => Hash::make('password'),
             'blocked' => true,
@@ -67,17 +69,17 @@ class CreateEmploye
         ]);
 
         EmployeContrat::create([
-            "employe_id" => $salarie->id,
-            "type" => $data['type'],
-            "date_debut" => $data['date_debut'],
-            "date_fin" => $data['date_fin'],
-            "salaire_horaire" => $data['salaire_horaire'],
-            "heure_travail" => $data['heure_travail'],
-            "status" => 'draft',
+            'employe_id' => $salarie->id,
+            'type' => $data['type'],
+            'date_debut' => $data['date_debut'],
+            'date_fin' => $data['date_fin'],
+            'salaire_horaire' => $data['salaire_horaire'],
+            'heure_travail' => $data['heure_travail'],
+            'status' => 'draft',
         ]);
 
         $userBridge = $bridge->post('/aggregation/users', [
-            'external_user_id' => $salarie->matricule
+            'external_user_id' => $salarie->matricule,
         ]);
 
         $salarie->update([
@@ -85,12 +87,12 @@ class CreateEmploye
         ]);
 
         try {
-            if (!Storage::disk('ged')->exists($salarie->matricule)) {
+            if (! Storage::disk('ged')->exists($salarie->matricule)) {
                 Storage::disk('ged')->makeDirectory($salarie->matricule);
                 Storage::disk('ged')->makeDirectory($salarie->matricule.'/documents');
                 Storage::disk('ged')->makeDirectory($salarie->matricule.'/documents/rh');
             }
-        } catch(Exception $ex) {
+        } catch (Exception $ex) {
             Log::emergency($ex->getMessage());
         }
 

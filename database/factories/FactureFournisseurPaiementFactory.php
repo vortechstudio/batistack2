@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Commerce\FactureFournisseur;
@@ -8,7 +10,7 @@ use App\Models\Core\ModeReglement;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class FactureFournisseurPaiementFactory extends Factory
+final class FactureFournisseurPaiementFactory extends Factory
 {
     protected $model = FactureFournisseurPaiement::class;
 

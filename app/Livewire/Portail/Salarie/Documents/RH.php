@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Portail\Salarie\Documents;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
-class RH extends Component
+final class RH extends Component
 {
     public function render()
     {
         $matricule = Auth::user()->employe->matricule;
-        $rhDocumentsPath = $matricule . '/documents/rh';
+        $rhDocumentsPath = $matricule.'/documents/rh';
 
         // Récupérer tous les fichiers du dossier RH de l'employé
         $documents = [];
@@ -32,31 +34,8 @@ class RH extends Component
 
         return view('livewire.portail.salarie.documents.r-h', [
             'documents' => $documents,
-            'matricule' => $matricule
+            'matricule' => $matricule,
         ]);
-    }
-
-    private function getDocumentType($filePath)
-    {
-        $fileName = basename($filePath);
-
-        if (str_contains(strtolower($fileName), 'contrat')) {
-            return 'Contrat de travail';
-        } elseif (str_contains(strtolower($fileName), 'cni') || str_contains(strtolower($fileName), 'carte') && str_contains(strtolower($fileName), 'identite')) {
-            return 'Carte d\'identité';
-        } elseif (str_contains(strtolower($fileName), 'vital') || str_contains(strtolower($fileName), 'vitale')) {
-            return 'Carte vitale';
-        } elseif (str_contains(strtolower($fileName), 'rib')) {
-            return 'RIB';
-        } elseif (str_contains(strtolower($fileName), 'dpae')) {
-            return 'DPAE';
-        } elseif (str_contains(strtolower($fileName), 'cv') || str_contains(strtolower($fileName), 'curriculum')) {
-            return 'CV';
-        } elseif (str_contains(strtolower($fileName), 'diplome') || str_contains(strtolower($fileName), 'certificat')) {
-            return 'Diplôme/Certificat';
-        }
-
-        return 'Document RH';
     }
 
     public function downloadDocument($filePath)
@@ -70,12 +49,43 @@ class RH extends Component
 
     public function formatFileSize($bytes)
     {
-        if ($bytes == 0) return '0 Bytes';
+        if ($bytes === 0) {
+            return '0 Bytes';
+        }
 
         $k = 1024;
         $sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
         $i = floor(log($bytes) / log($k));
 
-        return round($bytes / pow($k, $i), 2) . ' ' . $sizes[$i];
+        return round($bytes / pow($k, $i), 2).' '.$sizes[$i];
+    }
+
+    private function getDocumentType($filePath)
+    {
+        $fileName = basename($filePath);
+
+        if (str_contains(mb_strtolower($fileName), 'contrat')) {
+            return 'Contrat de travail';
+        }
+        if (str_contains(mb_strtolower($fileName), 'cni') || str_contains(mb_strtolower($fileName), 'carte') && str_contains(mb_strtolower($fileName), 'identite')) {
+            return 'Carte d\'identité';
+        }
+        if (str_contains(mb_strtolower($fileName), 'vital') || str_contains(mb_strtolower($fileName), 'vitale')) {
+            return 'Carte vitale';
+        }
+        if (str_contains(mb_strtolower($fileName), 'rib')) {
+            return 'RIB';
+        }
+        if (str_contains(mb_strtolower($fileName), 'dpae')) {
+            return 'DPAE';
+        }
+        if (str_contains(mb_strtolower($fileName), 'cv') || str_contains(mb_strtolower($fileName), 'curriculum')) {
+            return 'CV';
+        }
+        if (str_contains(mb_strtolower($fileName), 'diplome') || str_contains(mb_strtolower($fileName), 'certificat')) {
+            return 'Diplôme/Certificat';
+        }
+
+        return 'Document RH';
     }
 }

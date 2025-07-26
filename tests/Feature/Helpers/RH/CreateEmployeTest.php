@@ -6,17 +6,17 @@ use App\Enums\RH\TypeContrat;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 
-test("Accès à l'interface salariés pour nouveau salarié", function() {
+test("Accès à l'interface salariés pour nouveau salarié", function () {
     $this->actingAs($user = User::factory()->create());
 
     $this->get('/humans/salaries')->assertOk();
 });
 
-test("Création automatique d'un salariés", function() {
+test("Création automatique d'un salariés", function () {
     $this->actingAs($user = User::factory()->create());
     Artisan::call('install:country');
 
-    Livewire::test(\App\Livewire\Humans\Components\Tables\TableSalaries::class)
+    Livewire::test(App\Livewire\Humans\Components\Tables\TableSalaries::class)
         ->callTableAction('create', data: [
             'civility' => 'Madame',
             'nom' => 'Martin',
@@ -36,12 +36,12 @@ test("Création automatique d'un salariés", function() {
 
     $this->assertDatabaseHas('users', [
         'email' => 'sophie.martin@example.com',
-        'role' => \App\Enums\Core\UserRole::SALARIE
+        'role' => App\Enums\Core\UserRole::SALARIE,
     ]);
 
-    $employe = \App\Models\RH\Employe::latest()->first();
+    $employe = App\Models\RH\Employe::latest()->first();
     $this->assertDatabaseHas('employe_contrats', [
         'employe_id' => $employe->id,
-        'type' => 'cdd'
+        'type' => 'cdd',
     ]);
 });

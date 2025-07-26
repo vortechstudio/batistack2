@@ -27,14 +27,6 @@ final class ChantierDepense extends Model
         return $this->belongsTo(Chantiers::class);
     }
 
-    protected function casts(): array
-    {
-        return [
-            'date_depense' => 'date',
-            'type_depense' => TypeDepenseChantier::class,
-        ];
-    }
-
     public function getHasJustifyAttribute()
     {
         return Storage::disk('public')->exists('chantiers/'.$this->chantiers_id.'/justificatifs/depense_'.$this->tiers_id.'_'.$this->date_depense->format('d_m_Y').'_'.$this->type_depense->name.'.png');
@@ -43,5 +35,13 @@ final class ChantierDepense extends Model
     public function getJustifyAttribute()
     {
         return 'depense_'.$this->tiers_id.'_'.$this->date_depense->format('d_m_Y').'_'.$this->type_depense->value.'.*';
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'date_depense' => 'date',
+            'type_depense' => TypeDepenseChantier::class,
+        ];
     }
 }

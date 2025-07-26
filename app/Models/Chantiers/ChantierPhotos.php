@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Chantiers;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ChantierPhotos extends Model
+final class ChantierPhotos extends Model
 {
     protected $guarded = [];
 

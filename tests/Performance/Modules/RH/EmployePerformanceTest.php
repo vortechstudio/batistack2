@@ -43,7 +43,7 @@ test('performance du calcul des salaires en masse', function () {
     // Opération à tester
     $salaires = Employe::with('contrats')
         ->get()
-        ->map(fn($employe) => $employe->contrats->sum('salaire_base'));
+        ->map(fn ($employe) => $employe->contrats->sum('salaire_base'));
 
     $executionTime = microtime(true) - $startTime;
 

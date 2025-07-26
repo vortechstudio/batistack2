@@ -14,8 +14,6 @@ use App\Livewire\Portail\Salarie\Dashboard as SalarieDashboard;
 use App\Livewire\Portail\Salarie\Documents\Index as DocumentsIndex;
 use App\Livewire\Portail\Salarie\Documents\Signed;
 use App\Models\RH\Employe;
-use App\Services\Bridge;
-use App\Services\TesseractService;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -25,6 +23,7 @@ Route::get('/', function () {
 
 Route::get('/test', function () {
     $salarie = Employe::find(2);
+
     return view('pdf.rh.contrat', compact('salarie'));
 });
 
@@ -74,10 +73,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('{id}', App\Livewire\Chantier\View::class)->name('chantiers.view');
     });
 
-    Route::prefix('humans')->group(function() {
+    Route::prefix('humans')->group(function () {
         Route::get('/', Dashboard::class)->name('humans.dashboard');
 
-        Route::prefix('salaries')->group(function() {
+        Route::prefix('salaries')->group(function () {
             Route::get('/', Index::class)->name('humans.salaries.index');
             Route::get('{id}', View::class)->name('humans.salaries.view');
             Route::get('{id}/transmission', Transmission::class)->name('humans.salaries.transmission');
@@ -92,15 +91,15 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('config')->group(function () {
-            Route::get('/', App\Livewire\Humans\Config\Index::class)->name('humans.config.index');
+            Route::get('/', ConfigIndex::class)->name('humans.config.index');
         });
     });
 
     Route::prefix('portail')->group(function () {
-        Route::prefix('salarie')->group(function() {
+        Route::prefix('salarie')->group(function () {
             Route::get('/', SalarieDashboard::class)->name('portail.salarie.dashboard');
 
-            Route::prefix('documents')->group(function() {
+            Route::prefix('documents')->group(function () {
                 Route::get('/', DocumentsIndex::class)->name('portail.salarie.documents');
                 Route::get('/signed/{id}', Signed::class)->name('portail.salarie.documents.signed');
             });

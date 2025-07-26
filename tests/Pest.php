@@ -48,6 +48,7 @@ function measureExecutionTime(callable $callback): float
 {
     $start = microtime(true);
     $callback();
+
     return microtime(true) - $start;
 }
 
@@ -56,6 +57,7 @@ function measureMemoryUsage(callable $callback): int
 {
     $memoryBefore = memory_get_usage(true);
     $callback();
+
     return memory_get_usage(true) - $memoryBefore;
 }
 

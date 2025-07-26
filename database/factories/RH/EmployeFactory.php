@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\RH;
 
 use App\Models\RH\Employe;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class EmployeFactory extends Factory
+final class EmployeFactory extends Factory
 {
     protected $model = Employe::class;
 

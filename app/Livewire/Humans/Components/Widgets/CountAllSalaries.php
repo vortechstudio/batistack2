@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Components\Widgets;
 
 use App\Models\Commerce\Facture;
@@ -9,7 +11,7 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Number;
 
-class CountAllSalaries extends StatsOverviewWidget
+final class CountAllSalaries extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
@@ -19,14 +21,16 @@ class CountAllSalaries extends StatsOverviewWidget
             Stat::make('Salariés Inactif', Employe::where('status', 'inactif')->count()),
             Stat::make('Masse Salariales', $this->calcMasseSalariale()['value'])
                 ->description('Soit '.$this->calcMasseSalariale()['percent'].'% absorbé par les salariés')
-                ->color(function() {
-                    if($this->calcMasseSalariale()['percent'] <= 25) {
+                ->color(function () {
+                    if ($this->calcMasseSalariale()['percent'] <= 25) {
                         return 'success';
-                    } elseif($this->calcMasseSalariale()['percent'] > 25 && $this->calcMasseSalariale()['percent'] <= 40) {
-                        return 'warning';
-                    } else {
-                        return 'danger';
                     }
+                    if ($this->calcMasseSalariale()['percent'] > 25 && $this->calcMasseSalariale()['percent'] <= 40) {
+                        return 'warning';
+                    }
+
+                    return 'danger';
+
                 }),
         ];
     }
@@ -37,10 +41,11 @@ class CountAllSalaries extends StatsOverviewWidget
         $brut = FichePaie::whereDate('periode', '>=', now()->subYear())->sum('salaire_brut');
         $cotisation = FichePaie::whereDate('periode', '>=', now()->subYear())->sum('total_cotisation');
 
-        $calc = $brut+$cotisation;
+        $calc = $brut + $cotisation;
+
         return [
-            "value" => Number::currency($calc, 'EUR', 'fr'),
-            "percent" => $ca !== 0 ? ($calc / $ca) * 100 : 0,
+            'value' => Number::currency($calc, 'EUR', 'fr'),
+            'percent' => $ca !== 0 ? ($calc / $ca) * 100 : 0,
         ];
     }
 }

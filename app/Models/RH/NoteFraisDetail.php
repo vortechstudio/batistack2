@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\RH;
 
-use App\Enums\RH\TypeFrais;
 use App\Enums\RH\ModePaiementFrais;
+use App\Enums\RH\TypeFrais;
 use App\Models\Chantiers\Chantiers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,11 +13,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class NoteFraisDetail extends Model implements HasMedia
+final class NoteFraisDetail extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
     protected $table = 'note_frais_details';
+
     protected $guarded = [];
 
     /**
@@ -29,25 +32,6 @@ class NoteFraisDetail extends Model implements HasMedia
     public function chantier(): BelongsTo
     {
         return $this->belongsTo(Chantiers::class)->nullable();
-    }
-
-    /**
-     * Casts
-     */
-    protected function casts(): array
-    {
-        return [
-            'date_frais' => 'date',
-            'montant_ht' => 'decimal:2',
-            'montant_tva' => 'decimal:2',
-            'montant_ttc' => 'decimal:2',
-            'taux_tva' => 'decimal:2',
-            'kilometrage' => 'decimal:2',
-            'remboursable' => 'boolean',
-            'type_frais' => TypeFrais::class,
-            'mode_paiement' => ModePaiementFrais::class,
-            'metadata' => 'array',
-        ];
     }
 
     /**
@@ -73,13 +57,13 @@ class NoteFraisDetail extends Model implements HasMedia
 
     public function getAJustificatifAttribute(): bool
     {
-        return !empty($this->justificatif_path);
+        return ! empty($this->justificatif_path);
     }
 
     public function getDistanceAttribute(): ?string
     {
         if ($this->lieu_depart && $this->lieu_arrivee) {
-            return $this->lieu_depart . ' → ' . $this->lieu_arrivee;
+            return $this->lieu_depart.' → '.$this->lieu_arrivee;
         }
 
         return null;
@@ -90,11 +74,11 @@ class NoteFraisDetail extends Model implements HasMedia
         $libelle = $this->libelle;
 
         if ($this->type_frais === TypeFrais::TRANSPORT && $this->distance) {
-            $libelle .= ' (' . $this->distance . ')';
+            $libelle .= ' ('.$this->distance.')';
         }
 
         if ($this->kilometrage) {
-            $libelle .= ' - ' . $this->kilometrage . ' km';
+            $libelle .= ' - '.$this->kilometrage.' km';
         }
 
         return $libelle;
@@ -168,27 +152,46 @@ class NoteFraisDetail extends Model implements HasMedia
     {
         parent::boot();
 
-        static::saving(function ($detail) {
+        self::saving(function ($detail) {
             // Calculer automatiquement les montants si nécessaire
             $detail->calculerMontants();
         });
 
-        static::saved(function ($detail) {
+        self::saved(function ($detail) {
             // Mettre à jour le montant total de la note de frais
             if ($detail->noteFrais) {
                 $detail->noteFrais->update([
-                    'montant_total' => $detail->noteFrais->montant_total_calcule
+                    'montant_total' => $detail->noteFrais->montant_total_calcule,
                 ]);
             }
         });
 
-        static::deleted(function ($detail) {
+        self::deleted(function ($detail) {
             // Mettre à jour le montant total de la note de frais
             if ($detail->noteFrais) {
                 $detail->noteFrais->update([
-                    'montant_total' => $detail->noteFrais->montant_total_calcule
+                    'montant_total' => $detail->noteFrais->montant_total_calcule,
                 ]);
             }
         });
+    }
+
+    /**
+     * Casts
+     */
+    protected function casts(): array
+    {
+        return [
+            'date_frais' => 'date',
+            'montant_ht' => 'decimal:2',
+            'montant_tva' => 'decimal:2',
+            'montant_ttc' => 'decimal:2',
+            'taux_tva' => 'decimal:2',
+            'kilometrage' => 'decimal:2',
+            'remboursable' => 'boolean',
+            'type_frais' => TypeFrais::class,
+            'mode_paiement' => ModePaiementFrais::class,
+            'metadata' => 'array',
+        ];
     }
 }

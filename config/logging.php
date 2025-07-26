@@ -136,7 +136,7 @@ return [
         'github' => [
             // Required configuration
             'driver' => 'custom',
-            'via' => \Naoray\LaravelGithubMonolog\GithubIssueHandlerFactory::class,
+            'via' => Naoray\LaravelGithubMonolog\GithubIssueHandlerFactory::class,
             'repo' => env('GITHUB_USERNAME').'/'.env('GITHUB_REPOSITORY'),    // Format: "username/repository"
             'token' => env('GITHUB_TOKEN'),  // Your GitHub Personal Access Token
 

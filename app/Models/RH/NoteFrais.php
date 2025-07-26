@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\RH;
 
 use App\Enums\RH\StatusNoteFrais;
-use App\Models\Chantiers\Chantier;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,11 +13,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class NoteFrais extends Model implements HasMedia
+final class NoteFrais extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
     protected $table = 'note_frais';
+
     protected $guarded = [];
 
     /**
@@ -38,29 +40,11 @@ class NoteFrais extends Model implements HasMedia
     }
 
     /**
-     * Casts
-     */
-    protected function casts(): array
-    {
-        return [
-            'date_debut_periode' => 'date',
-            'date_fin_periode' => 'date',
-            'date_soumission' => 'datetime',
-            'date_validation' => 'datetime',
-            'date_paiement' => 'datetime',
-            'montant_total' => 'decimal:2',
-            'montant_valide' => 'decimal:2',
-            'status' => StatusNoteFrais::class,
-            'metadata' => 'array',
-        ];
-    }
-
-    /**
      * Accesseurs
      */
     public function getNumeroCompletAttribute(): string
     {
-        return 'NF-' . str_pad($this->id, 6, '0', STR_PAD_LEFT);
+        return 'NF-'.mb_str_pad($this->id, 6, '0', STR_PAD_LEFT);
     }
 
     public function getMontantTotalCalculeAttribute(): float
@@ -105,7 +89,7 @@ class NoteFrais extends Model implements HasMedia
     public function scopePourPeriode($query, $dateDebut, $dateFin)
     {
         return $query->whereBetween('date_debut_periode', [$dateDebut, $dateFin])
-                    ->orWhereBetween('date_fin_periode', [$dateDebut, $dateFin]);
+            ->orWhereBetween('date_fin_periode', [$dateDebut, $dateFin]);
     }
 
     /**
@@ -181,9 +165,9 @@ class NoteFrais extends Model implements HasMedia
     {
         parent::boot();
 
-        static::creating(function ($noteFrais) {
+        self::creating(function ($noteFrais) {
             if (empty($noteFrais->numero)) {
-                $noteFrais->numero = 'NF-' . date('Y') . '-' . str_pad(
+                $noteFrais->numero = 'NF-'.date('Y').'-'.mb_str_pad(
                     static::whereYear('created_at', date('Y'))->count() + 1,
                     4,
                     '0',
@@ -192,9 +176,27 @@ class NoteFrais extends Model implements HasMedia
             }
         });
 
-        static::deleting(function ($noteFrais) {
+        self::deleting(function ($noteFrais) {
             // Supprimer les détails associés
             $noteFrais->details()->delete();
         });
+    }
+
+    /**
+     * Casts
+     */
+    protected function casts(): array
+    {
+        return [
+            'date_debut_periode' => 'date',
+            'date_fin_periode' => 'date',
+            'date_soumission' => 'datetime',
+            'date_validation' => 'datetime',
+            'date_paiement' => 'datetime',
+            'montant_total' => 'decimal:2',
+            'montant_valide' => 'decimal:2',
+            'status' => StatusNoteFrais::class,
+            'metadata' => 'array',
+        ];
     }
 }

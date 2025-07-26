@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\RH;
 
 enum ModePaiementFrais: string
@@ -11,6 +13,13 @@ enum ModePaiementFrais: string
     case CARTE_ENTREPRISE = 'carte_entreprise';
     case AVANCE = 'avance';
     case AUTRE = 'autre';
+
+    public static function getSelectOptions(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn ($mode) => [$mode->value => $mode->label()])
+            ->toArray();
+    }
 
     public function label(): string
     {
@@ -36,12 +45,5 @@ enum ModePaiementFrais: string
             self::AVANCE => 'heroicon-o-arrow-up-circle',
             self::AUTRE => 'heroicon-o-question-mark-circle',
         };
-    }
-
-    public static function getSelectOptions(): array
-    {
-        return collect(self::cases())
-            ->mapWithKeys(fn($mode) => [$mode->value => $mode->label()])
-            ->toArray();
     }
 }

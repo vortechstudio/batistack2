@@ -1,18 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use QCod\Settings\Setting\Setting;
 
-class AppSettingSeeder extends Seeder
+final class AppSettingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run(): void
-    {
-
-    }
+    public function run(): void {}
 }

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Frais;
 
 use Livewire\Component;
 
-class Frais extends Component
+final class Frais extends Component
 {
     public function render()
     {

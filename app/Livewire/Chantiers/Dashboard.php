@@ -129,7 +129,7 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                             }
 
                             return $chantier;
-                        } catch(Exception $ex) {
+                        } catch (Exception $ex) {
                             Log::channel('github')->emergency($ex);
                         }
                     }),
@@ -148,7 +148,7 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                             return response()->streamDownload(function () use ($pdfBuilder) {
                                 echo base64_decode($pdfBuilder->download()->base64());
                             }, 'listing_chantier.pdf');
-                        } catch(Exception $ex) {
+                        } catch (Exception $ex) {
                             Log::channel('github')->emergency($ex);
                         }
                     }),

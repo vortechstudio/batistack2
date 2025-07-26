@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\RH;
 
-use App\Enums\RH\ProcessEmploye;
 use App\Enums\RH\StatusEmploye;
 use App\Enums\RH\TypeContrat;
 use App\Models\Chantiers\ChantierRessources;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Support\Str;
 
-class Employe extends Model implements HasMedia
+final class Employe extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+
     protected $guarded = [];
 
     public function user()
@@ -63,24 +65,14 @@ class Employe extends Model implements HasMedia
         return $this->hasMany(NoteFrais::class)->validees();
     }
 
-    protected function casts(): array
-    {
-        return [
-            'date_embauche' => 'date',
-            'date_sortie' => 'date',
-            'type_contrat' => TypeContrat::class,
-            'status' => StatusEmploye::class,
-        ];
-    }
-
     public function getFullNameAttribute()
     {
-        return $this->nom." ".$this->prenom;
+        return $this->nom.' '.$this->prenom;
     }
 
     public function getFullAddressAttribute()
     {
-        return $this->adresse.", ".$this->code_postal." ".$this->ville;
+        return $this->adresse.', '.$this->code_postal.' '.$this->ville;
     }
 
     public function getMatriculeAttribute()
@@ -99,5 +91,15 @@ class Employe extends Model implements HasMedia
             ->whereMonth('date_validation', now()->month)
             ->whereYear('date_validation', now()->year)
             ->sum('montant_valide');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'date_embauche' => 'date',
+            'date_sortie' => 'date',
+            'type_contrat' => TypeContrat::class,
+            'status' => StatusEmploye::class,
+        ];
     }
 }

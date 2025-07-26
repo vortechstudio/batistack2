@@ -38,6 +38,7 @@ use App\Models\User;
 use Database\Seeders\Paie\ProfilPaieSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use Str;
 
 final class DatabaseSeeder extends Seeder
 {
@@ -103,6 +104,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (User::count() > 0) {
             $this->command->warn('⚠️  Les utilisateurs existent déjà, passage...');
+
             return;
         }
 
@@ -122,6 +124,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Company::count() > 0) {
             $this->command->warn('⚠️  L\'entreprise existe déjà, passage...');
+
             return;
         }
 
@@ -134,7 +137,7 @@ final class DatabaseSeeder extends Seeder
      */
     private function setupStorage(): void
     {
-        if (!Storage::disk('public')->exists('company')) {
+        if (! Storage::disk('public')->exists('company')) {
             Storage::disk('public')->makeDirectory('company');
             $this->command->info('✓ Répertoire company créé');
         }
@@ -147,6 +150,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Tiers::count() > 0) {
             $this->command->warn('⚠️  Les tiers existent déjà, passage...');
+
             return;
         }
 
@@ -203,6 +207,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Chantiers::count() > 0) {
             $this->command->warn('⚠️  Les chantiers existent déjà, passage...');
+
             return;
         }
 
@@ -266,6 +271,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Devis::count() > 0) {
             $this->command->warn('⚠️  Les devis existent déjà, passage...');
+
             return;
         }
 
@@ -293,6 +299,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Commande::count() > 0) {
             $this->command->warn('⚠️  Les commandes existent déjà, passage...');
+
             return;
         }
 
@@ -317,6 +324,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Facture::count() > 0) {
             $this->command->warn('⚠️  Les factures existent déjà, passage...');
+
             return;
         }
 
@@ -338,7 +346,7 @@ final class DatabaseSeeder extends Seeder
                     'date_paiement' => $facture->date_echeance->addDays(rand(2, 5)),
                     'amount' => $facture->amount_ttc,
                     'mode_reglement_id' => ModeReglement::all()->random()->id,
-                    'reference' => 'STS' . now()->format('ym') . '-00' . rand(10, 99),
+                    'reference' => 'STS'.now()->format('ym').'-00'.rand(10, 99),
                 ]);
             }
         }
@@ -353,6 +361,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Avoir::count() > 0) {
             $this->command->warn('⚠️  Les avoirs existent déjà, passage...');
+
             return;
         }
 
@@ -382,6 +391,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (ProfilPaie::count() > 0) {
             $this->command->warn('⚠️  Les profils de paie existent déjà, passage...');
+
             return;
         }
 
@@ -396,6 +406,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Employe::count() > 0) {
             $this->command->warn('⚠️  Les employés existent déjà, passage...');
+
             return;
         }
 
@@ -415,7 +426,7 @@ final class DatabaseSeeder extends Seeder
             $employe = Employe::factory()->create([
                 'user_id' => $user->id,
                 'email' => $user->email,
-                'uuid' => \Str::uuid(),
+                'uuid' => Str::uuid(),
             ]);
 
             // Créer le contrat (obligatoire)
@@ -451,6 +462,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (NoteFrais::count() > 0) {
             $this->command->warn('⚠️  Les notes de frais existent déjà, passage...');
+
             return;
         }
 
@@ -459,6 +471,7 @@ final class DatabaseSeeder extends Seeder
 
         if ($users->isEmpty()) {
             $this->command->warn('⚠️  Aucun utilisateur trouvé, impossible de créer des notes de frais');
+
             return;
         }
 
@@ -468,11 +481,11 @@ final class DatabaseSeeder extends Seeder
         for ($i = 0; $i < $notesCount; $i++) {
             // Créer une note de frais avec un statut aléatoire
             $noteFrais = NoteFrais::factory()
-                ->when(rand(1, 10) <= 2, fn($factory) => $factory->brouillon())
-                ->when(rand(1, 10) <= 3, fn($factory) => $factory->soumise())
-                ->when(rand(1, 10) <= 3, fn($factory) => $factory->validee())
-                ->when(rand(1, 10) <= 1, fn($factory) => $factory->payee())
-                ->when(rand(1, 10) <= 1, fn($factory) => $factory->refusee())
+                ->when(rand(1, 10) <= 2, fn ($factory) => $factory->brouillon())
+                ->when(rand(1, 10) <= 3, fn ($factory) => $factory->soumise())
+                ->when(rand(1, 10) <= 3, fn ($factory) => $factory->validee())
+                ->when(rand(1, 10) <= 1, fn ($factory) => $factory->payee())
+                ->when(rand(1, 10) <= 1, fn ($factory) => $factory->refusee())
                 ->create([
                     'employe_id' => Employe::all()->random()->id,
                 ]);
@@ -487,7 +500,7 @@ final class DatabaseSeeder extends Seeder
                     'restauration',
                     'hebergement',
                     'carburant',
-                    'materiel'
+                    'materiel',
                 ];
 
                 $typeFactory = $typeFactories[array_rand($typeFactories)];
@@ -495,11 +508,11 @@ final class DatabaseSeeder extends Seeder
                 NoteFraisDetail::factory()
                     ->{$typeFactory}()
                     ->when(
-                        !$chantiers->isEmpty() && rand(1, 10) <= 7,
-                        fn($factory) => $factory->state(['chantier_id' => $chantiers->random()->id])
+                        ! $chantiers->isEmpty() && rand(1, 10) <= 7,
+                        fn ($factory) => $factory->state(['chantier_id' => $chantiers->random()->id])
                     )
-                    ->when(rand(1, 10) <= 2, fn($factory) => $factory->sansJustificatif())
-                    ->when(rand(1, 10) <= 1, fn($factory) => $factory->nonRemboursable())
+                    ->when(rand(1, 10) <= 2, fn ($factory) => $factory->sansJustificatif())
+                    ->when(rand(1, 10) <= 1, fn ($factory) => $factory->nonRemboursable())
                     ->create([
                         'note_frais_id' => $noteFrais->id,
                     ]);

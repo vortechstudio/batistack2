@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Chantiers\ChantierRessources;
@@ -7,7 +9,7 @@ use App\Models\Chantiers\Chantiers;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class ChantierRessourcesFactory extends Factory
+final class ChantierRessourcesFactory extends Factory
 {
     protected $model = ChantierRessources::class;
 

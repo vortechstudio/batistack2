@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Salarie;
 
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class Index extends Component
+final class Index extends Component
 {
     #[Title('Espace Salariés')]
     #[Layout('components.layouts.humans')]

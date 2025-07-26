@@ -1,37 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Salarie;
 
 use App\Enums\RH\ProcessEmploye;
 use App\Enums\RH\StatusContrat;
 use App\Models\RH\Employe;
 use App\Notifications\RH\NewSalarieNotification;
-use App\Services\YousignService;
 use Filament\Notifications\Notification;
-use Filament\Schemas\Components\View as ComponentsView;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
 
-class View extends Component implements HasSchemas
+final class View extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
 
     public Employe $salarie;
-    public ?array $contractValidatedData = [];
 
-    protected function getForms()
-    {
-        return [
-            'contractValidatedForm',
-        ];
-    }
+    public ?array $contractValidatedData = [];
 
     public function mount(int $id)
     {
@@ -59,7 +53,7 @@ class View extends Component implements HasSchemas
         ]);
 
         $this->salarie->info->update([
-            'process' => ProcessEmploye::CONTRACT_VALIDATE
+            'process' => ProcessEmploye::CONTRACT_VALIDATE,
         ]);
 
         $this->salarie->contrat->update([
@@ -74,7 +68,7 @@ class View extends Component implements HasSchemas
 
         Notification::make()
             ->success()
-            ->title("Contrat valider avec succès")
+            ->title('Contrat valider avec succès')
             ->send();
 
     }
@@ -84,5 +78,12 @@ class View extends Component implements HasSchemas
     public function render()
     {
         return view('livewire.humans.salarie.view');
+    }
+
+    protected function getForms()
+    {
+        return [
+            'contractValidatedForm',
+        ];
     }
 }

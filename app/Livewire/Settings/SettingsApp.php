@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Settings;
 
+use Exception;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -42,7 +40,7 @@ final class SettingsApp extends Component implements HasForms
                         TextInput::make('devis_validity')
                             ->label('Durée de validité des devis'),
 
-                        TextArea::make('devis_mention')
+                        Textarea::make('devis_mention')
                             ->label('Mention complémentaire'),
                     ])
                     ->collapsed(),
@@ -68,9 +66,9 @@ final class SettingsApp extends Component implements HasForms
 
                                         DatePicker::make('dashboard_message_date_end')
                                             ->label('Date de fin'),
-                                    ])
+                                    ]),
                             ])
-                            ->collapsed()
+                            ->collapsed(),
                     ])
                     ->collapsed(),
 
@@ -81,20 +79,20 @@ final class SettingsApp extends Component implements HasForms
     public function update()
     {
         try {
-            !empty($this->form->getState()['devis_validity']) ? settings()->set('devis_validity', $this->form->getState()['devis_validity']) : settings()->set('devis_validity', '');
-            !empty($this->form->getState()['devis_mention']) ? settings()->set('devis_mention', $this->form->getState()['devis_mention']) : settings()->set('devis_mention', '');
-            !empty($this->form->getState()['dashboard_message_active']) ? settings()->set('dashboard_message_active', $this->form->getState()['dashboard_message_active']) : settings()->set('dashboard_message_active', '');
-            !empty($this->form->getState()['dashboard_message_title']) ? settings()->set('dashboard_message_title', $this->form->getState()['dashboard_message_title']) : settings()->set('dashboard_message_title', '');
-            !empty($this->form->getState()['dashboard_message_body']) ? settings()->set('dashboard_message_body', $this->form->getState()['dashboard_message_body']) : settings()->set('dashboard_message_body', '');
-            !empty($this->form->getState()['dashboard_message_date_start']) ? settings()->set('dashboard_message_date_start', $this->form->getState()['dashboard_message_date_start']) : settings()->set('dashboard_message_date_start', '');
-            !empty($this->form->getState()['dashboard_message_date_end']) ? settings()->set('dashboard_message_date_end', $this->form->getState()['dashboard_message_date_end']) : settings()->set('dashboard_message_date_end', '');
+            ! empty($this->form->getState()['devis_validity']) ? settings()->set('devis_validity', $this->form->getState()['devis_validity']) : settings()->set('devis_validity', '');
+            ! empty($this->form->getState()['devis_mention']) ? settings()->set('devis_mention', $this->form->getState()['devis_mention']) : settings()->set('devis_mention', '');
+            ! empty($this->form->getState()['dashboard_message_active']) ? settings()->set('dashboard_message_active', $this->form->getState()['dashboard_message_active']) : settings()->set('dashboard_message_active', '');
+            ! empty($this->form->getState()['dashboard_message_title']) ? settings()->set('dashboard_message_title', $this->form->getState()['dashboard_message_title']) : settings()->set('dashboard_message_title', '');
+            ! empty($this->form->getState()['dashboard_message_body']) ? settings()->set('dashboard_message_body', $this->form->getState()['dashboard_message_body']) : settings()->set('dashboard_message_body', '');
+            ! empty($this->form->getState()['dashboard_message_date_start']) ? settings()->set('dashboard_message_date_start', $this->form->getState()['dashboard_message_date_start']) : settings()->set('dashboard_message_date_start', '');
+            ! empty($this->form->getState()['dashboard_message_date_end']) ? settings()->set('dashboard_message_date_end', $this->form->getState()['dashboard_message_date_end']) : settings()->set('dashboard_message_date_end', '');
 
             Notification::make()
                 ->success()
                 ->title("Configuration de l'application")
                 ->body("La mise à jour de la configuration de l'application à été effectué avec succès")
                 ->send();
-        }catch (\Exception $exception){
+        } catch (Exception $exception) {
             report($exception);
             Log::channel('github')->emergency($exception);
             Notification::make()

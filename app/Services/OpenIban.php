@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 
-class OpenIban
+final class OpenIban
 {
     private string $endpoint = 'https://openiban.com/validate/';
 
@@ -13,7 +15,7 @@ class OpenIban
         $call = Http::get($this->endpoint.$iban)
             ->json();
 
-        if($call['valid'] == true) {
+        if ($call['valid'] === true) {
             return true;
         }
 

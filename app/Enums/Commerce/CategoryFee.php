@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Commerce;
 
 enum CategoryFee: string
@@ -7,7 +9,7 @@ enum CategoryFee: string
     case CARBURANT = 'carburant';
     case REPAS = 'repas';
     case OUTILS = 'outillages';
-    case TRANSPORT  = 'transport';
+    case TRANSPORT = 'transport';
     case AUTRE = 'autre';
 
     public function label()

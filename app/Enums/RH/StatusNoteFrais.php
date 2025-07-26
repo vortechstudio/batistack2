@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\RH;
 
 enum StatusNoteFrais: string
@@ -9,6 +11,13 @@ enum StatusNoteFrais: string
     case VALIDEE = 'validee';
     case REFUSEE = 'refusee';
     case PAYEE = 'payee';
+
+    public static function getSelectOptions(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn ($status) => [$status->value => $status->label()])
+            ->toArray();
+    }
 
     public function label(): string
     {
@@ -41,12 +50,5 @@ enum StatusNoteFrais: string
             self::REFUSEE => 'heroicon-o-x-circle',
             self::PAYEE => 'heroicon-o-banknotes',
         };
-    }
-
-    public static function getSelectOptions(): array
-    {
-        return collect(self::cases())
-            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-            ->toArray();
     }
 }

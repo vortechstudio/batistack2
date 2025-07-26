@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Commerce;
 
 use App\Enums\Commerce\CategoryFee;
@@ -9,9 +11,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class frais extends Model
+final class frais extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
     public function user(): BelongsTo
