@@ -38,11 +38,33 @@ jobs:
         run: |
           echo "🔍 Détection des modules modifiés..."
 
-          # Obtenir la liste des fichiers modifiés
+          # Obtenir la liste des fichiers modifiés de manière plus robuste
           if [ "${{ github.event_name }}" = "push" ]; then
+            # Pour les push, comparer avec le commit précédent
             CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Pour les PR, utiliser la base de comparaison GitHub
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD)
           else
-            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+            # Fallback: utiliser les fichiers modifiés dans les derniers commits
+            CHANGED_FILES=$(git diff --name-only HEAD~2 HEAD)
+          fi
+
+          # Vérification de sécurité : si git diff échoue, utiliser une approche alternative
+          if [ $? -ne 0 ] || [ -z "$CHANGED_FILES" ]; then
+            echo "⚠️ git diff a échoué, utilisation d'une approche alternative..."
+
+            # Utiliser l'API GitHub pour les PR
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "📡 Récupération des fichiers via l'API GitHub..."
+              CHANGED_FILES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.number }}/files" | \
+                jq -r '.[].filename')
+            else
+              echo "❌ Impossible de détecter les fichiers modifiés"
+              echo "detection-success=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
           fi
 
           MODULES=()
