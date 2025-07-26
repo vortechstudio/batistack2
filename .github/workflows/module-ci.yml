@@ -196,7 +196,7 @@ jobs:
 
       - name: Check module documentation
         run: |
-          MODULE_DOC="docs/modules/${{ matrix.module }}.md"
+          MODULE_DOC="docs/1.0/${{ matrix.module }}.md"
           if [ ! -f "$MODULE_DOC" ]; then
             echo "⚠️ Documentation manquante pour le module ${{ matrix.module }}"
             echo "📝 Créez le fichier: $MODULE_DOC"
