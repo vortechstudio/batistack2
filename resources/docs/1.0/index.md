@@ -4,3 +4,5 @@
     - [Module Tiers](/{{route}}/{{version}}/tiers)
     - [Module Chantiers](/{{route}}/{{version}}/chantiers)
     - [Module RH](/{{route}}/{{version}}/hr)
+    - [Portail Salarié](/{{route}}/{{version}}/portail-salarie)
+    - [Paramètres](/{{route}}/{{version}}/settings)
