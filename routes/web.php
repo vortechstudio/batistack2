@@ -111,5 +111,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/api/bank/connect', [App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');
+Route::post('/csp-report', [App\Http\Controllers\CspReportController::class, 'report'])->name('csp.report');
 Route::get('/analyse/phpstan', PhpStan::class)->name('analyse.phpstan');
 require __DIR__.'/auth.php';
