@@ -291,7 +291,7 @@ jobs:
       - name: Approbation manuelle requise
         uses: trstringer/manual-approval@v1
         with:
-          secret: ${{ secrets.GITHUB_TOKEN }}
+          secret: ${{ secrets.GH_TOKEN }}
           approvers: vortechstudio
           minimum-approvals: 1
           issue-title: "🏭 Déploiement Production - Module ${{ matrix.module }}"

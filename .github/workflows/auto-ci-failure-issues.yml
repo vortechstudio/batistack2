@@ -300,9 +300,9 @@ jobs:
               ]
             };
 
-            // Envoyer à Slack (nécessite la configuration de SLACK_WEBHOOK_URL)
-            if (process.env.SLACK_WEBHOOK_URL) {
-              await fetch(process.env.SLACK_WEBHOOK_URL, {
+            // Envoyer à Slack (nécessite la configuration de SLACK_WEBHOOK)
+            if (process.env.SLACK_WEBHOOK) {
+              await fetch(process.env.SLACK_WEBHOOK, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -311,7 +311,7 @@ jobs:
               });
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
   update-existing-issue:
     runs-on: ubuntu-latest
