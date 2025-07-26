@@ -48,6 +48,21 @@ class Employe extends Model implements HasMedia
         return $this->hasOne(EmployeBank::class);
     }
 
+    public function notesFrais()
+    {
+        return $this->hasMany(NoteFrais::class);
+    }
+
+    public function notesFraisEnAttente()
+    {
+        return $this->hasMany(NoteFrais::class)->enAttente();
+    }
+
+    public function notesFraisValidees()
+    {
+        return $this->hasMany(NoteFrais::class)->validees();
+    }
+
     protected function casts(): array
     {
         return [
@@ -71,5 +86,18 @@ class Employe extends Model implements HasMedia
     public function getMatriculeAttribute()
     {
         return Str::upper(Str::limit($this->uuid, 8, ''));
+    }
+
+    public function getMontantNotesFraisEnAttenteAttribute(): float
+    {
+        return $this->notesFraisEnAttente->sum('montant_total');
+    }
+
+    public function getMontantNotesFraisValideesMoisAttribute(): float
+    {
+        return $this->notesFraisValidees()
+            ->whereMonth('date_validation', now()->month)
+            ->whereYear('date_validation', now()->year)
+            ->sum('montant_valide');
     }
 }
