@@ -4,8 +4,8 @@
 
 [![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![Livewire](https://img.shields.io/badge/Livewire-4B56BE?style=for-the-badge&logo=livewire&logoColor=white)](https://laravel-livewire.com)
-[![License](https://img.shields.io/github/license/batistack/batistack?style=for-the-badge)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/batistack/batistack?style=for-the-badge)](https://github.com/batistack/batistack/releases)
+[![License](https://img.shields.io/github/license/vortechstudio/batistack2?style=for-the-badge)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/vortechstudio/batistack2?style=for-the-badge)](https://github.com/vortechstudio/batistack2/releases)
 
 **Solution tout-en-un** de gestion de projets de construction avec modules intégrés pour :
 - 🏗️ Chantiers et planning
@@ -23,23 +23,6 @@
 | **Commerce** | Devis→Facture automatisé, gestion des fournisseurs, tableau de bord financier |
 | **GPAO** | Ordonnancement de production, contrôle qualité IoT, traçabilité matière |
 | **Mobile** | Application terrain avec synchronisation offline |
-
-## 🚀 Démarrage rapide
-
-```bash
-# Cloner le dépôt
-git clone https://github.com/batistack/batistack.git
-cd batistack
-
-# Lancer avec Docker (PHP 8.3 + MySQL + Redis)
-docker-compose up -d
-
-# Installer les dépendances
-docker-compose exec app composer install
-
-# Configurer l\'environnement
-cp .env.master .env
-```
 
 ## 📚 Documentation
 

@@ -74,3 +74,40 @@ clear:
 
 pr:
 	sh pr-agent.sh
+
+# Création du projet GitHub unifié
+github-project:
+ifeq ($(OS),Windows_NT)
+	@echo "Création du projet GitHub unifié...";
+	@powershell -ExecutionPolicy Bypass -File scripts/create-github-project-unified.ps1
+else
+	@echo "Création du projet GitHub unifié...";
+	@bash scripts/create-github-project-unified.sh
+endif
+
+github-milestones:
+ifeq ($(OS),Windows_NT)
+	@echo "Création des jalons GitHub...";
+	@powershell -ExecutionPolicy Bypass -File scripts/create-github-milestones.ps1
+else
+	@echo "Création des jalons GitHub...";
+	@bash scripts/create-github-milestones.sh
+endif
+
+# Création des issues pour le Module Produits/Services
+github-issues-produits:
+ifeq ($(OS),Windows_NT)
+	@echo "Création des issues Module Produits/Services...";
+	@powershell -ExecutionPolicy Bypass -File scripts/create-issues-produits-services.ps1
+else
+	@echo "Création des issues Module Produits/Services...";
+	@bash scripts/create-issues-produits-services.sh
+endif
+
+# Création des labels GitHub (inclus dans le projet unifié)
+github-labels:
+	@echo "Les labels sont créés automatiquement avec le projet unifié";
+
+# Configuration GitHub complète
+github-setup: github-project github-milestones
+	@echo "Configuration GitHub terminée !";

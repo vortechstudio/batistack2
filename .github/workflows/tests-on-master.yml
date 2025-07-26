@@ -48,14 +48,3 @@ jobs:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Create Issue on Failure
-        if: failure()
-        uses: peter-evans/create-issue-from-file@v5
-        with:
-          title: "🚨 CI Failed on ${{ github.workflow }} (#${{ github.run_number }})"
-          content-filepath: .github/ISSUE_TEMPLATE/ci-failure.md
-          labels: |
-            bug
-            CI
-          assignees: vortechstudio
-          token: ${{ secrets.GH_TOKEN }}

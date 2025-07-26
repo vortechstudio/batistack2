@@ -1,0 +1,271 @@
+name: 🏗️ Développement de Module
+description: Template pour le développement d'un nouveau module ou fonctionnalité
+title: "[MODULE] "
+labels: ["module", "enhancement"]
+assignees: []
+
+body:
+  - type: dropdown
+    id: module
+    attributes:
+      label: Module concerné
+      description: Sélectionnez le module principal concerné par cette issue
+      options:
+        # Modules existants
+        - "🏗️ Chantiers"
+        - "👥 RH (Ressources Humaines)"
+        - "🏢 Tiers"
+        - "💼 Commerce"
+        - "⚙️ Core (Système)"
+        # Modules en développement/planifiés
+        - "📦 Produits/Services"
+        - "🏭 GPAO (Gestion Production)"
+        - "💰 Facturation Avancée"
+        - "📊 Comptabilité"
+        - "🏢 Immobilisations"
+        - "📁 GED (Gestion Documentaire)"
+        - "🚗 Véhicules"
+        - "📋 Contrats/Abonnements"
+        - "📱 Portail Client"
+        - "🔧 Settings (Paramètres)"
+        - "🎯 Actions (Workflows)"
+        # Modules transversaux
+        - "⚙️ Infrastructure & DevOps"
+        - "🎨 UX/UI & Design System"
+        - "🔒 Sécurité & Authentification"
+        - "📊 Analytics & Reporting"
+        - "🔗 Intégrations & API"
+        - "📧 Notifications & Communications"
+        # Autre
+        - "🆕 Nouveau module"
+        - "🔧 Autre"
+    validations:
+      required: true
+
+  - type: input
+    id: custom_module
+    attributes:
+      label: Nom du module personnalisé
+      description: Si vous avez sélectionné "Nouveau module" ou "Autre", précisez le nom
+      placeholder: "Ex: Gestion des Stocks, Module Qualité, etc."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priorité
+      description: Niveau de priorité de cette fonctionnalité
+      options:
+        - "🔴 Critique (P0)"
+        - "🟠 Haute (P1)"
+        - "🟡 Moyenne (P2)"
+        - "🟢 Basse (P3)"
+        - "🔵 Nice-to-have (P4)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type de développement
+      description: Type de travail à effectuer
+      options:
+        - "✨ Nouvelle fonctionnalité"
+        - "🔧 Amélioration existante"
+        - "🐛 Correction de bug"
+        - "📚 Documentation"
+        - "🧪 Tests"
+        - "♻️ Refactoring"
+        - "🎨 Interface utilisateur"
+        - "⚡ Performance"
+        - "🔒 Sécurité"
+        - "🔗 Intégration"
+        - "📱 Mobile/Responsive"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Complexité technique
+      description: Évaluation de la complexité technique
+      options:
+        - "🟢 Simple (configuration, UI basique)"
+        - "🟡 Modérée (logique métier, API)"
+        - "🟠 Complexe (architecture, intégrations)"
+        - "🔴 Très complexe (refactoring majeur, nouveau système)"
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description détaillée
+      description: Décrivez en détail la fonctionnalité à développer ou le problème à résoudre
+      placeholder: |
+        Exemple :
+        - **Contexte métier** : Pourquoi cette fonctionnalité est nécessaire
+        - **Problème actuel** : Quelle limitation ou problème résoudre
+        - **Solution proposée** : Comment cette fonctionnalité va résoudre le problème
+        - **Impact attendu** : Bénéfices pour les utilisateurs et l'entreprise
+        - **Utilisateurs concernés** : Qui va utiliser cette fonctionnalité
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Critères d'acceptation
+      description: Listez les critères qui définissent quand cette fonctionnalité sera considérée comme terminée
+      placeholder: |
+        **Fonctionnalités :**
+        - [ ] Critère fonctionnel 1
+        - [ ] Critère fonctionnel 2
+        - [ ] Critère fonctionnel 3
+
+        **Qualité :**
+        - [ ] Tests unitaires écrits et passants
+        - [ ] Tests d'intégration si nécessaire
+        - [ ] Documentation technique mise à jour
+        - [ ] Documentation utilisateur créée/mise à jour
+
+        **Performance :**
+        - [ ] Temps de réponse < X secondes
+        - [ ] Compatible mobile/responsive
+
+        **Sécurité :**
+        - [ ] Validation des données d'entrée
+        - [ ] Gestion des permissions appropriée
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical_specs
+    attributes:
+      label: Spécifications techniques
+      description: Détails techniques, architecture, dépendances, etc.
+      placeholder: |
+        **Base de données :**
+        - Modèles à créer/modifier :
+        - Migrations nécessaires :
+        - Relations entre modèles :
+
+        **Backend :**
+        - Contrôleurs/Actions :
+        - Services/Jobs :
+        - API endpoints :
+        - Validations/Rules :
+
+        **Frontend :**
+        - Composants Livewire :
+        - Vues Blade :
+        - JavaScript/Alpine :
+
+        **Dépendances :**
+        - Packages Composer :
+        - Packages NPM :
+        - Services externes :
+
+        **Configuration :**
+        - Variables d'environnement :
+        - Fichiers de config :
+    validations:
+      required: false
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Maquettes/Wireframes
+      description: Liens vers les maquettes, captures d'écran ou descriptions de l'interface
+      placeholder: |
+        **Design :**
+        - Lien vers Figma/Sketch :
+        - Captures d'écran existantes :
+
+        **UX/UI :**
+        - Description du parcours utilisateur :
+        - Interactions spécifiques :
+        - États d'erreur/succès :
+
+        **Responsive :**
+        - Comportement mobile :
+        - Adaptations tablette :
+    validations:
+      required: false
+
+  - type: dropdown
+    id: estimated_effort
+    attributes:
+      label: Estimation d'effort
+      description: Estimation approximative du temps de développement
+      options:
+        - "🕐 1-2 heures (hotfix, config simple)"
+        - "🕑 Demi-journée (petite fonctionnalité)"
+        - "🕒 1 jour (fonctionnalité simple)"
+        - "🕓 2-3 jours (fonctionnalité moyenne)"
+        - "🕔 1 semaine (fonctionnalité complexe)"
+        - "🕕 2 semaines (module complet)"
+        - "🕖 1 mois (gros module)"
+        - "🕗 Plus d'1 mois (refactoring majeur)"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: dependencies
+    attributes:
+      label: Dépendances et blocages
+      description: Cette fonctionnalité dépend-elle d'autres développements ?
+      options:
+        - label: "🚫 Cette issue bloque d'autres développements"
+        - label: "⏳ Cette issue dépend d'autres issues en cours"
+        - label: "✅ Nécessite une validation métier avant développement"
+        - label: "👥 Nécessite des tests utilisateurs"
+        - label: "🔒 Nécessite une validation sécurité"
+        - label: "📊 Nécessite une analyse de performance"
+        - label: "🎨 Nécessite une validation UX/UI"
+        - label: "📱 Doit être compatible mobile"
+
+  - type: textarea
+    id: linked_issues
+    attributes:
+      label: Issues liées
+      description: Références vers d'autres issues en relation
+      placeholder: |
+        **Dépendances :**
+        - Bloque : #123, #456
+        - Dépend de : #789, #012
+
+        **Liées :**
+        - Voir aussi : #345, #678
+        - Epic parent : #999
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Contexte supplémentaire
+      description: Toute information supplémentaire utile
+      placeholder: |
+        **Documentation :**
+        - Liens vers la documentation existante
+        - Spécifications métier
+        - Standards techniques à respecter
+
+        **Références :**
+        - Issues GitHub liées
+        - Pull requests en relation
+        - Discussions Slack/Teams
+
+        **Contraintes :**
+        - Limitations techniques
+        - Contraintes de temps
+        - Compatibilité requise
+
+        **Notes :**
+        - Informations importantes
+        - Décisions prises
+        - Points d'attention
+    validations:
+      required: false

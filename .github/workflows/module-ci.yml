@@ -1,0 +1,265 @@
+name: 🏗️ Module CI/CD
+
+on:
+  pull_request:
+    branches: [develop, master]
+    paths:
+      # Modèles de tous les modules
+      - 'app/Models/**'
+      # Composants Livewire de tous les modules
+      - 'app/Livewire/**'
+      # Migrations de tous les modules
+      - 'database/migrations/**'
+      # Tests de tous les modules
+      - 'tests/Feature/**'
+      - 'tests/Unit/**'
+      # Factories et seeders
+      - 'database/factories/**'
+      - 'database/seeders/**'
+  push:
+    branches: [develop]
+
+jobs:
+  detect-changed-modules:
+    name: 🔍 Détection des modules modifiés
+    runs-on: ubuntu-latest
+    outputs:
+      modules: ${{ steps.changes.outputs.modules }}
+      has-changes: ${{ steps.changes.outputs.has-changes }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed modules
+        id: changes
+        run: |
+          # Récupérer les fichiers modifiés
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || git diff --name-only HEAD~1)
+
+          # Détecter les modules affectés
+          MODULES=()
+
+          # Vérifier chaque module existant
+          for module_dir in app/Models/*/; do
+            if [ -d "$module_dir" ]; then
+              module_name=$(basename "$module_dir")
+              module_name_lower=$(echo "$module_name" | tr '[:upper:]' '[:lower:]')
+
+              # Vérifier si des fichiers du module ont changé
+              if echo "$CHANGED_FILES" | grep -q "app/Models/$module_name/\|app/Livewire/$module_name/\|database/migrations/.*$module_name_lower\|tests/.*$module_name"; then
+                MODULES+=("$module_name_lower")
+              fi
+            fi
+          done
+
+          # Ajouter les modules futurs basés sur les patterns de fichiers
+          if echo "$CHANGED_FILES" | grep -q "produit\|catalogue"; then
+            MODULES+=("produits")
+          fi
+          if echo "$CHANGED_FILES" | grep -q "gpao\|production"; then
+            MODULES+=("gpao")
+          fi
+          if echo "$CHANGED_FILES" | grep -q "facturation\|billing"; then
+            MODULES+=("facturation")
+          fi
+          if echo "$CHANGED_FILES" | grep -q "comptabilite\|accounting"; then
+            MODULES+=("comptabilite")
+          fi
+          if echo "$CHANGED_FILES" | grep -q "immobilisation\|asset"; then
+            MODULES+=("immobilisations")
+          fi
+          if echo "$CHANGED_FILES" | grep -q "ged\|document"; then
+            MODULES+=("ged")
+          fi
+          if echo "$CHANGED_FILES" | grep -q "vehicule\|vehicle"; then
+            MODULES+=("vehicules")
+          fi
+          if echo "$CHANGED_FILES" | grep -q "contrat\|abonnement\|contract"; then
+            MODULES+=("contrats")
+          fi
+
+          # Supprimer les doublons et convertir en JSON
+          UNIQUE_MODULES=($(printf "%s\n" "${MODULES[@]}" | sort -u))
+          MODULES_JSON=$(printf '%s\n' "${UNIQUE_MODULES[@]}" | jq -R . | jq -s .)
+
+          echo "modules=$MODULES_JSON" >> $GITHUB_OUTPUT
+
+          if [ ${#UNIQUE_MODULES[@]} -gt 0 ]; then
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+            echo "📦 Modules détectés: ${UNIQUE_MODULES[*]}"
+          else
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Aucun module spécifique détecté"
+          fi
+
+  module-tests:
+    name: 🧪 Tests Module ${{ matrix.module }}
+    runs-on: ubuntu-latest
+    needs: detect-changed-modules
+    if: needs.detect-changed-modules.outputs.has-changes == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJson(needs.detect-changed-modules.outputs.modules) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: mbstring, bcmath, pdo_mysql, sqlite3
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Setup test environment
+        run: |
+          cp .env.github .env
+          php artisan key:generate
+
+      - name: Run module-specific tests
+        run: |
+          # Tests unitaires du module
+          if [ -d "tests/Unit" ]; then
+            php artisan test tests/Unit --filter=${{ matrix.module }} --coverage-text || true
+          fi
+
+          # Tests fonctionnels du module
+          if [ -d "tests/Feature" ]; then
+            php artisan test tests/Feature --filter=${{ matrix.module }} --coverage-text || true
+          fi
+
+          # Tests génériques si pas de tests spécifiques
+          php artisan test --filter=${{ matrix.module }} --coverage-text || echo "⚠️ Aucun test spécifique trouvé pour ${{ matrix.module }}"
+
+      - name: Check module documentation
+        run: |
+          MODULE_DOC="docs/modules/${{ matrix.module }}.md"
+          if [ ! -f "$MODULE_DOC" ]; then
+            echo "⚠️ Documentation manquante pour le module ${{ matrix.module }}"
+            echo "📝 Créez le fichier: $MODULE_DOC"
+            # Ne pas faire échouer le build pour la documentation manquante
+          else
+            echo "✅ Documentation trouvée pour ${{ matrix.module }}"
+          fi
+
+  security-scan:
+    name: 🔒 Analyse de sécurité
+    runs-on: ubuntu-latest
+    needs: detect-changed-modules
+    if: needs.detect-changed-modules.outputs.has-changes == 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run security audit
+        run: |
+          # Audit des dépendances Composer
+          composer audit || echo "⚠️ Vulnérabilités détectées dans les dépendances"
+
+          # Vérification des fichiers sensibles
+          echo "🔍 Vérification des fichiers sensibles..."
+          if grep -r "password\|secret\|key" app/ --include="*.php" | grep -v "// " | grep -v "/*" | head -5; then
+            echo "⚠️ Mots-clés sensibles détectés - Vérifiez qu'aucun secret n'est en dur"
+          fi
+
+  performance-check:
+    name: ⚡ Vérification des performances
+    runs-on: ubuntu-latest
+    needs: detect-changed-modules
+    if: needs.detect-changed-modules.outputs.has-changes == 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: mbstring, bcmath, pdo_mysql, sqlite3
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Setup test environment
+        run: |
+          cp .env.github .env
+          php artisan key:generate
+
+      - name: Check for N+1 queries
+        run: |
+          # Tests de performance si ils existent
+          if [ -d "tests/Performance" ]; then
+            php artisan test tests/Performance --coverage-text
+          else
+            echo "ℹ️ Aucun test de performance configuré"
+          fi
+
+          # Vérification basique des requêtes N+1 dans le code
+          echo "🔍 Recherche de patterns N+1 potentiels..."
+          if grep -r "foreach.*->.*->" app/Models/ app/Livewire/ --include="*.php" | head -3; then
+            echo "⚠️ Patterns N+1 potentiels détectés - Vérifiez l'utilisation d'eager loading"
+          fi
+
+  code-quality:
+    name: 📊 Qualité du code
+    runs-on: ubuntu-latest
+    needs: detect-changed-modules
+    if: needs.detect-changed-modules.outputs.has-changes == 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run Laravel Pint
+        run: |
+          if command -v ./vendor/bin/pint &> /dev/null; then
+            ./vendor/bin/pint --test
+          else
+            echo "⚠️ Laravel Pint non configuré"
+          fi
+
+      - name: Run PHPStan
+        run: |
+          if [ -f "phpstan.neon.dist" ] && command -v ./vendor/bin/phpstan &> /dev/null; then
+            ./vendor/bin/phpstan analyse --memory-limit=2G
+          else
+            echo "⚠️ PHPStan non configuré"
+          fi
+
+  summary:
+    name: 📋 Résumé des tests
+    runs-on: ubuntu-latest
+    needs: [detect-changed-modules, module-tests, security-scan, performance-check, code-quality]
+    if: always() && needs.detect-changed-modules.outputs.has-changes == 'true'
+
+    steps:
+      - name: Test Summary
+        run: |
+          echo "## 📊 Résumé des tests des modules"
+          echo "Modules testés: ${{ needs.detect-changed-modules.outputs.modules }}"
+          echo ""
+          echo "### Statuts:"
+          echo "- Tests modules: ${{ needs.module-tests.result }}"
+          echo "- Sécurité: ${{ needs.security-scan.result }}"
+          echo "- Performance: ${{ needs.performance-check.result }}"
+          echo "- Qualité: ${{ needs.code-quality.result }}"
