@@ -1,0 +1,26 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+  schedule:
+    - cron: '0 2 * * 1' # Lundi à 2h
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Composer Audit
+        run: composer audit
+
+      - name: Run NPM Audit
+        run: npm audit --audit-level=moderate
+
+      - name: Security Headers Check
+        run: |
+          # Vérifier les headers de sécurité
+          curl -I https://beta.batistack.ovh | grep -E "(X-Frame-Options|X-Content-Type-Options|Strict-Transport-Security)"

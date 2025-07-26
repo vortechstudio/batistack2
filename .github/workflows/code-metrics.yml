@@ -1,0 +1,31 @@
+name: Code Metrics
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Install Dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Generate Metrics
+        run: |
+          vendor/bin/phpmetrics --report-html=metrics app/
+
+      - name: Upload Metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-metrics
+          path: metrics/
