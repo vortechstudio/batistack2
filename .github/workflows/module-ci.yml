@@ -291,7 +291,7 @@ jobs:
       - name: Run Laravel Pint
         run: |
           if command -v ./vendor/bin/pint &> /dev/null; then
-            ./vendor/bin/pint --test
+            composer lint && composer test:lint
           else
             echo "⚠️ Laravel Pint non configuré"
           fi
