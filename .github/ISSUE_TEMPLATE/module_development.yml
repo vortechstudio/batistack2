@@ -1,0 +1,153 @@
+name: 🏗️ Développement de Module
+description: Template pour le développement d'un nouveau module ou fonctionnalité
+title: "[MODULE] "
+labels: ["module", "enhancement"]
+assignees: []
+
+body:
+  - type: dropdown
+    id: module
+    attributes:
+      label: Module concerné
+      description: Sélectionnez le module principal concerné par cette issue
+      options:
+        - "📦 Produits/Services"
+        - "🏭 GPAO"
+        - "💰 Facturation Avancée"
+        - "📊 Comptabilité"
+        - "🏢 Immobilisations"
+        - "📁 GED"
+        - "🚗 Véhicules"
+        - "📋 Contrats/Abonnements"
+        - "⚙️ Infrastructure"
+        - "🎨 UX/UI"
+        - "🏗️ Chantiers (existant)"
+        - "👥 RH (existant)"
+        - "🏢 Tiers (existant)"
+        - "💼 Commerce (existant)"
+        - "Autre"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priorité
+      description: Niveau de priorité de cette fonctionnalité
+      options:
+        - "🔴 Critique"
+        - "🟠 Haute"
+        - "🟡 Moyenne"
+        - "🟢 Basse"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type de développement
+      description: Type de travail à effectuer
+      options:
+        - "✨ Nouvelle fonctionnalité"
+        - "🔧 Amélioration existante"
+        - "🐛 Correction de bug"
+        - "📚 Documentation"
+        - "🧪 Tests"
+        - "♻️ Refactoring"
+        - "🎨 Interface utilisateur"
+        - "⚡ Performance"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description détaillée
+      description: Décrivez en détail la fonctionnalité à développer ou le problème à résoudre
+      placeholder: |
+        Exemple :
+        - Contexte métier
+        - Problème actuel
+        - Solution proposée
+        - Impact attendu
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Critères d'acceptation
+      description: Listez les critères qui définissent quand cette fonctionnalité sera considérée comme terminée
+      placeholder: |
+        - [ ] Critère 1
+        - [ ] Critère 2
+        - [ ] Critère 3
+        - [ ] Tests unitaires écrits
+        - [ ] Documentation mise à jour
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical_specs
+    attributes:
+      label: Spécifications techniques
+      description: Détails techniques, architecture, dépendances, etc.
+      placeholder: |
+        - Modèles à créer/modifier
+        - Migrations nécessaires
+        - API endpoints
+        - Composants Livewire
+        - Dépendances externes
+    validations:
+      required: false
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Maquettes/Wireframes
+      description: Liens vers les maquettes, captures d'écran ou descriptions de l'interface
+      placeholder: |
+        - Lien vers Figma/Sketch
+        - Captures d'écran
+        - Description de l'UX
+    validations:
+      required: false
+
+  - type: dropdown
+    id: estimated_effort
+    attributes:
+      label: Estimation d'effort
+      description: Estimation approximative du temps de développement
+      options:
+        - "🕐 1-2 heures"
+        - "🕑 Demi-journée"
+        - "🕒 1 jour"
+        - "🕓 2-3 jours"
+        - "🕔 1 semaine"
+        - "🕕 2 semaines"
+        - "🕖 1 mois"
+        - "🕗 Plus d'1 mois"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: dependencies
+    attributes:
+      label: Dépendances
+      description: Cette fonctionnalité dépend-elle d'autres développements ?
+      options:
+        - label: "Cette issue bloque d'autres développements"
+        - label: "Cette issue dépend d'autres issues en cours"
+        - label: "Nécessite une validation métier avant développement"
+        - label: "Nécessite des tests utilisateurs"
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Contexte supplémentaire
+      description: Toute information supplémentaire utile (liens, références, etc.)
+      placeholder: |
+        - Liens vers la documentation
+        - Issues liées
+        - Références externes
+        - Contraintes particulières
