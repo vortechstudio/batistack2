@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\Chantiers\Chantiers;
+use App\Models\Chantiers\ChantierRessources;
 use App\Models\RH\Employe;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -16,10 +17,12 @@ test('évite les requêtes N+1 pour les ressources de chantier', function () {
 
     // Associer des ressources aux chantiers
     $chantiers->each(function ($chantier) use ($employes) {
-        $chantier->ressources()->attach(
-            $employes->random(5)->pluck('id'),
-            ['created_at' => now(), 'updated_at' => now()]
-        );
+        $employes->random(5)->each(function ($employe) use ($chantier) {
+            ChantierRessources::factory()->create([
+                'chantiers_id' => $chantier->id,
+                'employe_id' => $employe->id,
+            ]);
+        });
     });
 
     DB::enableQueryLog();

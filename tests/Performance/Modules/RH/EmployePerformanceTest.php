@@ -13,15 +13,16 @@ uses(RefreshDatabase::class);
 test('évite les requêtes N+1 lors du chargement des employés avec leurs relations', function () {
     // Créer des données de test
     $employes = Employe::factory(10)
-        ->has(EmployeContrat::factory())
-        ->has(EmployeInfo::factory())
         ->create();
+
+    $employes->each(fn (Employe $employe) => EmployeContrat::factory()->create(['employe_id' => $employe->id]));
+    $employes->each(fn (Employe $employe) => EmployeInfo::factory()->create(['employe_id' => $employe->id]));
 
     // Compter les requêtes
     DB::enableQueryLog();
 
     // Charger les employés avec eager loading
-    $result = Employe::with(['contrats', 'infos', 'user'])
+    $result = Employe::with(['contrat', 'info', 'user'])
         ->get();
 
     $queryCount = count(DB::getQueryLog());
@@ -34,16 +35,17 @@ test('évite les requêtes N+1 lors du chargement des employés avec leurs relat
 
 test('performance du calcul des salaires en masse', function () {
     // Créer 100 employés avec contrats
-    Employe::factory(100)
-        ->has(EmployeContrat::factory())
+    $employes = Employe::factory(100)
         ->create();
+
+    $employes->each(fn (Employe $employe) => EmployeContrat::factory()->create(['employe_id' => $employe->id]));
 
     $startTime = microtime(true);
 
     // Opération à tester
-    $salaires = Employe::with('contrats')
+    $salaires = Employe::with('contrat')
         ->get()
-        ->map(fn ($employe) => $employe->contrats->sum('salaire_base'));
+        ->map(fn ($employe) => $employe->contrat->sum('salaire_base'));
 
     $executionTime = microtime(true) - $startTime;
 
