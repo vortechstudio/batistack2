@@ -256,7 +256,6 @@
                     <h1 class="company-name">{{ App\Models\Core\Company::first()?->name ?? config('app.name') }}</h1>
                 @endif
             </div>
-            <p class="company-tagline">ERP Moderne pour le BTP</p>
         </div>
 
         <!-- Corps du message -->

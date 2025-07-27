@@ -63,7 +63,7 @@ class FraisShow extends Component implements HasActions, HasSchemas
             ->action(function (array $data) {
                 Mail::to($data['to'])
                     ->send(new ProfessionalMail(
-                        subject: $data['subject'],
+                        emailSubject: $data['subject'],
                         content: $data['message'],
                     ));
             });

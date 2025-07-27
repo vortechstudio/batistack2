@@ -19,7 +19,7 @@ final class ProfessionalMail extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public string $subject,
+        public string $emailSubject,
         public string $content,
         public ?string $greeting = null,
         public ?string $actionText = null,
@@ -27,7 +27,7 @@ final class ProfessionalMail extends Mailable
         public ?string $additionalInfo = null,
         public ?string $recipientEmail = null,
         public ?string $recipientName = null,
-        public ?array $attachments = [],
+        public ?array $emailAttachments = [],
     ) {
         //
     }
@@ -44,7 +44,7 @@ final class ProfessionalMail extends Mailable
                 $company?->email ?? config('mail.from.address'),
                 $company?->name ?? config('mail.from.name')
             ),
-            subject: $this->subject,
+            subject: $this->emailSubject,
         );
     }
 
@@ -56,7 +56,7 @@ final class ProfessionalMail extends Mailable
         return new Content(
             view: 'mail.core.professional-message',
             with: [
-                'subject' => $this->subject,
+                'subject' => $this->emailSubject,
                 'content' => $this->content,
                 'greeting' => $this->greeting,
                 'actionText' => $this->actionText,
@@ -73,6 +73,6 @@ final class ProfessionalMail extends Mailable
      */
     public function attachments(): array
     {
-        return $this->attachments;
+        return $this->emailAttachments;
     }
 }
