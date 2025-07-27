@@ -167,8 +167,9 @@ final class NoteFrais extends Model implements HasMedia
 
         self::creating(function ($noteFrais) {
             if (empty($noteFrais->numero)) {
-                $noteFrais->numero = 'NF-'.date('Y').'-'.mb_str_pad(
-                    static::whereYear('created_at', date('Y'))->count() + 1,
+                $count = static::whereYear('created_at', date('Y'))->count() + 1;
+                $noteFrais->numero = 'NF-'.date('Y').'-'.str_pad(
+                    (string) $count,
                     4,
                     '0',
                     STR_PAD_LEFT
