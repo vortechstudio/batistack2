@@ -17,3 +17,4 @@ parameters:
     ignoreErrors:
         - identifier: property.notFound
         - identifier: method.notFound
+        - identifier: method.nonObject
