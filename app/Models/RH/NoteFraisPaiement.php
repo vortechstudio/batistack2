@@ -57,7 +57,7 @@ final class NoteFraisPaiement extends Model
                     $numero = 'PNF-'.$year.'-'.$sequence;
 
                     // Vérifier si le numéro existe déjà
-                    $exists = static::where('numero', $numero)->exists();
+                    $exists = static::where('numero_paiement', $numero)->exists();
 
                     if (! $exists) {
                         $noteFraisPaiement->numero_paiement = $numero;

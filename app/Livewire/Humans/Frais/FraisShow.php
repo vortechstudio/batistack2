@@ -6,12 +6,13 @@ namespace App\Livewire\Humans\Frais;
 
 use App\Actions\RH\GenerateNoteFrais;
 use App\Mail\Core\ProfessionalMail;
+use App\Models\Core\ModeReglement;
 use App\Models\RH\Employe;
 use App\Models\RH\NoteFrais;
-use Auth;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
@@ -19,9 +20,11 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Layout;
@@ -124,6 +127,40 @@ final class FraisShow extends Component implements HasActions, HasSchemas
                         content: "Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Merci de ne pas répondre à ce message.",
                         emailAttachments: ['invoice' => $invoice->url()]
                     ));
+            });
+    }
+
+    public function payerAction(): CreateAction
+    {
+        return CreateAction::make('payer')
+            ->label('Payer')
+            ->icon(Heroicon::CurrencyEuro)
+            ->schema([
+                Grid::make(3)
+                    ->schema([
+                        Select::make('mode_reglement_id')
+                            ->label('Mode de Paiement')
+                            ->options(ModeReglement::pluck('name', 'id'))
+                            ->required(),
+
+                        TextInput::make('reference_paiement')
+                            ->label('Référence de Paiement'),
+
+                        TextInput::make('montant')
+                            ->label('Montant de Paiement')
+                            ->default($this->frais->montant_valide)
+                            ->required(),
+                    ]),
+            ])
+            ->action(function (array $data) {
+                $paiement = $this->frais->paiement()->create([
+                    'note_frais_id' => $this->frais->id,
+                    'mode_reglement_id' => $data['mode_reglement_id'],
+                    'numero_paiement' => $data['reference_paiement'] ?? null,
+                    'date_paiement' => now(),
+                    'montant' => $data['montant'],
+                ]);
+                $this->frais->marquerPayee($paiement->numero_paiement);
             });
     }
 

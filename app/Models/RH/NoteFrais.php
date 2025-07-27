@@ -98,6 +98,15 @@ final class NoteFrais extends Model implements HasMedia
         return in_array($statut, [StatusNoteFrais::BROUILLON, StatusNoteFrais::REFUSEE]);
     }
 
+    public function getEstPayableAttribute(): bool
+    {
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+
+        return $statut === StatusNoteFrais::VALIDEE;
+    }
+
     /**
      * Scopes
      */
