@@ -7,6 +7,7 @@ namespace App\Mail\Core;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -27,7 +28,7 @@ final class ProfessionalMail extends Mailable
         public ?string $additionalInfo = null,
         public ?string $recipientEmail = null,
         public ?string $recipientName = null,
-        public ?array $emailAttachments = [],
+        public ?array $emailAttachments = null,
     ) {
         //
     }
@@ -73,6 +74,13 @@ final class ProfessionalMail extends Mailable
      */
     public function attachments(): array
     {
-        return $this->emailAttachments;
+        $attachments = [];
+        if ($this->emailAttachments) {
+            foreach ($this->emailAttachments as $key => $value) {
+                $attachments[] = Attachment::fromPath($value)
+                    ->as($key);
+            }
+        }
+        return $attachments;
     }
 }

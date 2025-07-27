@@ -1,6 +1,11 @@
 <div>
     <div class="flex justify-end gap-5 p-5 bg-gray-100 rounded mb-5">
         {{ $this->sendMailAction }}
+
+        {{ $this->frais->est_modifiable ? $this->editAction : null }}
+        {{ $this->frais->est_validable ? $this->validateAction : null }}
+
+        {{ $this->frais->est_modifiable ? $this->deleteAction : null }}
     </div>
     <div class="flex justify-between items-center mb-10">
         <div class="flex items-center">

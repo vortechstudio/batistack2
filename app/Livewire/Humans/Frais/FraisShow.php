@@ -2,15 +2,22 @@
 
 namespace App\Livewire\Humans\Frais;
 
+use App\Actions\RH\GenerateNoteFrais;
 use App\Mail\Core\MailToTiers;
 use App\Mail\Core\ProfessionalMail;
+use App\Models\RH\Employe;
 use App\Models\RH\NoteFrais;
 use App\Notifications\Core\SendMessageTo;
 use Auth;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -66,6 +73,70 @@ class FraisShow extends Component implements HasActions, HasSchemas
                         emailSubject: $data['subject'],
                         content: $data['message'],
                     ));
+            });
+    }
+
+    public function editAction(): EditAction
+    {
+        return EditAction::make('edit')
+            ->label('Modifier')
+            ->icon(Heroicon::Pencil)
+            ->schema([
+                DatePicker::make('date_debut')
+                    ->label('Date de début')
+                    ->required(),
+
+                DatePicker::make('date_fin')
+                    ->label('Date de fin')
+                    ->required(),
+
+                Select::make('employe_id')
+                    ->label('Employé')
+                    ->options(Employe::pluck('nom', 'id'))
+                    ->required(),
+
+                Textarea::make('commentaire_employe')
+                    ->label('Commentaire'),
+            ])
+            ->using(function (array $data) {
+
+            });
+    }
+
+    public function validateAction(): EditAction
+    {
+        return EditAction::make('validate')
+            ->label('Valider pour approbation')
+            ->icon(Heroicon::CheckCircle)
+            ->schema([
+                TextInput::make('montant_total')
+                    ->label('Montant déclaré')
+                    ->disabled(),
+
+                Textarea::make('commentaire_validateur')
+                    ->label('commentaire'),
+            ])
+            ->using(function (array $data) {
+                $this->frais->valider(Auth::user(), $data['commentaire_validateur']);
+                $invoice = app(GenerateNoteFrais::class)->handle($this->frais);
+                Mail::to($this->frais->employe->user->email)
+                    ->send(new ProfessionalMail(
+                        emailSubject: "Votre note de frais n°{$this->frais->numero} a été validée",
+                        greeting: "Bonjour {$this->frais->employe->full_name},",
+                        content: "Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Merci de ne pas répondre à ce message.",
+                        emailAttachments: ['invoice' => $invoice->url()]
+                    ));
+            });
+    }
+
+    public function deleteAction(): DeleteAction
+    {
+        return DeleteAction::make('delete')
+            ->label('Supprimer')
+            ->icon(Heroicon::Trash)
+            ->requiresConfirmation()
+            ->action(function () {
+                $this->frais->delete();
             });
     }
 
