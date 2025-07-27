@@ -1,3 +1,30 @@
+# [1.12.0](https://github.com/vortechstudio/batistack2/compare/v1.11.0...v1.12.0) (2025-07-27)
+
+
+### Bug Fixes
+
+* **factories:** correct faker methods and improve CI workflow ([0048d28](https://github.com/vortechstudio/batistack2/commit/0048d2837dc254df938c69a07188d42325561a9a))
+* **RH:** add status filter and improve table formatting ([450b4dd](https://github.com/vortechstudio/batistack2/commit/450b4dd73ee3b324f9fa894ff289a32c9a290747))
+
+
+### Features
+
+* **ci:** restructure CI workflows and issue automation ([159794f](https://github.com/vortechstudio/batistack2/commit/159794f793d2e7b0b360d363181e2ff0384210ce))
+* **core:** add expense notes tables and enhance seeder ([1e38a69](https://github.com/vortechstudio/batistack2/commit/1e38a698064e1f36d97a001adafe16bd7d8af731))
+* **frais:** add payment functionality for validated expenses ([30f7b0c](https://github.com/vortechstudio/batistack2/commit/30f7b0cdb99b785f221603a75779e7fbcc2afa6c))
+* **github:** add GitHub project setup scripts and configuration ([0b6f15d](https://github.com/vortechstudio/batistack2/commit/0b6f15d08b720c20a352cb6b949919188d1acfd6))
+* **RH:** add expense management system with tests and performance improvements ([4060429](https://github.com/vortechstudio/batistack2/commit/4060429b3539939c6ed53f595a93d5098fb876e5))
+* **RH:** add expense report payment and email features ([e2ccb62](https://github.com/vortechstudio/batistack2/commit/e2ccb6260018ae1a92b6308c82d0cda74146c47d))
+* **RH:** add expenses management module with stats widget ([abf4f4c](https://github.com/vortechstudio/batistack2/commit/abf4f4cb3c84fcf004ef702972f059d092a8b90c)), closes [#92](https://github.com/vortechstudio/batistack2/issues/92)
+* **RH:** add form fields for expense note creation ([0ff2ecb](https://github.com/vortechstudio/batistack2/commit/0ff2ecb404b0ba700b1bd8bab0ce01f1a1b27ff7))
+* **RH:** add invoice generation for expense reports ([96aeeff](https://github.com/vortechstudio/batistack2/commit/96aeeff9247d0795b8aff182f52f386c9c3a95be))
+* **RH:** add layout attributes and dashboard widgets ([20d8be1](https://github.com/vortechstudio/batistack2/commit/20d8be1c761d2e22977f916238e6ace54f87fb17))
+* **RH:** add table component to display latest expense notes ([3dfe3bb](https://github.com/vortechstudio/batistack2/commit/3dfe3bb60a5d3720bdc38dfc7c5f51cccb54db2f))
+* **RH:** enhance frais table with employee avatars and layout ([23a8ce3](https://github.com/vortechstudio/batistack2/commit/23a8ce3bd40b9ab2121884dbdcc80286c1d235f2)), closes [#92](https://github.com/vortechstudio/batistack2/issues/92)
+* **rh:** implement expense management system ([722270e](https://github.com/vortechstudio/batistack2/commit/722270ead402788592fa6f1989908655c55218f8)), closes [#92](https://github.com/vortechstudio/batistack2/issues/92)
+* **security:** implement content security policy middleware ([9512c5c](https://github.com/vortechstudio/batistack2/commit/9512c5cdfca8e35eb9034c20045d94c200e2b756))
+* **test:** add command to generate model test stubs ([c105ce1](https://github.com/vortechstudio/batistack2/commit/c105ce1155a7af91ea79632066ba251bd715a644))
+
 # [1.11.0](https://github.com/vortechstudio/batistack2/compare/v1.10.0...v1.11.0) (2025-07-24)
 
 
