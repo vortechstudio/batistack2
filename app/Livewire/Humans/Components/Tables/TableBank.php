@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Components\Tables;
 
 use App\Models\RH\Employe;
@@ -13,7 +15,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class TableBank extends Component implements HasActions, HasSchemas, HasTable
+final class TableBank extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
 
@@ -22,7 +24,7 @@ class TableBank extends Component implements HasActions, HasSchemas, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->heading("Comptes Bancaires")
+            ->heading('Comptes Bancaires')
             ->headerActions([])
             ->query($this->employe->bank->query())
             ->columns([

@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature');
+    ->in('Feature', 'Performance');
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +42,24 @@ expect()->extend('toBeOne', function () {
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
+
+// Helper pour mesurer le temps d'exécution
+function measureExecutionTime(callable $callback): float
+{
+    $start = microtime(true);
+    $callback();
+
+    return microtime(true) - $start;
+}
+
+// Helper pour mesurer l'utilisation mémoire
+function measureMemoryUsage(callable $callback): int
+{
+    $memoryBefore = memory_get_usage(true);
+    $callback();
+
+    return memory_get_usage(true) - $memoryBefore;
+}
 
 function something()
 {

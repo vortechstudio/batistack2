@@ -27,13 +27,15 @@ final class TabSupply extends Component implements HasActions, HasForms
 
     public Tiers $tiers;
 
-    public TiersFournisseur $supply;
+    public ?TiersFournisseur $supply = null;
 
     public ?array $data = [];
 
     public function mount(): void
     {
-        $this->supply = $this->tiers->fournisseur()->with('comptaGen', 'comptaFournisseur')->first();
+        /** @var TiersFournisseur|null $supply */
+        $supply = $this->tiers->fournisseur()->with('comptaGen', 'comptaFournisseur')->first();
+        $this->supply = $supply;
         $this->form->fill();
     }
 
@@ -47,11 +49,11 @@ final class TabSupply extends Component implements HasActions, HasForms
                         Toggle::make('tva')
                             ->label('Assujesti à la TVA')
                             ->live()
-                            ->default($this->supply->tva),
+                            ->default($this->supply?->tva ?? false),
 
                         TextInput::make('num_tva')
                             ->label('Numero TVA')
-                            ->default($this->supply->num_tva)
+                            ->default($this->supply?->num_tva)
                             ->live()
                             ->hidden(fn (Get $get): bool => ! $get('tva')),
                     ]),
@@ -60,30 +62,30 @@ final class TabSupply extends Component implements HasActions, HasForms
                     ->schema([
                         Select::make('code_comptable_general')
                             ->label('Code Comptable Générale')
-                            ->options(fn () => PlanComptable::all()->pluck('account', 'id'))
+                            ->options(fn () => PlanComptable::pluck('account', 'id'))
                             ->searchable()
-                            ->default($this->supply->code_comptable_general),
+                            ->default($this->supply?->code_comptable_general),
 
                         Select::make('code_comptable_fournisseur')
                             ->label('Code Comptable Fournisseur')
-                            ->options(fn () => PlanComptable::all()->pluck('account', 'id'))
+                            ->options(fn () => PlanComptable::pluck('account', 'id'))
                             ->searchable()
-                            ->default($this->supply->code_comptable_fournisseur),
+                            ->default($this->supply?->code_comptable_fournisseur),
                     ]),
 
                 Grid::make(2)
                     ->schema([
                         Select::make('condition_reglement_id')
                             ->label('Condition Reglement')
-                            ->options(fn () => ConditionReglement::all()->pluck('name', 'id'))
+                            ->options(fn () => ConditionReglement::pluck('name', 'id'))
                             ->searchable()
-                            ->default($this->supply->condition_reglement_id),
+                            ->default($this->supply?->condition_reglement_id),
 
                         Select::make('mode_reglement_id')
                             ->label('Mode de réglement')
-                            ->options(fn () => ModeReglement::all()->pluck('name', 'id'))
+                            ->options(fn () => ModeReglement::pluck('name', 'id'))
                             ->searchable()
-                            ->default($this->supply->mode_reglement_id),
+                            ->default($this->supply?->mode_reglement_id),
                     ]),
             ])
             ->action(function (array $data): void {});

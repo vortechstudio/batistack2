@@ -114,13 +114,13 @@ final class CreateForm extends Component implements HasSchemas
                                             ->columnSpan(2)
                                             ->label('Ville')
                                             ->searchable()
-                                            ->options(fn (Get $get) => $get('code_postal') ? City::where('postal_code', $get('code_postal'))->pluck('city', 'city')->toArray() : City::all()->pluck('city', 'city')->toArray()),
+                                            ->options(fn (Get $get) => $get('code_postal') ? City::where('postal_code', $get('code_postal'))->pluck('city', 'city') : City::pluck('city', 'city')),
 
                                         Select::make('pays')
                                             ->columnSpan(2)
                                             ->label('Pays')
                                             ->searchable()
-                                            ->options(fn () => Country::all()->pluck('name', 'name')->toArray()),
+                                            ->options(fn () => Country::pluck('name', 'name')),
                                     ]),
                             ]),
 
@@ -193,12 +193,12 @@ final class CreateForm extends Component implements HasSchemas
                                         Select::make('condition_reglement_id')
                                             ->label('Condition Reglement')
                                             ->columnSpan(1)
-                                            ->options(fn () => ConditionReglement::all()->pluck('name', 'id')->all()),
+                                            ->options(fn () => ConditionReglement::pluck('name', 'id')),
 
                                         Select::make('mode_reglement_id')
                                             ->label('Mode de Règlement')
                                             ->columnSpan(1)
-                                            ->options(fn () => ModeReglement::all()->pluck('name', 'id')->all()),
+                                            ->options(fn () => ModeReglement::pluck('name', 'id')),
                                     ]),
                             ]),
 
@@ -208,7 +208,7 @@ final class CreateForm extends Component implements HasSchemas
                                 Select::make('bank_id')
                                     ->label('Banque')
                                     ->searchable()
-                                    ->options(Bank::all()->pluck('name', 'id')->toArray()),
+                                    ->options(Bank::pluck('name', 'id')),
 
                                 Grid::make()
                                     ->schema([
@@ -284,13 +284,13 @@ final class CreateForm extends Component implements HasSchemas
                                         ->columnSpan(2)
                                         ->label('Ville')
                                         ->searchable()
-                                        ->options(fn (Get $get) => $get('code_postal') ? City::where('postal_code', $get('code_postal'))->pluck('city', 'city')->toArray() : City::all()->pluck('city', 'city')->toArray()),
+                                        ->options(fn (Get $get) => $get('code_postal') ? City::where('postal_code', $get('code_postal'))->pluck('city', 'city') : City::pluck('city', 'city')),
 
                                     Select::make('pays')
                                         ->columnSpan(2)
                                         ->label('Pays')
                                         ->searchable()
-                                        ->options(fn () => Country::all()->pluck('name', 'name')->toArray()),
+                                        ->options(fn () => Country::pluck('name', 'name')),
                                 ]),
                         ]),
 
@@ -363,12 +363,12 @@ final class CreateForm extends Component implements HasSchemas
                                     Select::make('condition_reglement_id')
                                         ->label('Condition Reglement')
                                         ->columnSpan(1)
-                                        ->options(fn () => ConditionReglement::all()->pluck('name', 'id')->all()),
+                                        ->options(fn () => ConditionReglement::pluck('name', 'id')),
 
                                     Select::make('mode_reglement_id')
                                         ->label('Mode de Règlement')
                                         ->columnSpan(1)
-                                        ->options(fn () => ModeReglement::all()->pluck('name', 'id')->all()),
+                                        ->options(fn () => ModeReglement::pluck('name', 'id')),
                                 ]),
                         ]),
 
@@ -378,7 +378,7 @@ final class CreateForm extends Component implements HasSchemas
                             Select::make('bank_id')
                                 ->label('Banque')
                                 ->searchable()
-                                ->options(Bank::all()->pluck('name', 'id')->toArray()),
+                                ->options(Bank::pluck('name', 'id')),
 
                             Grid::make()
                                 ->schema([

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Core\Company;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Exception;
 use Http;
 use Log;

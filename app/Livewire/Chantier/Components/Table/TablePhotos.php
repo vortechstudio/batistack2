@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Chantier\Components\Table;
 
 use App\Models\Chantiers\ChantierPhotos;
 use App\Models\Chantiers\Chantiers;
 use Exception;
-use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -14,7 +15,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Tables\Columns\ImageColumn;
@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
-class TablePhotos extends Component implements HasActions, HasSchemas, HasTable
+final class TablePhotos extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions;
     use InteractsWithSchemas;
@@ -59,10 +59,10 @@ class TablePhotos extends Component implements HasActions, HasSchemas, HasTable
                                     'photo_path' => $photo,
                                 ]);
                             }
-                        } catch(Exception $ex) {
+                        } catch (Exception $ex) {
                             Log::channel('github')->emergency($ex);
                         }
-                    })
+                    }),
             ])
             ->toolbarActions([
                 BulkAction::make('delete')
@@ -74,7 +74,7 @@ class TablePhotos extends Component implements HasActions, HasSchemas, HasTable
                                 Storage::disk('public')->delete($record->photo_path);
                                 $record->delete();
                             }
-                        } catch(Exception $ex) {
+                        } catch (Exception $ex) {
                             Log::channel('github')->emergency($ex);
                         }
                     }),
@@ -93,11 +93,11 @@ class TablePhotos extends Component implements HasActions, HasSchemas, HasTable
             ])
             ->recordActions([
                 EditAction::make()
-                        ->iconButton()
-                        ->schema([
-                            Textarea::make('description')
-                                ->label('Description'),
-                        ]),
+                    ->iconButton()
+                    ->schema([
+                        Textarea::make('description')
+                            ->label('Description'),
+                    ]),
                 DeleteAction::make()
                     ->requiresConfirmation()
                     ->color('danger')
@@ -106,7 +106,7 @@ class TablePhotos extends Component implements HasActions, HasSchemas, HasTable
                         try {
                             Storage::disk('public')->delete($record->photo_path);
                             $record->delete();
-                        } catch(Exception $ex) {
+                        } catch (Exception $ex) {
                             Log::channel('github')->emergency($ex);
                         }
                     }),

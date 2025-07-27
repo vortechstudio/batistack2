@@ -1,21 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\RH;
 
-use App\Enums\RH\ProcessEmploye;
 use App\Enums\RH\StatusEmploye;
 use App\Enums\RH\TypeContrat;
 use App\Models\Chantiers\ChantierRessources;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Support\Str;
 
-class Employe extends Model implements HasMedia
+final class Employe extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+
     protected $guarded = [];
 
     public function user()
@@ -23,7 +26,7 @@ class Employe extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
-    public function info()
+    public function info(): HasOne
     {
         return $this->hasOne(EmployeInfo::class);
     }
@@ -48,6 +51,54 @@ class Employe extends Model implements HasMedia
         return $this->hasOne(EmployeBank::class);
     }
 
+    public function notesFrais()
+    {
+        return $this->hasMany(NoteFrais::class);
+    }
+
+    public function notesFraisEnAttente()
+    {
+        return $this->hasMany(NoteFrais::class)->enAttente();
+    }
+
+    public function notesFraisValidees()
+    {
+        return $this->hasMany(NoteFrais::class)->validees();
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->nom.' '.$this->prenom;
+    }
+
+    public function getFullAddressAttribute()
+    {
+        return $this->adresse.', '.$this->code_postal.' '.$this->ville;
+    }
+
+    public function getMatriculeAttribute()
+    {
+        return Str::upper(Str::limit($this->uuid, 8, ''));
+    }
+
+    public function getMontantNotesFraisEnAttenteAttribute(): float
+    {
+        return $this->notesFraisEnAttente->sum('montant_total');
+    }
+
+    public function getMontantNotesFraisValideesMoisAttribute(): float
+    {
+        return $this->notesFraisValidees()
+            ->whereMonth('date_validation', now()->month)
+            ->whereYear('date_validation', now()->year)
+            ->sum('montant_valide');
+    }
+
+    public function getFirstMediaUrl()
+    {
+        return $this->user->avatar;
+    }
+
     protected function casts(): array
     {
         return [
@@ -56,20 +107,5 @@ class Employe extends Model implements HasMedia
             'type_contrat' => TypeContrat::class,
             'status' => StatusEmploye::class,
         ];
-    }
-
-    public function getFullNameAttribute()
-    {
-        return $this->nom." ".$this->prenom;
-    }
-
-    public function getFullAddressAttribute()
-    {
-        return $this->adresse.", ".$this->code_postal." ".$this->ville;
-    }
-
-    public function getMatriculeAttribute()
-    {
-        return Str::upper(Str::limit($this->uuid, 8, ''));
     }
 }

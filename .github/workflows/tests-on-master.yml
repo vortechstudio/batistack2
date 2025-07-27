@@ -39,7 +39,7 @@ jobs:
         run: php artisan migrate --force
 
       - name: Run tests
-        run: php artisan test --parallel --coverage-clover=coverage.xml
+        run: php artisan test --parallel --coverage-clover=coverage.xml --log-junit junit.xml
 
       - name: Upload to Codecov
         uses: codecov/codecov-action@v5
@@ -48,14 +48,10 @@ jobs:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Create Issue on Failure
-        if: failure()
-        uses: peter-evans/create-issue-from-file@v5
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
-          title: "🚨 CI Failed on ${{ github.workflow }} (#${{ github.run_number }})"
-          content-filepath: .github/ISSUE_TEMPLATE/ci-failure.md
-          labels: |
-            bug
-            CI
-          assignees: vortechstudio
-          token: ${{ secrets.GH_TOKEN }}
+          files: junit.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+

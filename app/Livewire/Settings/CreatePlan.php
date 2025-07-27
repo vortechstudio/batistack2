@@ -34,8 +34,8 @@ final class CreatePlan extends Component implements HasSchemas
                     ]),
                 Grid::make(4)
                     ->schema([
-                        Select::make('principal')->label('Groupe')->options(PlanComptable::all()->pluck('principal', 'principal')),
-                        Select::make('type')->label('Type de Compte')->options(PlanComptable::all()->pluck('type', 'type')),
+                        Select::make('principal')->label('Groupe')->options(PlanComptable::pluck('principal', 'principal')),
+                        Select::make('type')->label('Type de Compte')->options(PlanComptable::pluck('type', 'type')),
                         TextInput::make('initial')->label('Balance Initial')->suffix('€'),
                         Toggle::make('lettrage')->label('Lettrage'),
                     ]),

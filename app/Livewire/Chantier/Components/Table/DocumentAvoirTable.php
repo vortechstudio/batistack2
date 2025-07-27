@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Chantier\Components\Table;
 
 use App\Models\Chantiers\Chantiers;
@@ -15,9 +17,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 
-class DocumentAvoirTable extends Component implements HasTable, HasForms, HasActions
+final class DocumentAvoirTable extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
+
     public Chantiers $chantier;
 
     public function table(Table $table): Table

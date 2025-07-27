@@ -100,5 +100,5 @@ return [
     'controller' => '\QCod\AppSettings\Controllers\AppSettingController',
 
     // settings group
-    'setting_group' => "default",
+    'setting_group' => 'default',
 ];

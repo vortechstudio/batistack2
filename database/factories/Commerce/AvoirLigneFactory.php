@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Commerce;
 
 use App\Models\Commerce\Avoir;
 use App\Models\Commerce\AvoirLigne;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AvoirLigneFactory extends Factory
+final class AvoirLigneFactory extends Factory
 {
     protected $model = AvoirLigne::class;
 

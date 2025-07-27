@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Components\Tables;
 
 use App\Models\RH\Employe;
 use App\Models\RH\Paie\FichePaie;
-use Livewire\Component;
-use Filament\Tables\Contracts\HasTable;
+use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Livewire\Component;
 
-class TablePaie extends Component implements HasActions, HasSchemas, HasTable
+final class TablePaie extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
 

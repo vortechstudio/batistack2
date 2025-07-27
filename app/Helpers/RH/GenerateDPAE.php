@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Helpers\RH;
 
 use App\Mail\RH\TransmitDpae;
@@ -9,7 +11,7 @@ use Mail;
 use Spatie\ArrayToXml\ArrayToXml;
 use Storage;
 
-class GenerateDPAE
+final class GenerateDPAE
 {
     public function generate(Employe $salarie, string $nameDpae)
     {
@@ -17,7 +19,7 @@ class GenerateDPAE
             'Envoie' => [
                 'IdentifiantEmetteur' => Company::first()->siret,
                 'TypeEnvoie' => 'EMISSION',
-                'DateEnvoie' => now()->format('Y-m-d')
+                'DateEnvoie' => now()->format('Y-m-d'),
             ],
             'Declaration' => [
                 'Employeur' => [
@@ -37,7 +39,7 @@ class GenerateDPAE
                     'NIR' => $salarie->info->num_secu,
                     'Nationalite' => 'FR',
                     'LieuNaissance' => $salarie->info->lieu_naissance,
-                    'PaysNaissance' => $salarie->info->pays_naissance
+                    'PaysNaissance' => $salarie->info->pays_naissance,
                 ],
                 'Contrat' => [
                     'DateDebut' => $salarie->contrat->date_debut->format('Y-m-d'),
@@ -48,9 +50,9 @@ class GenerateDPAE
                         'Voie' => Company::first()->address,
                         'CodePostal' => Company::first()->code_postal,
                         'Ville' => Company::first()->ville,
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $xml = ArrayToXml::convert($array, [

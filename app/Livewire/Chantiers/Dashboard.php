@@ -64,7 +64,7 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                             ->label('Client')
                             ->searchable()
                             ->required()
-                            ->options(Tiers::where('nature', TiersNature::Client)->pluck('name', 'id')->toArray()),
+                            ->options(Tiers::where('nature', TiersNature::Client)->pluck('name', 'id')),
 
                         TextInput::make('libelle')
                             ->label('Nom du chantier')
@@ -89,13 +89,13 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                                 Select::make('responsable_id')
                                     ->label('Responsable')
                                     ->searchable()
-                                    ->options(User::all()->pluck('name', 'id')->toArray()),
+                                    ->options(User::pluck('name', 'id')),
 
                                 Select::make('intervenants')
                                     ->label('Intervenants')
                                     ->searchable()
                                     ->multiple()
-                                    ->options(User::all()->pluck('name', 'id')->toArray()),
+                                    ->options(User::pluck('name', 'id')),
                             ]),
 
                         Checkbox::make('other_address')
@@ -129,7 +129,7 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                             }
 
                             return $chantier;
-                        } catch(Exception $ex) {
+                        } catch (Exception $ex) {
                             Log::channel('github')->emergency($ex);
                         }
                     }),
@@ -148,7 +148,7 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                             return response()->streamDownload(function () use ($pdfBuilder) {
                                 echo base64_decode($pdfBuilder->download()->base64());
                             }, 'listing_chantier.pdf');
-                        } catch(Exception $ex) {
+                        } catch (Exception $ex) {
                             Log::channel('github')->emergency($ex);
                         }
                     }),
@@ -233,7 +233,7 @@ final class Dashboard extends Component implements HasActions, HasForms, HasTabl
                     ->options(StatusChantier::array()),
 
                 SelectFilter::make('tiers_id')
-                    ->options(Tiers::all()->pluck('name', 'id')),
+                    ->options(Tiers::pluck('name', 'id')),
 
                 QueryBuilder::make()
                     ->constraints([

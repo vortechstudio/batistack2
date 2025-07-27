@@ -43,3 +43,8 @@ jobs:
             🎉 Nouvelle release `${{ steps.semantic.outputs.new_release_version }}`
             Consultez : https://github.com/vortechstudio/batistack2/releases
 
+      # Ajouter génération automatique du changelog
+      - name: Generate Changelog
+        run: |
+          npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
+

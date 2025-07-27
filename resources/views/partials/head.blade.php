@@ -14,8 +14,15 @@
         display: none !important;
     }
 </style>
+<script>
+  // @see https://docs.headwayapp.co/widget for more configuration options.
+  var HW_config = {
+    selector: ".CHANGE_THIS", // CSS selector where to inject the badge
+    account:  "7NmVox"
+  }
+</script>
+<script async src="https://cdn.headwayapp.co/widget.js"></script>
 
 @filamentStyles
 @vite(['resources/css/app.css'])
 @fluxAppearance
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>

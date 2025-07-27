@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Portail\Salarie\Documents;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
-class All extends Component
+final class All extends Component
 {
     public function render()
     {
         $matricule = Auth::user()->employe->matricule;
-        $documentsPath = $matricule . '/documents';
+        $documentsPath = $matricule.'/documents';
 
         // Récupérer tous les fichiers du dossier documents de l'employé
         $documents = [];
@@ -32,21 +34,8 @@ class All extends Component
 
         return view('livewire.portail.salarie.documents.all', [
             'documents' => $documents,
-            'matricule' => $matricule
+            'matricule' => $matricule,
         ]);
-    }
-
-    private function getCategoryFromPath($filePath)
-    {
-        if (str_contains($filePath, '/rh/')) {
-            return 'RH';
-        } elseif (str_contains($filePath, '/paie/')) {
-            return 'Paie';
-        } elseif (str_contains($filePath, '/contrat')) {
-            return 'Contrat';
-        }
-
-        return 'Autre';
     }
 
     public function downloadDocument($filePath)
@@ -60,12 +49,29 @@ class All extends Component
 
     public function formatFileSize($bytes)
     {
-        if ($bytes == 0) return '0 Bytes';
+        if ($bytes === 0) {
+            return '0 Bytes';
+        }
 
         $k = 1024;
         $sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
         $i = floor(log($bytes) / log($k));
 
-        return round($bytes / pow($k, $i), 2) . ' ' . $sizes[$i];
+        return round($bytes / pow($k, $i), 2).' '.$sizes[$i];
+    }
+
+    private function getCategoryFromPath($filePath)
+    {
+        if (str_contains($filePath, '/rh/')) {
+            return 'RH';
+        }
+        if (str_contains($filePath, '/paie/')) {
+            return 'Paie';
+        }
+        if (str_contains($filePath, '/contrat')) {
+            return 'Contrat';
+        }
+
+        return 'Autre';
     }
 }

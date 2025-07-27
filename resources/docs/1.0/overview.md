@@ -1,119 +1,146 @@
-# Bienvenue sur le Wiki de Batistack
+# Bienvenue sur le Guide Utilisateur de Batistack
 
-Bienvenue sur la documentation officielle de Batistack, votre solution complète de gestion d'entreprises du BTP développée avec Laravel, Livewire et Tauri.
+Bienvenue dans la documentation utilisateur de Batistack, votre solution complète de gestion d'entreprises du BTP. Ce guide vous accompagne dans l'utilisation quotidienne de la plateforme pour optimiser la gestion de votre entreprise.
 
 ## À propos de Batistack
 
-Batistack est une solution ERP moderne spécialement conçue pour les entreprises du bâtiment et des travaux publics. Notre plateforme digitale centralise tous les aspects de votre gestion d'entreprise dans une interface intuitive et performante.
+Batistack est une solution ERP moderne spécialement conçue pour les entreprises du bâtiment et des travaux publics. Notre plateforme centralise tous les aspects de votre gestion d'entreprise dans une interface intuitive et performante.
+
+## Modules Principaux
 
 ### 🏗️ **Gestion de Chantiers**
-- **Suivi budgétaire complet** avec tableaux de bord en temps réel
-- **Onglet Rentabilité** avec analyses détaillées de performance
-- **Galerie photo intelligente** pour documenter l'avancement des travaux
-- **Gestion des ressources humaines** par chantier avec affectations
-- **Suivi des achats et dépenses** avec catégorisation automatique
-- **Calcul automatique des coûts** de main d'œuvre
-- **Système de tâches et interventions** pour organiser le travail
+Gérez l'ensemble de vos projets de construction avec :
+- **Suivi budgétaire en temps réel** : Contrôlez vos coûts et marges
+- **Planification des tâches** : Organisez le travail de vos équipes
+- **Galerie photo** : Documentez l'avancement des travaux
+- **Gestion des ressources** : Affectez vos employés aux chantiers
+- **Suivi des dépenses** : Enregistrez tous vos achats et frais
+- **Analyse de rentabilité** : Évaluez la performance de chaque projet
 
 ### 👥 **Ressources Humaines**
-- **Fiches salariés complètes** avec gestion des contrats de travail
-- **Système de paie intégré** avec profils de paie personnalisables
-- **Gestion des pointages et absences** avec suivi automatisé
-- **Processus DPAE automatisé** avec génération de documents PDF
-- **Signature électronique** pour les contrats et documents RH
-- **Gestion des informations bancaires** des employés
-- **Tableau de bord RH** avec indicateurs clés de performance
+Simplifiez la gestion de vos équipes avec :
+- **Fiches employés complètes** : Centralisez toutes les informations
+- **Gestion des contrats** : Créez et suivez les contrats de travail
+- **Système de paie** : Gérez la paie avec des profils personnalisables
+- **Suivi des absences** : Planifiez et suivez les congés
+- **Signature électronique** : Signez les documents en ligne
+- **Portail salarié** : Donnez accès autonome à vos employés
 
-### 💼 **Module Commerce**
-- **Système complet de devis** avec modèles personnalisables
-- **Gestion des commandes** et suivi des livraisons
-- **Facturation automatisée** avec génération PDF
-- **Gestion des factures fournisseurs** et rapprochements
-- **Système d'avoirs et remboursements** intégré
-- **Suivi des paiements et échéances** avec alertes automatiques
+### 💼 **Gestion Commerciale**
+Optimisez vos relations clients avec :
+- **Création de devis** : Réalisez des devis professionnels
+- **Suivi des commandes** : Gérez vos commandes et livraisons
+- **Facturation** : Émettez vos factures automatiquement
+- **Gestion des paiements** : Suivez vos encaissements
+- **Relances automatiques** : Automatisez le recouvrement
 
 ### 🏢 **Gestion des Tiers**
-- **Carnet d'adresses centralisé** clients et fournisseurs
-- **Contacts multiples** par entreprise avec rôles définis
-- **Informations bancaires** et conditions de règlement
-- **Historique complet** des interactions et transactions
-- **Système de notifications** par email et WhatsApp
+Centralisez vos contacts avec :
+- **Carnet d'adresses** : Clients et fournisseurs en un seul endroit
+- **Informations complètes** : Coordonnées, contacts, conditions
+- **Historique des relations** : Suivez toutes vos interactions
+- **Segmentation** : Classez vos tiers par catégories
 
-### 🔧 **Infrastructure Technique**
-- **Architecture moderne** : Laravel 11 avec Livewire 3
-- **Interface utilisateur** : Filament et DaisyUI pour une UX optimale
-- **Application desktop** : Tauri pour une expérience native
-- **Support mobile** : Application Android en phase de test
-- **Notifications multi-canaux** : Email, WhatsApp, notifications push
-- **Monitoring avancé** : Intégration Sentry pour la surveillance
-- **Gestion des médias** : Upload et organisation des documents
-- **Génération PDF** : Documents professionnels automatisés
+### 👤 **Portail Salarié**
+Offrez l'autonomie à vos employés avec :
+- **Accès personnel sécurisé** : Chaque employé a son espace
+- **Consultation des documents** : Bulletins de paie, contrats, attestations
+- **Gestion bancaire** : Mise à jour des coordonnées bancaires
+- **Signature électronique** : Signature des documents à distance
+- **Notifications** : Alertes pour les nouveaux documents
 
-## Plateformes Supportées
+## Comment utiliser ce guide
 
-Batistack est disponible sur :
+Cette documentation est organisée pour vous accompagner dans :
 
-- **💻 Application Desktop** : Windows, macOS, Linux (via Tauri)
-- **🌐 Interface Web** : Tous navigateurs modernes
-- **📱 Application Mobile** : Android (en phase de test)
+### 🚀 **Prise en main**
+- [Guide de démarrage](./getting-started) : Premiers pas avec Batistack
+- [Configuration initiale](./settings) : Paramétrage de votre environnement
+- [Bonnes pratiques](./best-practices) : Conseils pour une utilisation optimale
 
-## Architecture Technique
+### 📚 **Guides par module**
+- [Module Chantiers](./chantiers) : Gestion complète de vos projets
+- [Module RH](./hr) : Ressources humaines et paie
+- [Module Tiers](./tiers) : Gestion des clients et fournisseurs
+- [Portail Salarié](./portail-salarie) : Guide pour vos employés
 
-- **Backend** : Laravel 11, PHP 8.3+
-- **Frontend** : Livewire 3, Alpine.js, Tailwind CSS
-- **Base de données** : MySQL/PostgreSQL
-- **Cache** : Redis pour les performances
-- **Queue** : Laravel Horizon pour les tâches asynchrones
-- **Real-time** : Laravel Reverb/Pusher pour les notifications
+### ⚙️ **Configuration avancée**
+- [Paramètres](./settings) : Personnalisation de l'application
+- [Gestion des utilisateurs](./users) : Droits et permissions
+- [Intégrations](./integrations) : Connexion avec d'autres outils
 
-## Comment utiliser cette documentation
+## Fonctionnalités Clés
 
-Cette documentation est organisée pour vous permettre de :
+### 🔒 **Sécurité et Confidentialité**
+- **Accès sécurisé** : Authentification forte et chiffrement
+- **Gestion des droits** : Permissions granulaires par utilisateur
+- **Conformité RGPD** : Protection des données personnelles
+- **Audit trail** : Traçabilité complète des actions
 
-1. **Découvrir les modules** : Explorez chaque fonctionnalité en détail
-2. **Guides d'utilisation** : Apprenez à utiliser le logiciel étape par étape
-3. **Configuration** : Paramétrez Batistack selon vos besoins
-4. **Bonnes pratiques** : Optimisez votre utilisation quotidienne
+### 📱 **Accessibilité Multi-plateforme**
+- **Application desktop** : Windows, macOS, Linux
+- **Interface web** : Accessible depuis tout navigateur
+- **Application mobile** : Android (en développement)
+- **Synchronisation** : Données synchronisées en temps réel
 
-## Premiers pas
+### 🔄 **Intégrations**
+- **Banques** : Connexion sécurisée pour la vérification des comptes
+- **Signature électronique** : Solution intégrée pour les contrats
+- **Comptabilité** : Export vers les logiciels comptables
+- **Notifications** : Email, SMS et notifications push
 
-Pour commencer avec Batistack :
+## Avantages pour votre entreprise
 
-- [Guide de démarrage rapide](./getting-started) - Installation et première configuration
-- [Configuration des modules](./setup) - Paramétrage des fonctionnalités
-- [Tutoriels par module](./tutorials) - Guides pratiques détaillés
-- [FAQ](./faq) - Réponses aux questions fréquentes
+### ⏱️ **Gain de temps**
+- Automatisation des tâches répétitives
+- Centralisation de toutes les informations
+- Génération automatique des documents
+- Synchronisation en temps réel
 
-## Modules Disponibles
+### 💰 **Optimisation financière**
+- Suivi précis de la rentabilité des chantiers
+- Contrôle des coûts en temps réel
+- Amélioration de la trésorerie
+- Réduction des erreurs de facturation
 
-### ✅ **Modules Opérationnels**
-- **Chantiers** : Gestion complète des projets de construction
-- **RH** : Ressources humaines et paie
-- **Commerce** : Devis, factures et gestion commerciale
-- **Tiers** : Clients, fournisseurs et contacts
+### 👥 **Amélioration de la collaboration**
+- Partage d'informations en temps réel
+- Communication facilitée entre équipes
+- Suivi transparent des projets
+- Responsabilisation des collaborateurs
 
-### 🚧 **En Développement**
-- **Dashboard IoT** : Suivi des équipements en temps réel
-- **Signature électronique** : Solution intégrée "maison"
-- **Business Intelligence** : Analyses prédictives des coûts
+### 📈 **Aide à la décision**
+- Tableaux de bord en temps réel
+- Analyses de performance
+- Indicateurs clés de gestion
+- Historique complet des données
 
-## Besoin d'aide ?
+## Support et Assistance
 
-Notre équipe de support est là pour vous accompagner :
+### 📖 **Ressources disponibles**
+- **Documentation complète** : Guides détaillés pour chaque fonctionnalité
+- **Tutoriels vidéo** : Apprentissage visuel des principales fonctions
+- **FAQ** : Réponses aux questions les plus fréquentes
+- **Bonnes pratiques** : Conseils d'experts pour optimiser votre usage
 
-- **Documentation** : Consultez nos guides détaillés
-- **Issues GitHub** : Signalez les bugs et suggestions
-- **Support technique** : Assistance pour la configuration
+### 🆘 **Aide en cas de besoin**
+- **Support intégré** : Assistance directement depuis l'application
+- **Équipe dédiée** : Support technique réactif
+- **Formation** : Sessions de formation pour vos équipes
+- **Communauté** : Échanges avec d'autres utilisateurs
 
-## Évolution du Projet
+## Évolution Continue
 
-Batistack est en développement actif avec des mises à jour régulières :
+Batistack évolue constamment pour répondre à vos besoins :
 
-- **Version actuelle** : 1.5.0
-- **Prochaine version** : 1.6.0 (Février 2025)
-- **Roadmap** : Consultez notre [feuille de route](../roadmap) pour les prochaines fonctionnalités
+- **Mises à jour régulières** : Nouvelles fonctionnalités et améliorations
+- **Écoute utilisateur** : Développement basé sur vos retours
+- **Innovation** : Intégration des dernières technologies
+- **Roadmap transparente** : Visibilité sur les prochaines évolutions
 
 ---
 
-*Dernière mise à jour : Janvier 2025*  
-*Version de la documentation : 1.5.0*
+**Version actuelle** : 1.5.0  
+**Dernière mise à jour de la documentation** : Janvier 2025
+
+*Cette documentation est mise à jour régulièrement pour refléter les dernières fonctionnalités de Batistack.*

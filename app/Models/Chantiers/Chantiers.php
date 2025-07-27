@@ -33,17 +33,17 @@ final class Chantiers extends Model
         return $this->belongsTo(User::class, 'responsable_id');
     }
 
-    public function addresses()
+    public function addresses(): HasMany
     {
         return $this->hasMany(ChantierAddress::class);
     }
 
-    public function interventions()
+    public function interventions(): HasMany
     {
         return $this->hasMany(ChantierIntervention::class);
     }
 
-    public function depenses()
+    public function depenses(): HasMany
     {
         return $this->hasMany(ChantierDepense::class);
     }
@@ -53,12 +53,12 @@ final class Chantiers extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function tasks()
+    public function tasks(): HasMany
     {
         return $this->hasMany(ChantierTask::class);
     }
 
-    public function logs()
+    public function logs(): HasMany
     {
         return $this->hasMany(ChantierLog::class);
     }
@@ -68,22 +68,22 @@ final class Chantiers extends Model
         return $this->hasMany(Devis::class);
     }
 
-    public function commandes()
+    public function commandes(): HasMany
     {
         return $this->hasMany(Commande::class);
     }
 
-    public function factures()
+    public function factures(): HasMany
     {
         return $this->hasMany(Facture::class);
     }
 
-    public function avoirs()
+    public function avoirs(): HasMany
     {
         return $this->hasMany(Avoir::class);
     }
 
-    public function ressources()
+    public function ressources(): HasMany
     {
         return $this->hasMany(ChantierRessources::class);
     }
@@ -97,18 +97,6 @@ final class Chantiers extends Model
         return [
             'percent' => $percent,
             'color' => $percent <= 33 ? 'red' : ($percent > 34 && $percent <= 66 ? 'amber' : 'green'),
-        ];
-    }
-
-
-
-    protected function casts(): array
-    {
-        return [
-            'date_debut' => 'date',
-            'date_fin_prevu' => 'date',
-            'date_fin_reel' => 'date',
-            'status' => StatusChantier::class,
         ];
     }
 
@@ -134,15 +122,16 @@ final class Chantiers extends Model
     {
         $this->update([
             'budget_estime' => $this->calculerBudgetEstime(),
-            'budget_reel' => $this->calculerBudgetReel()
+            'budget_reel' => $this->calculerBudgetReel(),
         ]);
     }
 
     public function getEcartBudgetPercentAttribute(): ?float
     {
-        if ($this->budget_estime == 0) {
+        if ($this->budget_estime === 0) {
             return null; // Avoid division by zero
         }
+
         return round((($this->budget_reel - $this->budget_estime) / $this->budget_estime) * 100, 2);
     }
 
@@ -156,4 +145,13 @@ final class Chantiers extends Model
         return $this->ressources()->sum('amount_fee');
     }
 
+    protected function casts(): array
+    {
+        return [
+            'date_debut' => 'date',
+            'date_fin_prevu' => 'date',
+            'date_fin_reel' => 'date',
+            'status' => StatusChantier::class,
+        ];
+    }
 }

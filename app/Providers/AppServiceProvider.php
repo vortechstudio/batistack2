@@ -34,7 +34,7 @@ final class AppServiceProvider extends ServiceProvider
                 ]);
         });
 
-        View::composer('*', function($view) {
+        View::composer('*', function ($view) {
             $company = Company::first();
             $view->with('company', $company);
         });

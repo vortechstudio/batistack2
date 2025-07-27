@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Portail\Salarie;
 
 use App\Models\Core\Bank as CoreBank;
@@ -20,7 +22,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class Bank extends Component implements HasActions, HasSchemas, HasTable
+final class Bank extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
 
@@ -30,19 +32,19 @@ class Bank extends Component implements HasActions, HasSchemas, HasTable
 
         return $table
             ->query(EmployeBank::query()->where('employe_id', Auth::user()->employe->id))
-            ->emptyStateDescription("Aucun compte bancaire lié à votre compte.")
-            ->emptyStateHeading("Aucun compte bancaire")
+            ->emptyStateDescription('Aucun compte bancaire lié à votre compte.')
+            ->emptyStateHeading('Aucun compte bancaire')
             ->headerActions($hasAccounts ? [] : [
                 Action::make('connect')
-                    ->label("Lier un compte bancaire")
+                    ->label('Lier un compte bancaire')
                     ->action(fn () => $this->connectAccount()),
             ])
             ->columns([
                 TextColumn::make('bank_id')
-                    ->label("Banque"),
+                    ->label('Banque'),
 
                 TextColumn::make('iban')
-                    ->label("Information Bancaire"),
+                    ->label('Information Bancaire'),
             ]);
     }
 
@@ -63,11 +65,11 @@ class Bank extends Component implements HasActions, HasSchemas, HasTable
         return $this->redirect($bridge['url']);
     }
 
-    #[Title("Mon compte bancaire")]
+    #[Title('Mon compte bancaire')]
     #[Layout('components.layouts.portail.salarie')]
     public function render()
     {
-        if(request()->get('state') == 'banker') {
+        if (request()->get('state') === 'banker') {
 
             $accounts = app(Bridge::class)->get('/aggregation/accounts?item_id='.request()->get('item_id'), [], cache()->get('bridge_access_token'));
 
@@ -76,20 +78,21 @@ class Bank extends Component implements HasActions, HasSchemas, HasTable
                     return isset($account['data_access']) &&
                            $account['data_access'] === 'enabled' &&
                            isset($account['item_id']) &&
-                           $account['item_id'] == '11372128';
+                           $account['item_id'] === '11372128';
                 });
 
-            foreach($collect as $account) {
+            foreach ($collect as $account) {
                 $bank = CoreBank::where('bridge_id', $account['provider_id'])->first();
                 Auth::user()->employe->bank()->create([
-                    "employe_id" => Auth::user()->employe->id,
-                    "bank_id" => $bank->id,
-                    "iban" => $account['iban'],
-                    "bridge_id" => $account['id'],
-                    "bic" => app(OpenIban::class)->info($account['iban'])['bic'] ?? null,
+                    'employe_id' => Auth::user()->employe->id,
+                    'bank_id' => $bank->id,
+                    'iban' => $account['iban'],
+                    'bridge_id' => $account['id'],
+                    'bic' => app(OpenIban::class)->info($account['iban'])['bic'] ?? null,
                 ]);
             }
         }
+
         return view('livewire.portail.salarie.bank');
     }
 }
