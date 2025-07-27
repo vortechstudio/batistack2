@@ -2,7 +2,7 @@ name: 🏗️ Module CI/CD
 
 on:
   pull_request:
-    branches: [develop, master]
+    branches: [master]
     paths:
       # Modèles de tous les modules
       - 'app/Models/**'

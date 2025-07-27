@@ -94,6 +94,11 @@ final class Employe extends Model implements HasMedia
             ->sum('montant_valide');
     }
 
+    public function getFirstMediaUrl()
+    {
+        return $this->user->avatar;
+    }
+
     protected function casts(): array
     {
         return [

@@ -6,16 +6,16 @@ namespace App\Models\RH;
 
 use App\Enums\RH\ModePaiementFrais;
 use App\Enums\RH\TypeFrais;
-use App\Models\Chantiers\Chantiers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 final class NoteFraisDetail extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $table = 'note_frais_details';
 
@@ -27,11 +27,6 @@ final class NoteFraisDetail extends Model implements HasMedia
     public function noteFrais(): BelongsTo
     {
         return $this->belongsTo(NoteFrais::class);
-    }
-
-    public function chantier(): BelongsTo
-    {
-        return $this->belongsTo(Chantiers::class)->nullable();
     }
 
     /**
@@ -58,6 +53,11 @@ final class NoteFraisDetail extends Model implements HasMedia
     public function getAJustificatifAttribute(): bool
     {
         return ! empty($this->justificatif_path);
+    }
+
+    public function getTypeAttribute(): string
+    {
+        return $this->type_frais->value;
     }
 
     public function getDistanceAttribute(): ?string

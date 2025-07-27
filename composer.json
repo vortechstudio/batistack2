@@ -105,7 +105,8 @@
         "lint": "pint",
         "test:lint": "pint --test",
         "refactor": "rector",
-        "test:refactor": "rector --dry-run"
+        "test:refactor": "rector --dry-run",
+        "test:stan": "./vendor/bin/phpstan analyse --pro"
     },
     "extra": {
         "laravel": {

@@ -14,7 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Ajouter le middleware de sécurité CSP globalement
+        $middleware->web(append: [
+            App\Http\Middleware\ContentSecurityPolicy::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

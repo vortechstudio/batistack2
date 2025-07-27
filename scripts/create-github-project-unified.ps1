@@ -24,7 +24,7 @@ $result = gh project create --title "🏗️ Batistack - Développement Modules 
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Projet principal créé avec succès" -ForegroundColor Green
-
+    
     Write-Host "`n📝 Structure recommandée du projet :" -ForegroundColor Yellow
     Write-Host "├── 🎯 Modules Prioritaires (Q1 2025)" -ForegroundColor White
     Write-Host "│   ├── 📦 Module Produits/Services" -ForegroundColor Gray
@@ -40,7 +40,7 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "└── ⚙️ Projets Transversaux" -ForegroundColor White
     Write-Host "    ├── ⚙️ Infrastructure & DevOps" -ForegroundColor Gray
     Write-Host "    └── 🎨 UX/UI & Design System" -ForegroundColor Gray
-
+    
 } else {
     Write-Host "❌ Erreur lors de la création du projet" -ForegroundColor Red
     Write-Host $result -ForegroundColor Red

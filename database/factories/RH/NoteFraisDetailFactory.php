@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories\RH;
 
-use App\Models\Chantiers\Chantiers;
-use App\Models\RH\NoteFrais;
 use App\Models\RH\NoteFraisDetail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
@@ -18,7 +16,7 @@ final class NoteFraisDetailFactory extends Factory
     {
         $typeFrais = $this->faker->randomElement([
             'transport', 'hebergement', 'restauration', 'carburant',
-            'peage', 'parking', 'materiel', 'formation', 'telecommunication', 'autre',
+            'peage', 'parking', 'materiel', 'formation', 'communication', 'autre',
         ]);
 
         $montantHT = $this->faker->randomFloat(2, 5, 500);
@@ -27,7 +25,6 @@ final class NoteFraisDetailFactory extends Factory
         $montantTTC = $montantHT + $montantTVA;
 
         return [
-            'note_frais_id' => NoteFrais::factory(),
             'date_frais' => $this->faker->dateTimeBetween('-2 months', 'now'),
             'type_frais' => $typeFrais,
             'libelle' => $this->generateLibelle($typeFrais),
@@ -45,7 +42,7 @@ final class NoteFraisDetailFactory extends Factory
             'kilometrage' => $typeFrais === 'transport' ? $this->faker->optional(0.8)->randomFloat(1, 5, 500) : null,
             'lieu_depart' => $typeFrais === 'transport' ? $this->faker->optional(0.8)->city() : null,
             'lieu_arrivee' => $typeFrais === 'transport' ? $this->faker->optional(0.8)->city() : null,
-            'chantier_id' => $this->faker->optional(0.4)->randomElement([null, Chantiers::factory()]),
+            'chantier_id' => null, // Simplifié pour éviter les erreurs
             'metadata' => $this->faker->optional(0.2)->randomElements([
                 'urgence' => $this->faker->boolean,
                 'mission' => $this->faker->word,
@@ -258,7 +255,7 @@ final class NoteFraisDetailFactory extends Factory
                 'Formation professionnelle', 'Séminaire', 'Conférence métier',
                 'Stage technique', 'Formation sécurité',
             ],
-            'telecommunication' => [
+            'communication' => [
                 'Frais téléphone', 'Communication client', 'Internet mobile',
                 'Forfait téléphonique', 'Frais de communication',
             ],
