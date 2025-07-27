@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('date_debut'); // Date de début de la période
             $table->date('date_fin'); // Date de fin de la période
             $table->date('date_soumission')->nullable(); // Date de soumission de la note
-            $table->enum('statut', ['brouillon', 'soumise', 'validee', 'refusee', 'payee'])
+            $table->string('statut')
                 ->default('brouillon');
             $table->text('motif_refus')->nullable(); // Motif en cas de refus
             $table->decimal('montant_total', 10, 2)->default(0); // Montant total calculé
