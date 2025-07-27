@@ -60,18 +60,20 @@ final class NoteFrais extends Model implements HasMedia
 
     public function getEstValidableAttribute(): bool
     {
-        $statut = $this->statut instanceof StatusNoteFrais 
-            ? $this->statut 
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
             : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+
         return $statut === StatusNoteFrais::SOUMISE &&
                $this->details->count() > 0;
     }
 
     public function getEstModifiableAttribute(): bool
     {
-        $statut = $this->statut instanceof StatusNoteFrais 
-            ? $this->statut 
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
             : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+
         return in_array($statut, [StatusNoteFrais::BROUILLON, StatusNoteFrais::REFUSEE]);
     }
 
@@ -104,8 +106,8 @@ final class NoteFrais extends Model implements HasMedia
      */
     public function soumettre(): bool
     {
-        $statut = $this->statut instanceof StatusNoteFrais 
-            ? $this->statut 
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
             : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
         if ($statut !== StatusNoteFrais::BROUILLON) {
             return false;
@@ -122,8 +124,8 @@ final class NoteFrais extends Model implements HasMedia
 
     public function valider($validateur, ?string $commentaire = null): bool
     {
-        $statut = $this->statut instanceof StatusNoteFrais 
-            ? $this->statut 
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
             : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
         if ($statut !== StatusNoteFrais::SOUMISE) {
             return false;
@@ -144,8 +146,8 @@ final class NoteFrais extends Model implements HasMedia
 
     public function refuser($validateur, string $motif): bool
     {
-        $statut = $this->statut instanceof StatusNoteFrais 
-            ? $this->statut 
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
             : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
         if ($statut !== StatusNoteFrais::SOUMISE) {
             return false;
@@ -165,8 +167,8 @@ final class NoteFrais extends Model implements HasMedia
 
     public function marquerPayee(string $referencePaiement): bool
     {
-        $statut = $this->statut instanceof StatusNoteFrais 
-            ? $this->statut 
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
             : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
         if ($statut !== StatusNoteFrais::VALIDEE) {
             return false;
@@ -183,8 +185,8 @@ final class NoteFrais extends Model implements HasMedia
 
     public function payer(): bool
     {
-        $statut = $this->statut instanceof StatusNoteFrais 
-            ? $this->statut 
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
             : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
         if ($statut !== StatusNoteFrais::VALIDEE) {
             return false;
