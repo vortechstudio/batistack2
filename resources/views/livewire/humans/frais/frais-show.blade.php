@@ -37,11 +37,11 @@
                         </tr>
                         <tr>
                             <td class="font-bold">Date de Soumission</td>
-                            <td class="text-right">{{ $frais->date_soumission->format("d/m/Y") }}</td>
+                            <td class="text-right">{{ $frais->date_soumission ? $frais->date_soumission->format("d/m/Y") : '-' }}</td>
                         </tr>
                         <tr>
                             <td class="font-bold">Date de Validation</td>
-                            <td class="text-right">{{ $frais->date_validation->format("d/m/Y") }}</td>
+                            <td class="text-right">{{ $frais->date_validation ? $frais->date_validation->format("d/m/Y") : '-' }}</td>
                         </tr>
                     </tbody>
                 </table>

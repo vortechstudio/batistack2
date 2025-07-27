@@ -24,6 +24,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
@@ -164,9 +165,9 @@ final class FraisShow extends Component implements HasActions, HasSchemas
             });
     }
 
-    public function deleteAction(): DeleteAction
+    public function deleteAction(): Action
     {
-        return DeleteAction::make('delete')
+        return Action::make('delete')
             ->label('Supprimer')
             ->icon(Heroicon::Trash)
             ->requiresConfirmation()
