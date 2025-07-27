@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Livewire\Humans\Frais;
 
-use App\Enums\RH\StatusNoteFrais;
 use App\Models\RH\Employe;
 use App\Models\RH\NoteFrais;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -20,9 +19,8 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Enums\FiltersLayout;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -60,6 +58,7 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
                             ->label('Commentaire'),
                     ]),
             ])
+            ->recordUrl(fn (?Model $record) => route('humans.frais.show', $record->id))
             ->columns([
                 TextColumn::make('numero')
                     ->label('Réf.')
@@ -114,12 +113,7 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
                     ->sortable()
                     ->money('EUR', 0, 'fr')
                     ->summarize(Sum::make()->label('Total')->money('EUR', locale: 'fr')),
-            ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->options(StatusNoteFrais::getSelectOptions())
-                    ->multiple(),
-            ], layout: FiltersLayout::AboveContent);
+            ]);
     }
 
     #[Title('Note de Frais')]

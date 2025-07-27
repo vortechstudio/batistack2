@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -40,6 +41,11 @@ final class NoteFrais extends Model implements HasMedia
         return $this->hasMany(NoteFraisDetail::class);
     }
 
+    public function paiement(): HasOne
+    {
+        return $this->hasOne(NoteFraisPaiement::class);
+    }
+
     /**
      * Accesseurs
      */
@@ -53,9 +59,24 @@ final class NoteFrais extends Model implements HasMedia
         return $this->details->sum('montant_ttc');
     }
 
+    public function getMontantTotalHtAttribute(): float
+    {
+        return $this->details->sum('montant_ht');
+    }
+
+    public function getMontantTotalTvaAttribute(): float
+    {
+        return $this->details->sum('montant_tva');
+    }
+
     public function getNombreJustificatifsAttribute(): int
     {
         return $this->details->whereNotNull('justificatif_path')->count();
+    }
+
+    public function getMontantPaiementAttribute()
+    {
+        return $this->paiement?->sum('montant');
     }
 
     public function getEstValidableAttribute(): bool
@@ -75,6 +96,15 @@ final class NoteFrais extends Model implements HasMedia
             : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
 
         return in_array($statut, [StatusNoteFrais::BROUILLON, StatusNoteFrais::REFUSEE]);
+    }
+
+    public function getEstPayableAttribute(): bool
+    {
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+
+        return $statut === StatusNoteFrais::VALIDEE;
     }
 
     /**
@@ -258,6 +288,7 @@ final class NoteFrais extends Model implements HasMedia
         self::deleting(function ($noteFrais) {
             // Supprimer les détails associés
             $noteFrais->details()->delete();
+            $noteFrais->paiement()->delete();
         });
     }
 

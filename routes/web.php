@@ -7,6 +7,7 @@ use App\Livewire\Humans\Config\Index as ConfigIndex;
 use App\Livewire\Humans\Conges\Index as CongesIndex;
 use App\Livewire\Humans\Dashboard;
 use App\Livewire\Humans\Frais\Frais;
+use App\Livewire\Humans\Frais\FraisShow;
 use App\Livewire\Humans\Salarie\Index;
 use App\Livewire\Humans\Salarie\Transmission;
 use App\Livewire\Humans\Salarie\View;
@@ -89,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('frais')->group(function () {
             Route::get('/', Frais::class)->name('humans.frais');
+            Route::get('/{id}', FraisShow::class)->name('humans.frais.show');
         });
 
         Route::prefix('config')->group(function () {
