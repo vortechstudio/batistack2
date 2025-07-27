@@ -15,7 +15,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
-use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
@@ -24,7 +23,6 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -39,6 +37,7 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
         return $table
             ->query(NoteFrais::query())
             ->heading('Liste des notes de frais')
+            ->emptyStateHeading('Aucune note de frais trouvée')
             ->headerActions([
                 CreateAction::make('create')
                     ->label('Créer une note de frais')
@@ -71,12 +70,14 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
                     ->sortable()
                     ->formatStateUsing(function ($state, $record) {
                         $employe = $record->employe;
-                        if (!$employe) return '-';
+                        if (! $employe) {
+                            return '-';
+                        }
 
                         $avatar = $employe->getFirstMediaUrl();
                         $avatarHtml = "<img src='{$avatar}' class='w-8 h-8 rounded-full mr-2 inline-block' alt='Avatar'>";
 
-                        return new HtmlString($avatarHtml . $employe->full_name);
+                        return new HtmlString($avatarHtml.$employe->full_name);
                     })
                     ->html(),
 

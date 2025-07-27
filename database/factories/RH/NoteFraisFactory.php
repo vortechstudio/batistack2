@@ -21,7 +21,7 @@ final class NoteFraisFactory extends Factory
         $dateSoumission = $this->faker->optional(0.8)->dateTimeBetween($dateFin, 'now');
 
         return [
-            'numero' => $this->generateNumero(),
+            // Le numéro sera généré automatiquement par le modèle via la méthode boot()
             'employe_id' => Employe::factory(),
             'date_debut' => $dateDebut,
             'date_fin' => $dateFin,
@@ -140,16 +140,5 @@ final class NoteFraisFactory extends Factory
             'reference_paiement' => null,
             'montant_valide' => null,
         ]);
-    }
-
-    /**
-     * Générer un numéro de note de frais unique
-     */
-    private function generateNumero(): string
-    {
-        $year = $this->faker->numberBetween(2024, 2025);
-        $sequence = (string) $this->faker->numberBetween(1, 999);
-
-        return 'NF-'.$year.'-'.mb_str_pad($sequence, 4, '0', STR_PAD_LEFT);
     }
 }

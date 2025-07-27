@@ -10,12 +10,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 final class NoteFrais extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $table = 'note_frais';
 
@@ -44,7 +45,7 @@ final class NoteFrais extends Model implements HasMedia
      */
     public function getNumeroCompletAttribute(): string
     {
-        return 'NF-'.mb_str_pad($this->id, 6, '0', STR_PAD_LEFT);
+        return $this->numero ?? 'NF-'.mb_str_pad((string) $this->id, 6, '0', STR_PAD_LEFT);
     }
 
     public function getMontantTotalCalculeAttribute(): float
@@ -59,13 +60,19 @@ final class NoteFrais extends Model implements HasMedia
 
     public function getEstValidableAttribute(): bool
     {
-        return $this->status === StatusNoteFrais::SOUMISE &&
+        $statut = $this->statut instanceof StatusNoteFrais 
+            ? $this->statut 
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+        return $statut === StatusNoteFrais::SOUMISE &&
                $this->details->count() > 0;
     }
 
     public function getEstModifiableAttribute(): bool
     {
-        return in_array($this->status, [StatusNoteFrais::BROUILLON, StatusNoteFrais::REFUSEE]);
+        $statut = $this->statut instanceof StatusNoteFrais 
+            ? $this->statut 
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+        return in_array($statut, [StatusNoteFrais::BROUILLON, StatusNoteFrais::REFUSEE]);
     }
 
     /**
@@ -73,12 +80,12 @@ final class NoteFrais extends Model implements HasMedia
      */
     public function scopeEnAttente($query)
     {
-        return $query->where('status', StatusNoteFrais::SOUMISE);
+        return $query->where('statut', StatusNoteFrais::SOUMISE);
     }
 
     public function scopeValidees($query)
     {
-        return $query->where('status', StatusNoteFrais::VALIDEE);
+        return $query->where('statut', StatusNoteFrais::VALIDEE);
     }
 
     public function scopePourEmploye($query, $employeId)
@@ -88,8 +95,8 @@ final class NoteFrais extends Model implements HasMedia
 
     public function scopePourPeriode($query, $dateDebut, $dateFin)
     {
-        return $query->whereBetween('date_debut_periode', [$dateDebut, $dateFin])
-            ->orWhereBetween('date_fin_periode', [$dateDebut, $dateFin]);
+        return $query->whereBetween('date_debut', [$dateDebut, $dateFin])
+            ->orWhereBetween('date_fin', [$dateDebut, $dateFin]);
     }
 
     /**
@@ -97,12 +104,15 @@ final class NoteFrais extends Model implements HasMedia
      */
     public function soumettre(): bool
     {
-        if ($this->status !== StatusNoteFrais::BROUILLON) {
+        $statut = $this->statut instanceof StatusNoteFrais 
+            ? $this->statut 
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+        if ($statut !== StatusNoteFrais::BROUILLON) {
             return false;
         }
 
         $this->update([
-            'status' => StatusNoteFrais::SOUMISE,
+            'statut' => StatusNoteFrais::SOUMISE,
             'date_soumission' => now(),
             'montant_total' => $this->montant_total_calcule,
         ]);
@@ -110,15 +120,20 @@ final class NoteFrais extends Model implements HasMedia
         return true;
     }
 
-    public function valider(User $validateur, ?string $commentaire = null): bool
+    public function valider($validateur, ?string $commentaire = null): bool
     {
-        if ($this->status !== StatusNoteFrais::SOUMISE) {
+        $statut = $this->statut instanceof StatusNoteFrais 
+            ? $this->statut 
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+        if ($statut !== StatusNoteFrais::SOUMISE) {
             return false;
         }
 
+        $validateurId = $validateur instanceof User ? $validateur->id : $validateur;
+
         $this->update([
-            'status' => StatusNoteFrais::VALIDEE,
-            'validateur_id' => $validateur->id,
+            'statut' => StatusNoteFrais::VALIDEE,
+            'validateur_id' => $validateurId,
             'date_validation' => now(),
             'commentaire_validateur' => $commentaire,
             'montant_valide' => $this->montant_total,
@@ -127,17 +142,22 @@ final class NoteFrais extends Model implements HasMedia
         return true;
     }
 
-    public function refuser(User $validateur, string $commentaire): bool
+    public function refuser($validateur, string $motif): bool
     {
-        if ($this->status !== StatusNoteFrais::SOUMISE) {
+        $statut = $this->statut instanceof StatusNoteFrais 
+            ? $this->statut 
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+        if ($statut !== StatusNoteFrais::SOUMISE) {
             return false;
         }
 
+        $validateurId = $validateur instanceof User ? $validateur->id : $validateur;
+
         $this->update([
-            'status' => StatusNoteFrais::REFUSEE,
-            'validateur_id' => $validateur->id,
+            'statut' => StatusNoteFrais::REFUSEE,
+            'validateur_id' => $validateurId,
             'date_validation' => now(),
-            'commentaire_validateur' => $commentaire,
+            'motif_refus' => $motif,
         ]);
 
         return true;
@@ -145,17 +165,47 @@ final class NoteFrais extends Model implements HasMedia
 
     public function marquerPayee(string $referencePaiement): bool
     {
-        if ($this->status !== StatusNoteFrais::VALIDEE) {
+        $statut = $this->statut instanceof StatusNoteFrais 
+            ? $this->statut 
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+        if ($statut !== StatusNoteFrais::VALIDEE) {
             return false;
         }
 
         $this->update([
-            'status' => StatusNoteFrais::PAYEE,
+            'statut' => StatusNoteFrais::PAYEE,
             'date_paiement' => now(),
             'reference_paiement' => $referencePaiement,
         ]);
 
         return true;
+    }
+
+    public function payer(): bool
+    {
+        $statut = $this->statut instanceof StatusNoteFrais 
+            ? $this->statut 
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+        if ($statut !== StatusNoteFrais::VALIDEE) {
+            return false;
+        }
+
+        $this->update([
+            'statut' => StatusNoteFrais::PAYEE,
+            'date_paiement' => now(),
+        ]);
+
+        return true;
+    }
+
+    public function calculerMontants(): void
+    {
+        $this->load('details'); // Rafraîchir la relation
+        $montantTotal = $this->details->sum('montant_ttc');
+
+        $this->update([
+            'montant_total' => $montantTotal,
+        ]);
     }
 
     /**
@@ -167,13 +217,39 @@ final class NoteFrais extends Model implements HasMedia
 
         self::creating(function ($noteFrais) {
             if (empty($noteFrais->numero)) {
-                $count = static::whereYear('created_at', date('Y'))->count() + 1;
-                $noteFrais->numero = 'NF-'.date('Y').'-'.str_pad(
-                    (string) $count,
-                    4,
-                    '0',
-                    STR_PAD_LEFT
-                );
+                // Générer un numéro unique avec retry en cas de conflit
+                $year = date('Y');
+                $attempts = 0;
+                $maxAttempts = 10;
+
+                do {
+                    $attempts++;
+
+                    // Utiliser un timestamp microseconde + random pour plus d'unicité
+                    $microtime = (int) (microtime(true) * 1000000);
+                    $random = mt_rand(1000, 9999);
+                    $sequence = mb_substr((string) ($microtime + $random), -4);
+
+                    $numero = 'NF-'.$year.'-'.$sequence;
+
+                    // Vérifier si le numéro existe déjà
+                    $exists = static::where('numero', $numero)->exists();
+
+                    if (! $exists) {
+                        $noteFrais->numero = $numero;
+                        break;
+                    }
+
+                    // Si on arrive ici, il y a eu un conflit, on réessaie
+                    usleep(1000); // Attendre 1ms avant de réessayer
+
+                } while ($attempts < $maxAttempts);
+
+                // Si on n'a pas réussi après plusieurs tentatives, utiliser un UUID tronqué
+                if (empty($noteFrais->numero)) {
+                    $uuid = str_replace('-', '', (string) \Illuminate\Support\Str::uuid());
+                    $noteFrais->numero = 'NF-'.$year.'-'.mb_substr($uuid, 0, 4);
+                }
             }
         });
 
@@ -189,14 +265,14 @@ final class NoteFrais extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'date_debut_periode' => 'date',
-            'date_fin_periode' => 'date',
+            'date_debut' => 'date',
+            'date_fin' => 'date',
             'date_soumission' => 'datetime',
             'date_validation' => 'datetime',
             'date_paiement' => 'datetime',
-            'montant_total' => 'decimal:2',
-            'montant_valide' => 'decimal:2',
-            'status' => StatusNoteFrais::class,
+            'montant_total' => 'float',
+            'montant_valide' => 'float',
+            'statut' => StatusNoteFrais::class,
             'metadata' => 'array',
         ];
     }

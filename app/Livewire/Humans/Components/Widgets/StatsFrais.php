@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Livewire\Humans\Components\Widgets;
 
-use App\Enums\RH\TypeFrais;
 use App\Models\RH\NoteFraisDetail;
 use Filament\Widgets\ChartWidget;
 

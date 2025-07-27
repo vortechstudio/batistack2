@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Components\Tables;
 
-use Livewire\Component;
 use App\Models\RH\NoteFrais;
-use Illuminate\Support\HtmlString;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
+use Livewire\Component;
 
-class TableFraisLimit extends Component implements HasActions, HasSchemas, HasTable
+final class TableFraisLimit extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
 
@@ -34,12 +35,14 @@ class TableFraisLimit extends Component implements HasActions, HasSchemas, HasTa
                     ->label('')
                     ->formatStateUsing(function ($state, $record) {
                         $employe = $record->employe;
-                        if (!$employe) return '-';
+                        if (! $employe) {
+                            return '-';
+                        }
 
                         $avatar = $employe->getFirstMediaUrl();
                         $avatarHtml = "<img src='{$avatar}' class='w-8 h-8 rounded-full mr-2 inline-block' alt='Avatar'>";
 
-                        return new HtmlString($avatarHtml . $employe->full_name);
+                        return new HtmlString($avatarHtml.$employe->full_name);
                     })
                     ->html(),
 

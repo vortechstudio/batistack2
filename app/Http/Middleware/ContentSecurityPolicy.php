@@ -8,12 +8,12 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ContentSecurityPolicy
+final class ContentSecurityPolicy
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -27,7 +27,7 @@ class ContentSecurityPolicy
         if ($config['development_mode'] && app()->environment('local')) {
             foreach ($config['development_overrides'] as $directive => $override) {
                 if (isset($directives[$directive])) {
-                    $directives[$directive] .= ' ' . $override;
+                    $directives[$directive] .= ' '.$override;
                 }
             }
         }
@@ -35,11 +35,11 @@ class ContentSecurityPolicy
         // Construire la politique CSP
         $cspParts = [];
         foreach ($directives as $directive => $value) {
-            $cspParts[] = $directive . ' ' . $value;
+            $cspParts[] = $directive.' '.$value;
         }
 
         // Ajouter upgrade-insecure-requests si pas en développement
-        if (!app()->environment('local')) {
+        if (! app()->environment('local')) {
             $cspParts[] = 'upgrade-insecure-requests';
         }
 
@@ -51,7 +51,7 @@ class ContentSecurityPolicy
 
         // Ajouter l'URI de rapport si configuré
         if ($config['report_uri']) {
-            $cspHeader .= '; report-uri ' . $config['report_uri'];
+            $cspHeader .= '; report-uri '.$config['report_uri'];
             $response->headers->set($headerName, $cspHeader);
         }
 

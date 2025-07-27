@@ -35,7 +35,7 @@ return new class extends Migration
             $table->decimal('kilometrage', 8, 2)->nullable(); // Kilométrage pour les frais de transport
             $table->string('lieu_depart')->nullable(); // Lieu de départ (pour transport)
             $table->string('lieu_arrivee')->nullable(); // Lieu d'arrivée (pour transport)
-            $table->foreignId('chantier_id')->nullable()->constrained('chantiers')->nullOnDelete(); // Lien avec un chantier si applicable
+            $table->unsignedBigInteger('chantier_id')->nullable(); // Lien avec un chantier si applicable
             $table->json('metadata')->nullable(); // Données supplémentaires
             $table->timestamps();
 
@@ -43,7 +43,6 @@ return new class extends Migration
             $table->index(['note_frais_id', 'date_frais'], 'note_frais_details_note_date_index');
             $table->index('type_frais', 'note_frais_details_type_index');
             $table->index('remboursable', 'note_frais_details_remboursable_index');
-            $table->index('chantier_id', 'note_frais_details_chantier_index');
         });
     }
 

@@ -94,6 +94,11 @@ final class Employe extends Model implements HasMedia
             ->sum('montant_valide');
     }
 
+    public function getFirstMediaUrl()
+    {
+        return $this->user->avatar;
+    }
+
     protected function casts(): array
     {
         return [
@@ -102,10 +107,5 @@ final class Employe extends Model implements HasMedia
             'type_contrat' => TypeContrat::class,
             'status' => StatusEmploye::class,
         ];
-    }
-
-    public function getFirstMediaUrl()
-    {
-        return $this->user->avatar;
     }
 }

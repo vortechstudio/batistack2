@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Channels;
 
 use App\Channels\Messages\WhatsAppMessage;
+use Exception;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Log;
@@ -27,6 +28,7 @@ final class WhatAppChannel
                 'notifiable_id' => $notifiable->id ?? null,
                 'notification' => get_class($notification),
             ]);
+
             return false;
         }
 
@@ -58,11 +60,11 @@ final class WhatAppChannel
         // Priorité 1: Méthode toWhatsApp() si elle existe
         if (method_exists($notification, 'toWhatsApp')) {
             $result = $notification->toWhatsApp($notifiable);
-            
+
             if ($result instanceof WhatsAppMessage) {
                 return $result->content;
             }
-            
+
             if (is_string($result)) {
                 return $result;
             }
@@ -75,9 +77,10 @@ final class WhatAppChannel
                 if ($mailMessage instanceof MailMessage) {
                     // Combiner les lignes d'introduction
                     $content = implode(' ', $mailMessage->introLines);
-                    return !empty($content) ? $content : 'Nouvelle notification';
+
+                    return ! empty($content) ? $content : 'Nouvelle notification';
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::warning('Failed to extract mail content for WhatsApp', [
                     'notification' => get_class($notification),
                     'error' => $e->getMessage(),
