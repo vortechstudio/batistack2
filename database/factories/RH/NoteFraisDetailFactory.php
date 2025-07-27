@@ -1,31 +1,31 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Database\Factories\RH;
 
+use App\Enums\RH\ModePaiementFrais;
+use App\Enums\RH\TypeFrais;
 use App\Models\Chantiers\Chantiers;
 use App\Models\RH\NoteFrais;
 use App\Models\RH\NoteFraisDetail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-final class NoteFraisDetailFactory extends Factory
+class NoteFraisDetailFactory extends Factory
 {
     protected $model = NoteFraisDetail::class;
 
     public function definition(): array
     {
         $typeFrais = $this->faker->randomElement([
-            'transport', 'hebergement', 'restauration', 'carburant',
-            'peage', 'parking', 'materiel', 'formation', 'telecommunication', 'autre',
+            'transport', 'hebergement', 'restauration', 'carburant', 
+            'peage', 'parking', 'materiel', 'formation', 'telecommunication', 'autre'
         ]);
-
+        
         $montantHT = $this->faker->randomFloat(2, 5, 500);
         $tauxTVA = $this->faker->randomElement([0, 5.5, 10, 20]);
         $montantTVA = round($montantHT * $tauxTVA / 100, 2);
         $montantTTC = $montantHT + $montantTVA;
-
+        
         return [
             'note_frais_id' => NoteFrais::factory(),
             'date_frais' => $this->faker->dateTimeBetween('-2 months', 'now'),
@@ -68,7 +68,7 @@ final class NoteFraisDetailFactory extends Factory
                 'Transport chantier',
                 'Mission commerciale',
                 'Formation externe',
-                'Rendez-vous fournisseur',
+                'Rendez-vous fournisseur'
             ]),
             'kilometrage' => $this->faker->randomFloat(1, 10, 300),
             'lieu_depart' => $this->faker->city(),
@@ -89,14 +89,14 @@ final class NoteFraisDetailFactory extends Factory
                 'Déjeuner mission',
                 'Dîner d\'affaires',
                 'Petit-déjeuner réunion',
-                'Pause café équipe',
+                'Pause café équipe'
             ]),
             'fournisseur' => $this->faker->randomElement([
                 'Restaurant Le Gourmet',
                 'Brasserie du Centre',
                 'Café de la Gare',
                 'Hôtel Restaurant',
-                'Quick Service',
+                'Quick Service'
             ]),
             'montant_ht' => $this->faker->randomFloat(2, 8, 80),
             'kilometrage' => null,
@@ -117,14 +117,14 @@ final class NoteFraisDetailFactory extends Factory
                 'Hébergement formation',
                 'Hôtel déplacement client',
                 'Chambre d\'hôtes',
-                'Résidence temporaire',
+                'Résidence temporaire'
             ]),
             'fournisseur' => $this->faker->randomElement([
                 'Hôtel Ibis',
                 'Best Western',
                 'Campanile',
                 'Novotel',
-                'Hôtel du Commerce',
+                'Hôtel du Commerce'
             ]),
             'montant_ht' => $this->faker->randomFloat(2, 60, 250),
             'kilometrage' => null,
@@ -145,14 +145,14 @@ final class NoteFraisDetailFactory extends Factory
                 'Diesel mission',
                 'Carburant déplacement',
                 'Plein d\'essence',
-                'Gasoil véhicule',
+                'Gasoil véhicule'
             ]),
             'fournisseur' => $this->faker->randomElement([
                 'Total Energies',
                 'Shell',
                 'BP',
                 'Esso',
-                'Intermarché',
+                'Intermarché'
             ]),
             'montant_ht' => $this->faker->randomFloat(2, 30, 120),
             'kilometrage' => null,
@@ -173,14 +173,14 @@ final class NoteFraisDetailFactory extends Factory
                 'Matériel informatique',
                 'Outillage chantier',
                 'Équipement sécurité',
-                'Consommables',
+                'Consommables'
             ]),
             'fournisseur' => $this->faker->randomElement([
                 'Leroy Merlin',
                 'Brico Dépôt',
                 'Bureau Vallée',
                 'Castorama',
-                'Point P',
+                'Point P'
             ]),
             'montant_ht' => $this->faker->randomFloat(2, 15, 300),
             'kilometrage' => null,
@@ -195,7 +195,7 @@ final class NoteFraisDetailFactory extends Factory
     public function avecJustificatif(): static
     {
         return $this->state(fn (array $attributes) => [
-            'justificatif_path' => '/storage/justificatifs/'.$this->faker->uuid().'.pdf',
+            'justificatif_path' => '/storage/justificatifs/' . $this->faker->uuid() . '.pdf',
         ]);
     }
 
@@ -228,44 +228,44 @@ final class NoteFraisDetailFactory extends Factory
         $libelles = [
             'transport' => [
                 'Déplacement client', 'Transport chantier', 'Mission commerciale',
-                'Formation externe', 'Rendez-vous fournisseur', 'Visite technique',
+                'Formation externe', 'Rendez-vous fournisseur', 'Visite technique'
             ],
             'hebergement' => [
                 'Nuit d\'hôtel mission', 'Hébergement formation', 'Hôtel déplacement client',
-                'Chambre d\'hôtes', 'Résidence temporaire',
+                'Chambre d\'hôtes', 'Résidence temporaire'
             ],
             'restauration' => [
                 'Repas client', 'Déjeuner mission', 'Dîner d\'affaires',
-                'Petit-déjeuner réunion', 'Pause café équipe',
+                'Petit-déjeuner réunion', 'Pause café équipe'
             ],
             'carburant' => [
                 'Essence véhicule société', 'Diesel mission', 'Carburant déplacement',
-                'Plein d\'essence', 'Gasoil véhicule',
+                'Plein d\'essence', 'Gasoil véhicule'
             ],
             'peage' => [
                 'Péage autoroute', 'Frais de route', 'Péage mission',
-                'Autoroute déplacement', 'Frais péage client',
+                'Autoroute déplacement', 'Frais péage client'
             ],
             'parking' => [
                 'Parking client', 'Stationnement mission', 'Parking aéroport',
-                'Frais parking', 'Stationnement payant',
+                'Frais parking', 'Stationnement payant'
             ],
             'materiel' => [
                 'Fournitures bureau', 'Matériel informatique', 'Outillage chantier',
-                'Équipement sécurité', 'Consommables',
+                'Équipement sécurité', 'Consommables'
             ],
             'formation' => [
                 'Formation professionnelle', 'Séminaire', 'Conférence métier',
-                'Stage technique', 'Formation sécurité',
+                'Stage technique', 'Formation sécurité'
             ],
             'telecommunication' => [
                 'Frais téléphone', 'Communication client', 'Internet mobile',
-                'Forfait téléphonique', 'Frais de communication',
+                'Forfait téléphonique', 'Frais de communication'
             ],
             'autre' => [
                 'Frais divers', 'Dépense exceptionnelle', 'Frais administratifs',
-                'Autres frais', 'Dépense non classée',
-            ],
+                'Autres frais', 'Dépense non classée'
+            ]
         ];
 
         return $this->faker->randomElement($libelles[$typeFrais] ?? $libelles['autre']);

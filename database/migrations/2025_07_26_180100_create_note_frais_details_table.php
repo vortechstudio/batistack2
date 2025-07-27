@@ -18,18 +18,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(NoteFrais::class)->constrained('note_frais')->cascadeOnDelete();
             $table->date('date_frais'); // Date du frais
-            $table->enum('type_frais', [
-                'transport',
-                'hebergement',
-                'restauration',
-                'carburant',
-                'peage',
-                'parking',
-                'materiel',
-                'formation',
-                'telecommunication',
-                'autre',
-            ]);
+            $table->string('type_frais');
             $table->string('libelle'); // Description du frais
             $table->decimal('montant_ht', 8, 2); // Montant HT
             $table->decimal('taux_tva', 5, 2)->default(20.00); // Taux de TVA
@@ -38,7 +27,7 @@ return new class extends Migration
             $table->decimal('montant_valide', 8, 2)->nullable(); // Montant validé (si différent)
             $table->string('fournisseur')->nullable(); // Nom du fournisseur/commerçant
             $table->string('numero_facture')->nullable(); // Numéro de facture/ticket
-            $table->enum('mode_paiement', ['especes', 'carte', 'cheque', 'virement', 'autre'])
+            $table->string('mode_paiement')
                 ->default('carte');
             $table->boolean('remboursable')->default(true); // Si le frais est remboursable
             $table->text('commentaire')->nullable(); // Commentaire sur le frais
