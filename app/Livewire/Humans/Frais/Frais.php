@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 namespace App\Livewire\Humans\Frais;
 
+use App\Enums\RH\StatusNoteFrais;
 use App\Models\RH\NoteFrais;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -30,7 +35,7 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
         return $table
             ->query(NoteFrais::query())
             ->heading('Liste des notes de frais')
-            ->toolbarActions([
+            ->headerActions([
                 CreateAction::make('create')
                     ->label('Créer une note de frais')
                     ->icon(Heroicon::PlusCircle)
@@ -82,19 +87,20 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
                     ->searchable(isIndividual: true)
                     ->sortable()
                     ->money('EUR', 0, 'fr')
-                    ->summarize(Sum::make()->label('Total')),
+                    ->summarize(Sum::make()->label('Total')->money('EUR', locale: 'fr')),
 
                 TextColumn::make('montant_valide')
                     ->label('Montant validé')
                     ->searchable(isIndividual: true)
                     ->sortable()
                     ->money('EUR', 0, 'fr')
-                    ->summarize(Sum::make()->label('Total')),
-
-                TextColumn::make('status')
-                    ->label('Statut')
-                    ->sortable(),
-            ]);
+                    ->summarize(Sum::make()->label('Total')->money('EUR', locale: 'fr')),
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->options(StatusNoteFrais::getSelectOptions())
+                    ->multiple(),
+            ], layout: FiltersLayout::AboveContent);
     }
 
     #[Title('Note de Frais')]
