@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications\Core;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SendMessageTo extends Notification
+final class SendMessageTo extends Notification
 {
     use Queueable;
 
@@ -17,8 +18,7 @@ class SendMessageTo extends Notification
     public function __construct(
         public string $subject,
         public string $message,
-    )
-    {
+    ) {
         //
     }
 

@@ -9,18 +9,16 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-describe("NoteFraisPaiement Model", function() {
-    beforeEach(function() {
+describe('NoteFraisPaiement Model', function () {
+    beforeEach(function () {
         $this->employe = Employe::factory()->create();
         $this->noteFrais = NoteFrais::factory()->create([
-            'employe_id' => $this->employe->id
+            'employe_id' => $this->employe->id,
         ]);
         $this->noteFraisDetails = NoteFraisDetail::factory()->create([
-            'note_frais_id' => $this->noteFrais->id
+            'note_frais_id' => $this->noteFrais->id,
         ]);
     });
 
-    test("peut créer un paiement", function() {
-        
-    });
+    test('peut créer un paiement', function () {});
 });

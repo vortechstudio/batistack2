@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Humans\Frais;
 
 use App\Actions\RH\GenerateNoteFrais;
-use App\Mail\Core\MailToTiers;
 use App\Mail\Core\ProfessionalMail;
 use App\Models\RH\Employe;
 use App\Models\RH\NoteFrais;
-use App\Notifications\Core\SendMessageTo;
 use Auth;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -22,16 +22,16 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class FraisShow extends Component implements HasActions, HasSchemas
+final class FraisShow extends Component implements HasActions, HasSchemas
 {
     use InteractsWithActions, InteractsWithSchemas;
+
     public NoteFrais $frais;
 
     public function mount(int $id)
@@ -43,7 +43,7 @@ class FraisShow extends Component implements HasActions, HasSchemas
     {
         return Action::make('sendMail')
             ->color('primary')
-            ->label("Envoyer un email")
+            ->label('Envoyer un email')
             ->icon(Heroicon::Envelope)
             ->schema([
                 TextInput::make('from')
@@ -98,9 +98,7 @@ class FraisShow extends Component implements HasActions, HasSchemas
                 Textarea::make('commentaire_employe')
                     ->label('Commentaire'),
             ])
-            ->using(function (array $data) {
-
-            });
+            ->using(function (array $data) {});
     }
 
     public function validateAction(): EditAction

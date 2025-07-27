@@ -1,13 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\RH;
 
 use App\Models\Core\ModeReglement;
 use Illuminate\Database\Eloquent\Model;
 
-class NoteFraisPaiement extends Model
+final class NoteFraisPaiement extends Model
 {
     protected $guarded = [];
+
+    protected $casts = [
+        'montant' => 'float',
+        'date_paiement' => 'date',
+    ];
 
     public function noteFrais()
     {
@@ -21,7 +28,7 @@ class NoteFraisPaiement extends Model
 
     public function getTypePaiementAttribute()
     {
-         return $this->modeReglement->name;
+        return $this->modeReglement->name;
     }
 
     public function getCompteBancaireAttribute()
@@ -33,7 +40,7 @@ class NoteFraisPaiement extends Model
     {
         parent::boot();
         self::creating(function ($noteFraisPaiement) {
-            if(empty($noteFraisPaiement->numero_paiement)) {
+            if (empty($noteFraisPaiement->numero_paiement)) {
                 // Générer un numéro unique avec retry en cas de conflit
                 $year = date('Y');
                 $attempts = 0;
@@ -70,9 +77,4 @@ class NoteFraisPaiement extends Model
             }
         });
     }
-
-    protected $casts = [
-        'montant' => 'float',
-        'date_paiement' => 'date',
-    ];
 }

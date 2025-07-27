@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\RH;
 
 use App\Models\Core\Company;
@@ -8,28 +10,28 @@ use LaravelDaily\Invoices\Classes\InvoiceItem;
 use LaravelDaily\Invoices\Classes\Party;
 use LaravelDaily\Invoices\Facades\Invoice;
 
-class GenerateNoteFrais
+final class GenerateNoteFrais
 {
     public function handle(NoteFrais $frais)
     {
         $company = Company::first();
         $seller = new Party([
             'name' => $company->name,
-            'address' => $company->address.", ".$company->code_postal." ".$company->ville,
+            'address' => $company->address.', '.$company->code_postal.' '.$company->ville,
             'phone' => $company->phone,
             'vat' => $company->num_tva,
             'custom_fields' => [
                 'siret' => $company->siret,
-                'ape' => $company->ape
-            ]
+                'ape' => $company->ape,
+            ],
         ]);
 
         $buyer = new Party([
             'name' => $frais->employe->full_name,
-            'address' => $frais->employe->adresse.", ".$frais->employe->code_postal." ".$frais->employe->ville,
+            'address' => $frais->employe->adresse.', '.$frais->employe->code_postal.' '.$frais->employe->ville,
             'custom_fields' => [
                 'matricule' => $frais->employe->matricule,
-            ]
+            ],
         ]);
 
         $items = [];
@@ -42,9 +44,9 @@ class GenerateNoteFrais
         }
 
         $notes = [
-            'Le paiement de la note de frais se fait 14 jours après la validation'
+            'Le paiement de la note de frais se fait 14 jours après la validation',
         ];
-        $notes = implode("<br>", $notes);
+        $notes = implode('<br>', $notes);
 
         $invoice = Invoice::make('receipt')
             ->status($frais->statut->label())
