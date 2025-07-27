@@ -1,0 +1,6 @@
+=== Audit NPM ===
+Date: Sun Jul 27 19:05:27 CEST 2025
+Projet: /mnt/wsl/docker-desktop-bind-mounts/Ubuntu/e449ea4066759f8f008855ad53900c18c1a8bf9e22e74962e6a525851dd53fbf
+
+found 0 vulnerabilities
+✅ Aucune vulnérabilité modérée/critique détectée
