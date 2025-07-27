@@ -5,6 +5,7 @@
  */
 
 import './echo';
+import './chart-config';
 
 window.Echo.private('App.Models.User.1')
     .listen('AggregateMouvementEvent', (event) => {

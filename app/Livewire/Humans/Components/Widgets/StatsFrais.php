@@ -33,11 +33,14 @@ final class StatsFrais extends ChartWidget
             '#4BC0C0', '#FF6384',
         ];
 
-        foreach ($stats as $index => $stat) {
-            $typeEnum = TypeFrais::from($stat->type_frais);
-            $labels[] = $typeEnum->label();
+        foreach ($stats as $stat) {
+            $labels[] = $stat->type_frais->label();
             $data[] = (float) $stat->total;
         }
+
+        // S'assurer que les tableaux sont indexés numériquement
+        $labels = array_values($labels);
+        $data = array_values($data);
 
         return [
             'labels' => $labels,
