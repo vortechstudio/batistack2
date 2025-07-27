@@ -103,4 +103,9 @@ final class Employe extends Model implements HasMedia
             'status' => StatusEmploye::class,
         ];
     }
+
+    public function getFirstMediaUrl()
+    {
+        return $this->user->avatar;
+    }
 }
