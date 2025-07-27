@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Models\Chantiers\Chantiers;
 use App\Models\Chantiers\ChantierRessources;
+use App\Models\Chantiers\Chantiers;
 use App\Models\RH\Employe;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
