@@ -59,10 +59,10 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
                     ->using(function (array $data) {
                         $data['employe_id'] = Auth::user()->employe->id;
                         NoteFrais::create([
-                            "employe_id" => $data['employe_id'],
-                            "date_debut" => $data['date_debut'],
-                            "date_fin" => $data['date_fin'],
-                            "commentaire_employe" => $data['commentaire_employe'],
+                            'employe_id' => $data['employe_id'],
+                            'date_debut' => $data['date_debut'],
+                            'date_fin' => $data['date_fin'],
+                            'commentaire_employe' => $data['commentaire_employe'],
                         ]);
                     }),
             ])
@@ -74,7 +74,7 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
                     ->constraints([
                         DateConstraint::make('date_debut'),
                         DateConstraint::make('date_fin'),
-                    ])
+                    ]),
             ])
             ->filtersFormWidth(Width::FourExtraLarge)
             ->query(NoteFrais::query()->where('employe_id', Auth::user()->employe->id))
