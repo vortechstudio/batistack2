@@ -2,11 +2,15 @@
     <div class="flex justify-end gap-5 p-5 bg-gray-100 rounded mb-5">
         {{ $this->sendMailAction }}
 
-        {{ $this->frais->est_modifiable ? $this->editAction : null }}
-        {{ $this->frais->est_validable ? $this->validateAction : null }}
-        {{ $this->frais->est_payable ? $this->payerAction : null }}
+        @if(!$frais->est_refuse)
+            {{ $this->frais->est_modifiable ? $this->submitAction : null }}
+            {{ $this->frais->est_modifiable ? $this->editAction : null }}
+            {{ $this->frais->est_validable ? $this->validateAction : null }}
+            {{ $this->frais->est_validable ? $this->refuseAction : null }}
+            {{ $this->frais->est_payable ? $this->payerAction : null }}
 
-        {{ $this->frais->est_modifiable ? $this->deleteAction : null }}
+            {{ $this->frais->est_modifiable ? $this->deleteAction : null }}
+        @endif
     </div>
     <div class="flex justify-between items-center mb-10">
         <div class="flex items-center">
@@ -22,7 +26,7 @@
             <p>Pas encore en comptabilité</p>
         </div>
     </div>
-    <div class="flex justify-between gap-5">
+    <div class="flex justify-between gap-5 mb-10">
         <div class="flex w-1/2 bg-gray-100 rounded p-5">
             <div class="overflow-x-auto">
                 <table class="table w-[100%]">
@@ -37,11 +41,11 @@
                         </tr>
                         <tr>
                             <td class="font-bold">Date de Soumission</td>
-                            <td class="text-right">{{ $frais->date_soumission->format("d/m/Y") }}</td>
+                            <td class="text-right">{{ $frais->date_soumission ? $frais->date_soumission->format("d/m/Y") : '-' }}</td>
                         </tr>
                         <tr>
                             <td class="font-bold">Date de Validation</td>
-                            <td class="text-right">{{ $frais->date_validation->format("d/m/Y") }}</td>
+                            <td class="text-right">{{ $frais->date_validation ? $frais->date_validation->format("d/m/Y") : '-' }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -104,5 +108,6 @@
             </div>
         </div>
     </div>
+    @livewire('humans.components.tables.table-frais-details', ['frais' => $frais])
     <x-filament-actions::modals />
 </div>
