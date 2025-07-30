@@ -6,6 +6,7 @@
             {{ $this->frais->est_modifiable ? $this->submitAction : null }}
             {{ $this->frais->est_modifiable ? $this->editAction : null }}
             {{ $this->frais->est_validable ? $this->validateAction : null }}
+            {{ $this->frais->est_validable ? $this->refuseAction : null }}
             {{ $this->frais->est_payable ? $this->payerAction : null }}
 
             {{ $this->frais->est_modifiable ? $this->deleteAction : null }}

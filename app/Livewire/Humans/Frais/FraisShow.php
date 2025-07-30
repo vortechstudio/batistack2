@@ -200,6 +200,30 @@ final class FraisShow extends Component implements HasActions, HasSchemas
             });
     }
 
+    public function refuseAction(): Action
+    {
+        return Action::make('refuse')
+            ->label('Refuser')
+            ->icon(Heroicon::XMark)
+            ->requiresConfirmation()
+            ->modalHeading("Refuser la note de frais")
+            ->modalDescription("Êtes-vous sûr de vouloir refuser la note de frais ?")
+            ->schema([
+                Textarea::make('commentaire_validateur')
+                    ->label('Commentaire')
+                    ->required(),
+            ])
+            ->action(function (array $data) {
+                $this->frais->refuser(Auth::user(), $data['commentaire_validateur']);
+                Mail::to($this->frais->employe->user->email)
+                    ->send(new ProfessionalMail(
+                        emailSubject: "Votre note de frais n°{$this->frais->numero} a été refusée",
+                        greeting: "Bonjour {$this->frais->employe->full_name},",
+                        content: "Votre note de frais n°{$this->frais->numero} a été refusée le {$this->frais->date_refus->format('d/m/Y')}.<br><br>{$this->frais->commentaire_validateur}<br><br>Merci de ne pas répondre à ce message.",
+                    ));
+            });
+    }
+
     #[Title('Note de frais - Fiche')]
     #[Layout('components.layouts.humans')]
     public function render()

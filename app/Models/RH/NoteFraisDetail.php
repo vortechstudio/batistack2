@@ -84,6 +84,11 @@ final class NoteFraisDetail extends Model implements HasMedia
         return $libelle;
     }
 
+    public function getIsRemboursableAttribute()
+    {
+        return $this->remboursable;
+    }
+
     /**
      * Scopes
      */

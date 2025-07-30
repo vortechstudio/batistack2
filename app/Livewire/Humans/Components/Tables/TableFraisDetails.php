@@ -24,6 +24,7 @@ use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -183,6 +184,9 @@ final class TableFraisDetails extends Component implements HasActions, HasSchema
                     ->label('Mode de paiement')
                     ->searchable(isIndividual: true)
                     ->formatStateUsing(fn (?Model $record) => $record->mode_paiement->label()),
+
+                IconColumn::make('is_remboursable')
+                    ->boolean(),
             ]);
     }
 
