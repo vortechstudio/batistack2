@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Humans\Components\Tables;
 
 use App\Enums\RH\ModePaiementFrais;
+use App\Enums\RH\StatusNoteFrais;
 use App\Enums\RH\TypeFrais;
 use App\Models\Chantiers\Chantiers;
 use App\Models\RH\NoteFrais;
@@ -18,7 +19,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
@@ -28,21 +28,21 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Illuminate\Support\Str;
 
 final class TableFraisDetails extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
+
     public NoteFrais $frais;
 
     public function table(Table $table): Table
     {
         return $table
             ->heading('Détails de la note de frais')
-            ->headerActions([
+            ->headerActions($this->frais->statut === StatusNoteFrais::BROUILLON ? [
                 CreateAction::make('create')
                     ->label('Ajouter une ligne de frais')
                     ->icon(Heroicon::Plus)
@@ -118,7 +118,7 @@ final class TableFraisDetails extends Component implements HasActions, HasSchema
 
                                             TextInput::make('kilometrage')
                                                 ->label('Kilométrage'),
-                                        ])
+                                        ]),
                                 ]),
 
                             Step::make('Justificatif')
@@ -129,20 +129,21 @@ final class TableFraisDetails extends Component implements HasActions, HasSchema
                                         ->directory(now()->year.'/'.now()->month)
                                         ->visibility('public')
                                         ->required()
-                                        ->getUploadedFileNameForStorageUsing(function(TemporaryUploadedFile $file) {
+                                        ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file) {
                                             $strNoteFrais = Str::slug($this->frais->numero, separator: '_');
                                             $now = now()->format('Y_m_d_H_i_s');
+
                                             return $strNoteFrais.'_'.$now.'_'.$file->hashName();
                                         }),
-                                ])
-                        ])
+                                ]),
+                        ]),
                     ])
                     ->using(function (array $data) {
                         $data['note_frais_id'] = $this->frais->id;
                         NoteFraisDetail::create($data);
                         NoteFrais::refresh();
                     }),
-            ])
+            ] : [])
             ->query(NoteFraisDetail::query()->where('note_frais_id', $this->frais->id))
             ->columns([
                 TextColumn::make('date_frais')

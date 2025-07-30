@@ -39,10 +39,9 @@ final class GenerateNoteFrais
         $items = [];
         foreach ($frais->details as $detail) {
             $items[] = InvoiceItem::make($detail->libelle)
-                ->description($frais->type_frais->label())
                 ->quantity(1)
-                ->pricePerUnit($detail->montant_ht)
-                ->tax($detail->taux_tva);
+                ->pricePerUnit((float) $detail->montant_ht)
+                ->tax((float) $detail->montant_tva);
         }
 
         $notes = [
@@ -58,10 +57,10 @@ final class GenerateNoteFrais
             ->date($frais->date_validation)
             ->dateFormat('d/m/Y')
             ->payUntilDays(14)
-            ->filename('receipt_'.$frais->numero)
+            ->filename($frais->employe->matricule.'/documents/frais/'.now()->year.'/'.now()->month.'/receipt_'.$frais->numero)
             ->addItems($items)
             ->notes($notes)
-            ->save('public');
+            ->save('ged');
 
         $this->addingFraisChantierDepense($frais);
 
@@ -71,7 +70,7 @@ final class GenerateNoteFrais
     private function addingFraisChantierDepense(NoteFrais $frais)
     {
         foreach ($frais->details as $detail) {
-            if(isset($detail->chantier_id)) {
+            if (isset($detail->chantier_id)) {
                 $chantier = Chantiers::find($detail->chantier_id);
                 $chantier->depenses()->create([
                     'type_depense' => TypeDepenseChantier::Frais,

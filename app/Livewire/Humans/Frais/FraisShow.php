@@ -13,7 +13,6 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
@@ -24,9 +23,9 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -105,28 +104,29 @@ final class FraisShow extends Component implements HasActions, HasSchemas
             ->using(function (array $data) {});
     }
 
-    public function validateAction(): EditAction
+    public function validateAction(): Action
     {
-        return EditAction::make('validate')
+        return Action::make('validate')
             ->label('Valider pour approbation')
             ->icon(Heroicon::CheckCircle)
             ->schema([
                 TextInput::make('montant_total')
                     ->label('Montant déclaré')
+                    ->default($this->frais->montant_total)
                     ->disabled(),
 
                 Textarea::make('commentaire_validateur')
                     ->label('commentaire'),
             ])
-            ->using(function (array $data) {
+            ->action(function (array $data) {
                 $this->frais->valider(Auth::user(), $data['commentaire_validateur']);
-                $invoice = app(GenerateNoteFrais::class)->handle($this->frais);
+                app(GenerateNoteFrais::class)->handle($this->frais);
                 Mail::to($this->frais->employe->user->email)
                     ->send(new ProfessionalMail(
                         emailSubject: "Votre note de frais n°{$this->frais->numero} a été validée",
                         greeting: "Bonjour {$this->frais->employe->full_name},",
                         content: "Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Merci de ne pas répondre à ce message.",
-                        emailAttachments: ['invoice' => $invoice->url()]
+                        emailAttachments: ['invoice' => Storage::disk('ged')->path($this->frais->employe->matricule.'/documents/frais/'.now()->year.'/'.now()->month.'/'.$this->frais->numero.'.pdf')]
                     ));
             });
     }
@@ -172,6 +172,7 @@ final class FraisShow extends Component implements HasActions, HasSchemas
             ->icon(Heroicon::PaperAirplane)
             ->action(function () {
                 $this->frais->soumettre();
+                $this->frais->refresh();
             });
     }
 

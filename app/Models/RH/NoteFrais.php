@@ -107,6 +107,15 @@ final class NoteFrais extends Model implements HasMedia
         return $statut === StatusNoteFrais::VALIDEE;
     }
 
+    public function getEstRefuseAttribute(): bool
+    {
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+
+        return $statut === StatusNoteFrais::REFUSEE;
+    }
+
     /**
      * Scopes
      */
