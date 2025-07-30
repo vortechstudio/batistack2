@@ -16,6 +16,7 @@ use App\Livewire\Portail\Salarie\Dashboard as SalarieDashboard;
 use App\Livewire\Portail\Salarie\Documents\Index as DocumentsIndex;
 use App\Livewire\Portail\Salarie\Documents\Signed;
 use App\Livewire\Portail\Salarie\Frais as SalarieFrais;
+use App\Livewire\Portail\Salarie\Frais\FraisShow as FraisFraisShow;
 use App\Models\RH\Employe;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -112,6 +113,7 @@ Route::middleware(['auth'])->group(function () {
 
             Route::prefix('frais')->group(function () {
                 Route::get('/', SalarieFrais::class)->name('portail.salarie.frais');
+                Route::get('{id}', FraisFraisShow::class)->name('portail.salarie.frais.show');
             });
         });
     });
@@ -120,4 +122,5 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/api/bank/connect', [App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');
 Route::post('/csp-report', [App\Http\Controllers\CspReportController::class, 'report'])->name('csp.report');
 Route::get('/analyse/phpstan', PhpStan::class)->name('analyse.phpstan');
+Route::impersonate();
 require __DIR__.'/auth.php';
