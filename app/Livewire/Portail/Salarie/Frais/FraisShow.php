@@ -3,6 +3,7 @@
 namespace App\Livewire\Portail\Salarie\Frais;
 
 use App\Models\RH\NoteFrais;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -10,6 +11,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
@@ -55,6 +57,11 @@ class FraisShow extends Component implements HasActions, HasSchemas
             ->action(function () {
                 $this->frais->soumettre();
                 $this->frais->refresh();
+                Notification::make()
+                    ->info()
+                    ->title("Nouvelle soumission de note de frais")
+                    ->body("La note de frais n°{$this->frais->numero} a été soumise et est en attente de validation.")
+                    ->sendToDatabase(User::find(1));
             });
     }
 

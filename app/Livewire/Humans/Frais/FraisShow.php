@@ -182,6 +182,11 @@ final class FraisShow extends Component implements HasActions, HasSchemas
                     'montant' => $data['montant'],
                 ]);
                 $this->frais->marquerPayee($paiement->numero_paiement);
+                Notification::make()
+                    ->success()
+                    ->title("Nouveau paiement de note de frais")
+                    ->body("La note de frais n°{$this->frais->numero} a été payée.")
+                    ->sendToDatabase($this->frais->employe->user);
             });
     }
 
