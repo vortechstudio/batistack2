@@ -119,7 +119,7 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
                     ->searchable(isIndividual: true)
                     ->sortable()
                     ->formatStateUsing(function ($state, $record) {
-                        return new HtmlString("<span class='inline-flex items-center rounded-md bg-{$record->statut->color()}-100 px-2 py-1 text-md font-medium text-{$record->statut->color()}-600 ring-1 ring-{$record->statut->color()}-500/10 ring-inset'>{$record->statut->label()}</span>");
+                        return new HtmlString("<span class=inline-flex items-center rounded-md bg-{$record->statut->color()}-100 px-2 py-1 text-md font-medium text-{$record->statut->color()}-600 ring-1 ring-{$record->statut->color()}-500/10 ring-inset'>{$record->statut->label()}</span>");
                     }),
             ]);
     }
