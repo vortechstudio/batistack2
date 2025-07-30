@@ -28,6 +28,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -141,7 +142,7 @@ final class TableFraisDetails extends Component implements HasActions, HasSchema
                     ->using(function (array $data) {
                         $data['note_frais_id'] = $this->frais->id;
                         NoteFraisDetail::create($data);
-                        NoteFrais::refresh();
+                        $this->frais->refresh();
                     }),
             ] : [])
             ->query(NoteFraisDetail::query()->where('note_frais_id', $this->frais->id))
@@ -160,7 +161,8 @@ final class TableFraisDetails extends Component implements HasActions, HasSchema
                 TextColumn::make('type_frais')
                     ->label('Type')
                     ->sortable()
-                    ->searchable(isIndividual: true),
+                    ->searchable(isIndividual: true)
+                    ->formatStateUsing(fn (?Model $record) => $record->type_frais->label()),
 
                 TextColumn::make('libelle')
                     ->label('Designation')
@@ -176,6 +178,11 @@ final class TableFraisDetails extends Component implements HasActions, HasSchema
                 TextColumn::make('montant_ttc')
                     ->label('Montant TTC')
                     ->money('EUR', locale: 'fr'),
+
+                TextColumn::make('mode_paiement')
+                    ->label('Mode de paiement')
+                    ->searchable(isIndividual: true)
+                    ->formatStateUsing(fn (?Model $record) => $record->mode_paiement->label()),
             ]);
     }
 

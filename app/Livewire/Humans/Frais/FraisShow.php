@@ -139,7 +139,7 @@ final class FraisShow extends Component implements HasActions, HasSchemas
                     ->send(new ProfessionalMail(
                         emailSubject: "Votre note de frais n°{$this->frais->numero} a été validée",
                         greeting: "Bonjour {$this->frais->employe->full_name},",
-                        content: "Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Merci de ne pas répondre à ce message.",
+                        content: "Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Le document relatif à cette note est disponible dans votre espace.<br><br>Merci de ne pas répondre à ce message.",
                     ));
             });
     }

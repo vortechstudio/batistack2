@@ -37,7 +37,7 @@ final class GenerateNoteFrais
         ]);
 
         $items = [];
-        foreach ($frais->details as $detail) {
+        foreach ($frais->details()->where('remboursable', true) as $detail) {
             $items[] = InvoiceItem::make($detail->libelle)
                 ->quantity(1)
                 ->pricePerUnit((float) $detail->montant_ht)
