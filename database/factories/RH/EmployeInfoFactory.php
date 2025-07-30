@@ -18,7 +18,7 @@ final class EmployeInfoFactory extends Factory
         return [
             'nationnality' => $this->faker->country,
             'num_cni' => $this->faker->randomNumber(8),
-            'num_secu' => $this->faker->nir(),
+            'num_secu' => $this->faker->randomNumber(14),
             'num_passport' => $this->faker->boolean ? $this->faker->randomNumber(8) : null,
             'date_naissance' => Carbon::now()->subYears(rand(18, 60)),
             'lieu_naissance' => $this->faker->city,
