@@ -26,7 +26,6 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -123,8 +122,9 @@ final class FraisShow extends Component implements HasActions, HasSchemas
                     ->label('Détails à valider')
                     ->options($this->frais->details->mapWithKeys(function ($detail) {
                         $dateFormatted = $detail->date_frais->format('d/m/Y');
-                        $montantFormatted = number_format($detail->montant_ttc_calcule, 2, ',', ' ') . ' €';
+                        $montantFormatted = number_format($detail->montant_ttc_calcule, 2, ',', ' ').' €';
                         $label = "{$dateFormatted} - {$detail->libelle} - {$montantFormatted}";
+
                         return [$detail->id => $label];
                     }))
                     ->default($this->frais->details->pluck('id')->toArray()),
@@ -206,8 +206,8 @@ final class FraisShow extends Component implements HasActions, HasSchemas
             ->label('Refuser')
             ->icon(Heroicon::XMark)
             ->requiresConfirmation()
-            ->modalHeading("Refuser la note de frais")
-            ->modalDescription("Êtes-vous sûr de vouloir refuser la note de frais ?")
+            ->modalHeading('Refuser la note de frais')
+            ->modalDescription('Êtes-vous sûr de vouloir refuser la note de frais ?')
             ->schema([
                 Textarea::make('commentaire_validateur')
                     ->label('Commentaire')

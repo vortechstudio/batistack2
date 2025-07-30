@@ -15,6 +15,7 @@ use App\Livewire\Portail\Salarie\Bank;
 use App\Livewire\Portail\Salarie\Dashboard as SalarieDashboard;
 use App\Livewire\Portail\Salarie\Documents\Index as DocumentsIndex;
 use App\Livewire\Portail\Salarie\Documents\Signed;
+use App\Livewire\Portail\Salarie\Frais as SalarieFrais;
 use App\Models\RH\Employe;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -108,6 +109,10 @@ Route::middleware(['auth'])->group(function () {
             });
 
             Route::get('bank', Bank::class)->name('portail.salarie.bank');
+
+            Route::prefix('frais')->group(function () {
+                Route::get('/', SalarieFrais::class)->name('portail.salarie.frais');
+            });
         });
     });
 });

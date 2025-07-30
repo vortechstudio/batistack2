@@ -175,7 +175,7 @@ final class NoteFrais extends Model implements HasMedia
         // Calculer le montant validé basé sur les détails sélectionnés
         $montantValide = $this->montant_total; // Par défaut, tout le montant
 
-        if ($detailsSelectionnes !== null && is_array($detailsSelectionnes) && !empty($detailsSelectionnes)) {
+        if ($detailsSelectionnes !== null && is_array($detailsSelectionnes) && ! empty($detailsSelectionnes)) {
             // Calculer le montant des détails sélectionnés uniquement
             $montantValide = $this->details()
                 ->whereIn('id', $detailsSelectionnes)
@@ -186,7 +186,7 @@ final class NoteFrais extends Model implements HasMedia
                 ->whereNotIn('id', $detailsSelectionnes)
                 ->update([
                     'commentaire' => 'Frais personnel non remboursable',
-                    'remboursable' => false
+                    'remboursable' => false,
                 ]);
         }
 
