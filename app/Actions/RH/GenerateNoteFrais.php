@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\RH;
 
+use App\Enums\Chantiers\TypeDepenseChantier;
+use App\Models\Chantiers\Chantiers;
 use App\Models\Core\Company;
 use App\Models\RH\NoteFrais;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
@@ -61,6 +63,26 @@ final class GenerateNoteFrais
             ->notes($notes)
             ->save('public');
 
+        $this->addingFraisChantierDepense($frais);
+
         return $invoice;
+    }
+
+    private function addingFraisChantierDepense(NoteFrais $frais)
+    {
+        foreach ($frais->details as $detail) {
+            if(isset($detail->chantier_id)) {
+                $chantier = Chantiers::find($detail->chantier_id);
+                $chantier->depenses()->create([
+                    'type_depense' => TypeDepenseChantier::Frais,
+                    'description' => $detail->libelle,
+                    'montant' => $detail->montant_ht,
+                    'date_depense' => $frais->date_validation,
+                    'invoice_ref' => $detail->numero_facture ?? null,
+                    'tiers_id' => $frais->employe->id,
+                    'chantiers_id' => $detail->chantier_id,
+                ]);
+            }
+        }
     }
 }

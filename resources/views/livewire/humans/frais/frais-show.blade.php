@@ -23,7 +23,7 @@
             <p>Pas encore en comptabilité</p>
         </div>
     </div>
-    <div class="flex justify-between gap-5">
+    <div class="flex justify-between gap-5 mb-10">
         <div class="flex w-1/2 bg-gray-100 rounded p-5">
             <div class="overflow-x-auto">
                 <table class="table w-[100%]">
@@ -105,5 +105,6 @@
             </div>
         </div>
     </div>
+    @livewire('humans.components.tables.table-frais-details', ['frais' => $frais])
     <x-filament-actions::modals />
 </div>
