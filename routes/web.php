@@ -35,7 +35,7 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware(['auth', 'role.redirect'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('notifications', App\Livewire\Core\Pages\Notification::class)->name('notifications');
 
     Route::redirect('settings', 'settings/profile');

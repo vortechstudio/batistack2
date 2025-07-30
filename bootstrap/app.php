@@ -17,12 +17,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // Ajouter le middleware de sécurité CSP globalement
         $middleware->web(append: [
             App\Http\Middleware\ContentSecurityPolicy::class,
-            App\Http\Middleware\RedirectByRole::class, // Nouveau middleware
-        ]);
-
-        // Ou l'ajouter comme middleware nommé
-        $middleware->alias([
-            'role.redirect' => App\Http\Middleware\RedirectByRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

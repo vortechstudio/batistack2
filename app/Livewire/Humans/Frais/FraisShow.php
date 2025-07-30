@@ -232,13 +232,13 @@ final class FraisShow extends Component implements HasActions, HasSchemas
                     ->send(new ProfessionalMail(
                         emailSubject: "Votre note de frais n°{$this->frais->numero} a été refusée",
                         greeting: "Bonjour {$this->frais->employe->full_name},",
-                        content: "Votre note de frais n°{$this->frais->numero} a été refusée le {$this->frais->date_refus->format('d/m/Y')}.<br><br>{$this->frais->commentaire_validateur}<br><br>Merci de ne pas répondre à ce message.",
+                        content: "Votre note de frais n°{$this->frais->numero} a été refusée le {$this->frais->updated_at->format('d/m/Y')}.<br><br>{$this->frais->commentaire_validateur}<br><br>Merci de ne pas répondre à ce message.",
                     ));
 
                 Notification::make()
                     ->title('Note de frais refusé')
                     ->danger()
-                    ->body("Votre note de frais n°{$this->frais->numero} a été refusé le {$this->frais->date_refus->format('d/m/Y')}.<br><br>{$this->frais->commentaire_validateur}.")
+                    ->body("Votre note de frais n°{$this->frais->numero} a été refusé le {$this->frais->updated_at->format('d/m/Y')}.<br><br>{$this->frais->commentaire_validateur}.")
                     ->sendToDatabase(Auth::user());
 
             });
