@@ -1,6 +1,6 @@
 # Guide de démarrage rapide
 
-Bienvenue dans Batistack ! Ce guide vous accompagne dans vos premiers pas pour prendre en main rapidement la plateforme et commencer à gérer efficacement votre entreprise du BTP.
+Bienvenue dans Batistack ! Ce guide vous accompagne dans vos premiers pas pour prendre en main rapidement la plateforme et commencer à gérer efficacement votre entreprise du BTP avec les dernières fonctionnalités.
 
 ## Première connexion
 
@@ -14,7 +14,7 @@ Bienvenue dans Batistack ! Ce guide vous accompagne dans vos premiers pas pour p
 1. **Informations personnelles** : Complétez votre nom, prénom et coordonnées
 2. **Photo de profil** : Ajoutez une photo pour personnaliser votre compte
 3. **Préférences** : Choisissez votre langue et thème d'affichage
-4. **Notifications** : Configurez vos préférences de notification
+4. **Notifications** : Configurez vos préférences de notification (email, SMS pour la signature)
 
 ## Découverte de l'interface
 
@@ -28,7 +28,7 @@ Bienvenue dans Batistack ! Ce guide vous accompagne dans vos premiers pas pour p
 ### Organisation des modules
 Batistack est organisé en modules spécialisés :
 - **Chantiers** : Gestion de vos projets de construction
-- **RH** : Ressources humaines et paie
+- **RH** : Ressources humaines et paie avec signature électronique
 - **Tiers** : Clients et fournisseurs
 - **Commerce** : Devis, factures et commandes
 - **Portail Salarié** : Espace personnel des employés (si applicable)
@@ -84,23 +84,59 @@ Batistack est organisé en modules spécialisés :
 
 **💡 Conseil** : Utilisez des descriptions claires pour faciliter la compréhension client
 
-### 4. Ajouter votre premier employé
+### 4. 🆕 Ajouter votre premier employé avec les nouvelles fonctionnalités
 
-**Objectif** : Enregistrer un employé pour la gestion RH
+**Objectif** : Enregistrer un employé pour la gestion RH avec les dernières améliorations
 
 1. **Accès** : Menu principal > RH > Nouveau salarié
 2. **Informations personnelles** :
    - État civil complet
-   - Coordonnées
+   - Coordonnées (incluant numéro de téléphone pour SMS)
    - Numéro de sécurité sociale
+   - **🆕 Génération automatique** : UUID et matricule RH
 3. **Contrat de travail** :
    - Type de contrat (CDI, CDD, etc.)
    - Date de début
    - Poste et qualification
    - Salaire et taux horaire
-4. **Validation** : Enregistrez l'employé
+4. **🆕 Informations bancaires** :
+   - IBAN et BIC avec validation automatique
+   - Vérification via OpenIban
+5. **Validation** : Enregistrez l'employé
+6. **🆕 Notification automatique** : L'équipe RH est alertée
 
 **💡 Conseil** : Commencez par vous enregistrer ou un employé de confiance
+
+### 5. 🆕 Tester la signature électronique
+
+**Objectif** : Découvrir le processus de signature électronique sécurisée
+
+1. **Préparation** : Créez un contrat pour l'employé ajouté
+2. **Envoi pour signature** : Lancez le workflow de signature
+3. **Côté employé** :
+   - Réception de l'email de notification
+   - Connexion au portail salarié
+   - Réception du code SMS (OTP)
+   - Signature sur le pad électronique
+4. **Suivi** : Vérifiez le statut de signature dans l'interface RH
+
+**💡 Conseil** : Testez d'abord avec votre propre compte employé
+
+### 6. 🆕 Créer et valider une note de frais
+
+**Objectif** : Tester la nouvelle validation sélective des notes de frais
+
+1. **Création** (côté employé) :
+   - Accès : Menu RH > Notes de frais > Nouvelle note
+   - Ajout de plusieurs détails de frais (professionnels et personnels)
+   - Soumission de la note
+2. **Validation** (côté responsable) :
+   - Ouverture de la note soumise
+   - Utilisation de la validation sélective
+   - Sélection des frais professionnels uniquement
+   - Validation avec commentaire
+
+**💡 Conseil** : Mélangez frais professionnels et personnels pour tester la sélection
 
 ## Fonctionnalités essentielles à maîtriser
 
@@ -110,17 +146,44 @@ Batistack est organisé en modules spécialisés :
 - **Tri des colonnes** : Cliquez sur les en-têtes pour trier
 - **Sauvegarde de vues** : Enregistrez vos filtres favoris
 
-### Gestion des documents
+### 🆕 Gestion des documents et signature
 - **Upload** : Glissez-déposez vos fichiers dans les zones prévues
 - **Génération PDF** : Créez automatiquement vos devis, factures et contrats
-- **Signature électronique** : Signez et faites signer vos documents
+- **🆕 Signature électronique** : Signez et faites signer vos documents avec Yousign
+- **🆕 Vérification SMS** : Sécurisez les signatures avec des codes OTP
 - **Archivage** : Tous vos documents sont automatiquement archivés
 
 ### Notifications et alertes
 - **Notifications en temps réel** : Restez informé des événements importants
+- **🆕 Notifications SMS** : Codes de sécurité pour la signature
 - **Emails automatiques** : Recevez des résumés périodiques
 - **Alertes personnalisées** : Configurez vos propres alertes
 - **Centre de notifications** : Consultez l'historique de vos notifications
+
+## 🆕 Nouvelles fonctionnalités à découvrir
+
+### Signature électronique sécurisée
+- **Service Yousign** : Plateforme certifiée de signature
+- **Vérification SMS** : Code OTP pour sécuriser chaque signature
+- **Pad de signature** : Interface intuitive de signature
+- **Traçabilité complète** : Historique de toutes les signatures
+
+### Validation sélective des notes de frais
+- **Interface améliorée** : Affichage détaillé des frais
+- **Sélection granulaire** : Validez uniquement les frais professionnels
+- **Traitement automatique** : Marquage des frais personnels
+- **Recalcul automatique** : Montants ajustés selon la sélection
+
+### Gestion des comptes bancaires
+- **Validation IBAN/BIC** : Vérification automatique via OpenIban
+- **Interface dédiée** : Gestion simplifiée des coordonnées
+- **Sécurité renforcée** : Chiffrement des données bancaires
+
+### Module de gestion des congés
+- **Demandes en ligne** : Interface simplifiée pour les employés
+- **Workflow de validation** : Processus d'approbation hiérarchique
+- **Suivi des soldes** : Gestion des droits et consommations
+- **Calendrier intégré** : Vue d'ensemble des absences
 
 ## Conseils pour bien démarrer
 
@@ -130,16 +193,21 @@ Batistack est organisé en modules spécialisés :
 - Adoptez une nomenclature cohérente pour vos chantiers
 - Utilisez les catégories et étiquettes pour classer vos tiers
 - Créez des modèles de documents pour gagner du temps
+- **🆕 Configurez les notifications SMS** pour la signature électronique
 
 **⏰ Routine quotidienne**
 - Consultez votre tableau de bord chaque matin
 - Mettez à jour l'avancement de vos chantiers
 - Traitez vos notifications régulièrement
+- **🆕 Vérifiez les signatures en attente**
+- **🆕 Validez les notes de frais avec la nouvelle interface**
 
 **👥 Collaboration d'équipe**
 - Formez vos collaborateurs aux fonctionnalités de base
+- **🆕 Expliquez le processus de signature électronique**
 - Définissez des responsabilités claires pour chaque module
 - Utilisez les commentaires pour communiquer
+- **🆕 Sensibilisez à la distinction frais professionnels/personnels**
 
 ### Optimisation progressive
 
@@ -147,46 +215,59 @@ Batistack est organisé en modules spécialisés :
 - Créez vos premiers clients et chantiers
 - Testez la création de devis
 - Explorez l'interface et les menus
+- **🆕 Testez la signature électronique avec un contrat simple**
 
 **Semaine 2 : Approfondissement**
 - Configurez vos modèles de documents
-- Paramétrez vos notifications
+- Paramétrez vos notifications (email et SMS)
 - Commencez le suivi budgétaire des chantiers
+- **🆕 Explorez la validation sélective des notes de frais**
+- **🆕 Configurez les comptes bancaires des employés**
 
 **Semaine 3 : Automatisation**
 - Utilisez les fonctionnalités avancées
 - Configurez les relances automatiques
 - Optimisez vos workflows
+- **🆕 Mettez en place le module de gestion des congés**
+- **🆕 Formez vos équipes aux nouvelles fonctionnalités**
 
 ### Erreurs à éviter
 
 **❌ À ne pas faire**
 - Ne pas sauvegarder régulièrement vos données importantes
-- Négliger la formation de vos équipes
+- Négliger la formation de vos équipes aux nouvelles fonctionnalités
 - Oublier de mettre à jour les informations clients
 - Ignorer les notifications importantes
+- **🆕 Ne pas tester la signature électronique avant utilisation**
+- **🆕 Valider automatiquement tous les frais sans vérification**
 
 **✅ Bonnes pratiques**
 - Sauvegardez vos données critiques
 - Documentez vos processus internes
 - Formez progressivement vos équipes
 - Utilisez les fonctionnalités d'aide intégrées
+- **🆕 Testez la signature électronique en interne d'abord**
+- **🆕 Utilisez la validation sélective pour optimiser les remboursements**
+- **🆕 Vérifiez les coordonnées bancaires avec OpenIban**
 
 ## Ressources d'aide
 
 ### Documentation
 - **Guides détaillés** : Consultez la documentation complète de chaque module
+- **🆕 Tutoriels signature électronique** : Guides spécifiques pour Yousign
 - **Tutoriels** : Suivez les guides pas à pas pour les tâches courantes
 - **FAQ** : Trouvez rapidement des réponses aux questions fréquentes
 
 ### Support
 - **Aide contextuelle** : Cliquez sur les icônes d'aide dans l'interface
 - **Support technique** : Contactez l'équipe via le menu Aide
+- **🆕 Support signature** : Assistance spécialisée pour la signature électronique
 - **Formation** : Demandez des sessions de formation pour vos équipes
 
 ### Communauté
 - **Forum utilisateurs** : Échangez avec d'autres utilisateurs
 - **Retours d'expérience** : Partagez vos bonnes pratiques
+- **🆕 Témoignages** : Découvrez comment d'autres utilisent les nouvelles fonctionnalités
 - **Suggestions** : Proposez des améliorations
 
 ## Prochaines étapes
@@ -194,18 +275,40 @@ Batistack est organisé en modules spécialisés :
 Une fois ces premiers pas maîtrisés, vous pourrez :
 
 1. **Approfondir chaque module** : Explorez les fonctionnalités avancées
-2. **Personnaliser votre environnement** : Adaptez Batistack à vos processus
-3. **Former vos équipes** : Accompagnez vos collaborateurs dans l'adoption
-4. **Optimiser vos workflows** : Automatisez vos tâches répétitives
+2. **🆕 Maîtriser la signature électronique** : Déployez massivement la signature
+3. **🆕 Optimiser la validation des frais** : Utilisez pleinement la validation sélective
+4. **Personnaliser votre environnement** : Adaptez Batistack à vos processus
+5. **Former vos équipes** : Accompagnez vos collaborateurs dans l'adoption
+6. **Optimiser vos workflows** : Automatisez vos tâches répétitives
+7. **🆕 Intégrer les nouvelles fonctionnalités** : Congés, comptes bancaires, etc.
+
+## 🆕 Checklist de démarrage avec les nouvelles fonctionnalités
+
+### Configuration initiale
+- [ ] Créer votre premier client
+- [ ] Créer votre premier chantier
+- [ ] Créer votre premier devis
+- [ ] Ajouter votre premier employé avec UUID/matricule
+- [ ] **🆕 Configurer les informations bancaires avec validation IBAN**
+- [ ] **🆕 Tester la signature électronique avec un contrat simple**
+- [ ] **🆕 Créer une note de frais et tester la validation sélective**
+
+### Formation équipe
+- [ ] Former aux fonctionnalités de base
+- [ ] **🆕 Expliquer le processus de signature électronique**
+- [ ] **🆕 Sensibiliser à la validation sélective des frais**
+- [ ] **🆕 Présenter le nouveau portail salarié**
+- [ ] **🆕 Former à la gestion des congés**
+
+### Optimisation
+- [ ] Configurer les notifications (email + SMS)
+- [ ] Paramétrer les modèles de documents
+- [ ] **🆕 Mettre en place les workflows de signature**
+- [ ] **🆕 Optimiser les processus de validation des frais**
+- [ ] **🆕 Configurer le module de gestion des congés**
 
 ---
 
-**🎯 Objectif** : À la fin de ce guide, vous devriez être capable de créer un client, un chantier, un devis et un employé en toute autonomie.
-
-**⏱️ Temps estimé** : 2-3 heures pour maîtriser les bases
-
-**📞 Besoin d'aide ?** N'hésitez pas à contacter notre support pour un accompagnement personnalisé.
-
----
-
-*Dernière mise à jour : Janvier 2025*
+**Version du guide** : 1.12.0  
+**Dernière mise à jour** : Janvier 2025  
+*Ce guide reflète les dernières fonctionnalités de Batistack.*
