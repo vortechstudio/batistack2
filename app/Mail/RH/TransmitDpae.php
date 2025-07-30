@@ -58,10 +58,6 @@ final class TransmitDpae extends Mailable
     {
         return [
             Attachment::fromPath(Storage::disk('public')->path('rh/salarie/'.$this->salarie->id.'/documents/'.$this->nameDpae)),
-            Attachment::fromPath(Storage::disk('public')->path('rh/salarie/'.$this->salarie->id.'/documents/cni-recto.jpg')),
-            Attachment::fromPath(Storage::disk('public')->path('rh/salarie/'.$this->salarie->id.'/documents/cni-verso.jpg')),
-            Attachment::fromPath(Storage::disk('public')->path('rh/salarie/'.$this->salarie->id.'/documents/carte-vital.jpg')),
-            Attachment::fromPath(Storage::disk('public')->path('rh/salarie/'.$this->salarie->id.'/documents/rib.jpg')),
         ];
     }
 }
