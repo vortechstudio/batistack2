@@ -30,6 +30,7 @@ Batistack est organisé en modules spécialisés :
 - **Chantiers** : Gestion de vos projets de construction
 - **RH** : Ressources humaines et paie avec signature électronique
 - **Tiers** : Clients et fournisseurs
+- **Produits & Services** : Catalogue de produits, matériaux et services
 - **Commerce** : Devis, factures et commandes
 - **Portail Salarié** : Espace personnel des employés (si applicable)
 
@@ -50,7 +51,28 @@ Batistack est organisé en modules spécialisés :
 
 **💡 Conseil** : Commencez par vos clients les plus importants pour tester le système
 
-### 2. Créer votre premier chantier
+### 2. Créer votre premier produit
+
+**Objectif** : Enregistrer un produit dans votre catalogue pour les devis et achats
+
+1. **Accès** : Menu principal > Produits & Services > Nouveau produit
+2. **Informations de base** :
+   - Référence (ex: "CIM-001")
+   - Nom du produit (ex: "Ciment Portland CEM II 32,5")
+   - Description détaillée
+   - Type de produit (matériau, outillage, service, etc.)
+3. **Classification** :
+   - Catégorie (ex: "Matériaux > Gros œuvre > Ciments")
+   - Unité de mesure (ex: "Sac de 25kg")
+4. **Tarification** :
+   - Prix d'achat fournisseur
+   - Prix de vente client
+   - Marge souhaitée
+5. **Validation** : Enregistrez votre produit
+
+**💡 Conseil** : Commencez par vos produits les plus utilisés
+
+### 3. Créer votre premier chantier
 
 **Objectif** : Démarrer le suivi d'un projet de construction
 
@@ -66,7 +88,7 @@ Batistack est organisé en modules spécialisés :
 
 **💡 Conseil** : Choisissez un chantier en cours pour voir immédiatement les bénéfices
 
-### 3. Créer votre premier devis
+### 4. Créer votre premier devis
 
 **Objectif** : Établir un devis professionnel pour un client
 
@@ -76,15 +98,15 @@ Batistack est organisé en modules spécialisés :
    - Date d'émission et de validité
    - Conditions de règlement
 3. **Lignes de devis** :
-   - Description des prestations
+   - Sélection des produits depuis le catalogue
    - Quantités et unités
-   - Prix unitaires HT
+   - Prix unitaires HT (automatiquement remplis)
    - Taux de TVA
 4. **Finalisation** : Enregistrez et générez le PDF
 
-**💡 Conseil** : Utilisez des descriptions claires pour faciliter la compréhension client
+**💡 Conseil** : Utilisez le catalogue de produits pour accélérer la saisie
 
-### 4. 🆕 Ajouter votre premier employé avec les nouvelles fonctionnalités
+### 5. 🆕 Ajouter votre premier employé avec les nouvelles fonctionnalités
 
 **Objectif** : Enregistrer un employé pour la gestion RH avec les dernières améliorations
 
@@ -107,7 +129,7 @@ Batistack est organisé en modules spécialisés :
 
 **💡 Conseil** : Commencez par vous enregistrer ou un employé de confiance
 
-### 5. 🆕 Tester la signature électronique
+### 6. 🆕 Tester la signature électronique
 
 **Objectif** : Découvrir le processus de signature électronique sécurisée
 
@@ -122,7 +144,7 @@ Batistack est organisé en modules spécialisés :
 
 **💡 Conseil** : Testez d'abord avec votre propre compte employé
 
-### 6. 🆕 Créer et valider une note de frais
+### 7. 🆕 Créer et valider une note de frais
 
 **Objectif** : Tester la nouvelle validation sélective des notes de frais
 
@@ -286,8 +308,9 @@ Une fois ces premiers pas maîtrisés, vous pourrez :
 
 ### Configuration initiale
 - [ ] Créer votre premier client
+- [ ] Créer votre premier produit dans le catalogue
 - [ ] Créer votre premier chantier
-- [ ] Créer votre premier devis
+- [ ] Créer votre premier devis avec des produits du catalogue
 - [ ] Ajouter votre premier employé avec UUID/matricule
 - [ ] **🆕 Configurer les informations bancaires avec validation IBAN**
 - [ ] **🆕 Tester la signature électronique avec un contrat simple**

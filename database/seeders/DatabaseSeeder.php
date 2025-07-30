@@ -36,6 +36,7 @@ use App\Models\Tiers\TiersContact;
 use App\Models\Tiers\TiersFournisseur;
 use App\Models\User;
 use Database\Seeders\Paie\ProfilPaieSeeder;
+use Database\Seeders\Produit\ProduitModuleSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Str;
@@ -81,6 +82,7 @@ final class DatabaseSeeder extends Seeder
         $this->command->info('🏢 Seeding des données métier...');
 
         $this->seedTiers();
+        $this->seedProduits();
         $this->seedChantiers();
         $this->seedCommerce();
     }
@@ -522,5 +524,13 @@ final class DatabaseSeeder extends Seeder
         }
 
         $this->command->info("✓ {$notesCount} notes de frais créées avec {$detailsCount} détails");
+    }
+
+    /**
+     * Création des produits et services
+     */
+    private function seedProduits(): void
+    {
+        $this->call(ProduitModuleSeeder::class);
     }
 }
