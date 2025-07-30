@@ -49,13 +49,13 @@ final class ProduitSeeder extends Seeder
     private function createProduitsMateriaux(): void
     {
         $categoriesMateriaux = CategoryProduit::where('code', 'LIKE', 'MAT-%')->get();
-        
+
         foreach ($categoriesMateriaux as $categorie) {
             $produits = $this->getProduitsParCategorie($categorie->code);
-            
+
             foreach ($produits as $produitData) {
-                Produit::factory()->materiel()->create([
-                    'categorie_id' => $categorie->id,
+                Produit::factory()->materiau()->create([
+                    'category_produit_id' => $categorie->id,
                     'unite_mesure_id' => UniteMesure::where('code', $produitData['unite'])->first()?->id,
                     'reference' => $produitData['reference'],
                     'nom' => $produitData['nom'],
@@ -75,13 +75,13 @@ final class ProduitSeeder extends Seeder
     private function createProduitsOutillage(): void
     {
         $categoriesOutillage = CategoryProduit::where('code', 'LIKE', 'OUT-%')->get();
-        
+
         foreach ($categoriesOutillage as $categorie) {
             $produits = $this->getProduitsParCategorie($categorie->code);
-            
+
             foreach ($produits as $produitData) {
-                Produit::factory()->materiel()->create([
-                    'categorie_id' => $categorie->id,
+                Produit::factory()->materiau()->create([
+                    'category_produit_id' => $categorie->id,
                     'unite_mesure_id' => UniteMesure::where('code', $produitData['unite'])->first()?->id,
                     'reference' => $produitData['reference'],
                     'nom' => $produitData['nom'],
@@ -99,13 +99,13 @@ final class ProduitSeeder extends Seeder
     private function createProduitsServices(): void
     {
         $categoriesServices = CategoryProduit::where('code', 'LIKE', 'SER-%')->get();
-        
+
         foreach ($categoriesServices as $categorie) {
             $produits = $this->getProduitsParCategorie($categorie->code);
-            
+
             foreach ($produits as $produitData) {
                 Produit::factory()->service()->create([
-                    'categorie_id' => $categorie->id,
+                    'category_produit_id' => $categorie->id,
                     'unite_mesure_id' => UniteMesure::where('code', $produitData['unite'])->first()?->id,
                     'reference' => $produitData['reference'],
                     'nom' => $produitData['nom'],
@@ -124,13 +124,13 @@ final class ProduitSeeder extends Seeder
     private function createProduitsLocation(): void
     {
         $categoriesLocation = CategoryProduit::where('code', 'LIKE', 'LOC-%')->get();
-        
+
         foreach ($categoriesLocation as $categorie) {
             $produits = $this->getProduitsParCategorie($categorie->code);
-            
+
             foreach ($produits as $produitData) {
                 Produit::factory()->service()->create([
-                    'categorie_id' => $categorie->id,
+                    'category_produit_id' => $categorie->id,
                     'unite_mesure_id' => UniteMesure::where('code', $produitData['unite'])->first()?->id,
                     'reference' => $produitData['reference'],
                     'nom' => $produitData['nom'],

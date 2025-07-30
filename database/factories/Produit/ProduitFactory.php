@@ -43,8 +43,8 @@ final class ProduitFactory extends Factory
             'competence_requise' => $estService ? $this->faker->optional(0.6)->randomElement(['Débutant', 'Intermédiaire', 'Expert', 'Spécialisé']) : null,
             'cout_deplacement' => $estService ? $this->faker->optional(0.7)->randomFloat(2, 10, 100) : null,
             'delai_intervention' => $estService ? $this->faker->optional(0.5)->numberBetween(1, 30) : null,
-            'deplacement_inclus' => $estService ? $this->faker->boolean(30) : null,
-            'urgence_possible' => $estService ? $this->faker->boolean(40) : null,
+            'deplacement_inclus' => $estService ? $this->faker->boolean(30) : false,
+            'urgence_possible' => $estService ? $this->faker->boolean(40) : false,
             'majoration_urgence' => $estService ? $this->faker->optional(0.3)->randomFloat(2, 10, 50) : null,
 
             // Champs JSON
@@ -96,8 +96,8 @@ final class ProduitFactory extends Factory
             'competence_requise' => null,
             'cout_deplacement' => null,
             'delai_intervention' => null,
-            'deplacement_inclus' => null,
-            'urgence_possible' => null,
+            'deplacement_inclus' => false,
+            'urgence_possible' => false,
             'majoration_urgence' => null,
             'horaires_disponibilite' => null,
             'zones_intervention' => null,

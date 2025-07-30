@@ -23,25 +23,28 @@ final class TarifClientFactory extends Factory
             'produit_id' => Produit::factory(),
             'tiers_id' => $this->faker->optional(0.7)->randomElement(Tiers::pluck('id')->toArray()),
             'type_client' => $typeClient,
-            'actif' => $this->faker->boolean(90),
             'prix_vente' => $prixVente,
             'devise' => $this->faker->randomElement(['EUR', 'USD']),
-            'quantite_minimale' => $this->faker->optional(0.5)->randomFloat(2, 1, 50),
+            'marge_pourcentage' => $this->faker->randomFloat(2, 10, 50),
             
             // Tarifs dégressifs
-            'seuil_quantite_1' => $this->faker->optional(0.6)->randomFloat(2, 5, 25),
             'prix_quantite_1' => $this->faker->optional(0.6)->randomFloat(2, $prixVente * 0.9, $prixVente * 0.95),
-            'seuil_quantite_2' => $this->faker->optional(0.4)->randomFloat(2, 25, 100),
+            'seuil_quantite_1' => $this->faker->optional(0.6)->randomFloat(2, 5, 25),
             'prix_quantite_2' => $this->faker->optional(0.4)->randomFloat(2, $prixVente * 0.8, $prixVente * 0.9),
-            'seuil_quantite_3' => $this->faker->optional(0.2)->randomFloat(2, 100, 500),
+            'seuil_quantite_2' => $this->faker->optional(0.4)->randomFloat(2, 25, 100),
             'prix_quantite_3' => $this->faker->optional(0.2)->randomFloat(2, $prixVente * 0.7, $prixVente * 0.8),
+            'seuil_quantite_3' => $this->faker->optional(0.2)->randomFloat(2, 100, 500),
             
-            'remise_generale' => $this->faker->optional(0.3)->randomFloat(2, 1, 20),
-            'marge_pourcentage' => $this->faker->randomFloat(2, 10, 50),
+            // Remises commerciales
+            'remise_commerciale' => $this->faker->optional(0.3)->randomFloat(2, 1, 20),
+            'remise_fidelite' => $this->faker->optional(0.2)->randomFloat(2, 1, 15),
+            'remise_volume' => $this->faker->optional(0.2)->randomFloat(2, 1, 25),
+            'seuil_remise_volume' => $this->faker->optional(0.2)->randomFloat(2, 100, 1000),
+            
             'prix_minimum' => $this->faker->optional(0.4)->randomFloat(2, $prixVente * 0.6, $prixVente * 0.8),
             'prix_maximum' => $this->faker->optional(0.3)->randomFloat(2, $prixVente * 1.2, $prixVente * 1.5),
             
-            'delai_livraison' => $this->faker->optional(0.7)->numberBetween(1, 21),
+            // Conditions commerciales
             'conditions_paiement' => $this->faker->optional(0.8)->randomElement([
                 '30 jours net',
                 '60 jours net',
@@ -50,35 +53,45 @@ final class TarifClientFactory extends Factory
                 '45 jours net',
                 'Acompte 30%',
             ]),
-            
-            // Frais
+            'delai_livraison' => $this->faker->optional(0.7)->numberBetween(1, 21),
             'frais_livraison' => $this->faker->optional(0.5)->randomFloat(2, 10, 100),
-            'frais_installation' => $this->faker->optional(0.3)->randomFloat(2, 50, 300),
-            'frais_formation' => $estService ? $this->faker->optional(0.2)->randomFloat(2, 100, 500) : null,
-            'franco_livraison' => $this->faker->optional(0.4)->randomFloat(2, 200, 1500),
+            'seuil_franco_livraison' => $this->faker->optional(0.4)->randomFloat(2, 200, 1500),
+            'zone_livraison' => $this->faker->optional(0.3)->city(),
             
-            'date_debut' => $this->faker->optional(0.7)->dateTimeBetween('-3 months', 'now'),
+            // Validité et statut
+            'date_debut' => $this->faker->dateTimeBetween('-3 months', 'now'),
             'date_fin' => $this->faker->optional(0.4)->dateTimeBetween('now', '+1 year'),
-            'statut' => $this->faker->randomElement(['brouillon', 'valide', 'expire', 'suspendu']),
-            'priorite' => $this->faker->numberBetween(1, 10),
-            'negociable' => $this->faker->boolean(60),
+            'actif' => $this->faker->boolean(90),
+            'tarif_public' => $this->faker->boolean(20),
+            'priorite' => $this->faker->numberBetween(0, 10),
             
             // Champs spécifiques aux services
             'tarif_horaire' => $estService ? $this->faker->randomFloat(2, 40, 200) : null,
-            'cout_deplacement' => $estService ? $this->faker->optional(0.6)->randomFloat(2, 20, 150) : null,
+            'tarif_deplacement' => $estService ? $this->faker->optional(0.6)->randomFloat(2, 20, 150) : null,
+            'majoration_urgence' => $estService ? $this->faker->optional(0.3)->randomFloat(2, 25, 120) : null,
             'majoration_weekend' => $estService ? $this->faker->optional(0.4)->randomFloat(2, 15, 60) : null,
             'majoration_nuit' => $estService ? $this->faker->optional(0.3)->randomFloat(2, 20, 80) : null,
-            'majoration_urgence' => $estService ? $this->faker->optional(0.3)->randomFloat(2, 25, 120) : null,
+            'majoration_ferie' => $estService ? $this->faker->optional(0.3)->randomFloat(2, 25, 100) : null,
             'grille_tarifaire' => $estService ? $this->faker->optional(0.3)->randomElements([
                 'normal' => $this->faker->randomFloat(2, 50, 100),
                 'weekend' => $this->faker->randomFloat(2, 60, 120),
                 'nuit' => $this->faker->randomFloat(2, 70, 140),
                 'urgence' => $this->faker->randomFloat(2, 90, 180),
             ]) : null,
+            'zones_intervention' => $estService ? $this->faker->optional(0.2)->randomElements([
+                'zone_1' => ['nom' => 'Centre-ville', 'tarif' => $this->faker->randomFloat(2, 50, 100)],
+                'zone_2' => ['nom' => 'Périphérie', 'tarif' => $this->faker->randomFloat(2, 60, 120)],
+            ]) : null,
             
+            // Tarifs spéciaux
+            'prix_forfait' => $this->faker->optional(0.3)->randomFloat(2, 100, 1000),
+            'description_forfait' => $this->faker->optional(0.3)->sentence(),
+            
+            // Informations complémentaires
             'notes' => $this->faker->optional(0.3)->sentence(),
+            'contact_commercial' => $this->faker->optional(0.4)->name(),
+            'negociable' => $this->faker->boolean(60),
             'metadata' => $this->faker->optional(0.2)->randomElements([
-                'contact_commercial' => $this->faker->name(),
                 'conditions_speciales' => $this->faker->sentence(),
                 'zone_geographique' => $this->faker->city(),
             ]),
@@ -92,7 +105,6 @@ final class TarifClientFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'actif' => true,
-            'statut' => 'valide',
         ]);
     }
 
@@ -171,11 +183,11 @@ final class TarifClientFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'tarif_horaire' => $this->faker->randomFloat(2, 50, 150),
-            'cout_deplacement' => $this->faker->randomFloat(2, 25, 100),
+            'tarif_deplacement' => $this->faker->randomFloat(2, 25, 100),
             'majoration_weekend' => $this->faker->randomFloat(2, 20, 50),
             'majoration_nuit' => $this->faker->randomFloat(2, 25, 70),
             'majoration_urgence' => $this->faker->randomFloat(2, 30, 100),
-            'frais_formation' => $this->faker->randomFloat(2, 150, 600),
+            'majoration_ferie' => $this->faker->randomFloat(2, 25, 80),
         ]);
     }
 
@@ -186,13 +198,13 @@ final class TarifClientFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'tarif_horaire' => null,
-            'cout_deplacement' => null,
+            'tarif_deplacement' => null,
             'majoration_weekend' => null,
             'majoration_nuit' => null,
             'majoration_urgence' => null,
+            'majoration_ferie' => null,
             'grille_tarifaire' => null,
-            'frais_formation' => null,
-            'frais_installation' => $this->faker->randomFloat(2, 50, 400),
+            'zones_intervention' => null,
         ]);
     }
 
@@ -216,7 +228,6 @@ final class TarifClientFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'date_debut' => now()->subMonth(),
             'date_fin' => now()->addMonths(8),
-            'statut' => 'valide',
             'actif' => true,
         ]);
     }
@@ -229,7 +240,6 @@ final class TarifClientFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'date_debut' => now()->subMonths(8),
             'date_fin' => now()->subWeeks(2),
-            'statut' => 'expire',
             'actif' => false,
         ]);
     }

@@ -92,9 +92,11 @@ final class TarifFournisseurSeeder extends Seeder
      */
     private function generateReferenceFournisseur(Produit $produit, Tiers $fournisseur): string
     {
-        $prefixeFournisseur = strtoupper(substr($fournisseur->nom_entreprise ?? $fournisseur->nom, 0, 3));
+        // Obtenir le nom du fournisseur avec une valeur par défaut
+        $nomFournisseur = $fournisseur->nom_entreprise ?? $fournisseur->nom ?? 'FOURNISSEUR';
+        $prefixeFournisseur = strtoupper(substr($nomFournisseur, 0, 3));
         $suffixeProduit = substr($produit->reference, -4);
-        
+
         return $prefixeFournisseur . '-' . $suffixeProduit . '-' . random_int(100, 999);
     }
 }

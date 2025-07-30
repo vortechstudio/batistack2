@@ -181,7 +181,7 @@ final class UniteMesureSeeder extends Seeder
                 'unite_base' => 'M3',
             ],
             [
-                'code' => 'ML',
+                'code' => 'MLI',
                 'nom' => 'Millilitre',
                 'symbole' => 'ml',
                 'type' => 'volume',
