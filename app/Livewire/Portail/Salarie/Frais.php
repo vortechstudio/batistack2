@@ -78,7 +78,7 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
             ])
             ->filtersFormWidth(Width::FourExtraLarge)
             ->query(NoteFrais::query()->where('employe_id', Auth::user()->employe->id))
-            ->recordUrl(fn (?Model $record) => route('humans.frais.show', $record->id))
+            ->recordUrl(fn (?Model $record) => route('portail.salarie.frais.show', $record->id))
             ->columns([
                 TextColumn::make('numero')
                     ->label('Réf.')
