@@ -14,6 +14,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -117,16 +118,28 @@ final class FraisShow extends Component implements HasActions, HasSchemas
 
                 Textarea::make('commentaire_validateur')
                     ->label('commentaire'),
+
+                CheckboxList::make('details')
+                    ->label('Détails à valider')
+                    ->options($this->frais->details->mapWithKeys(function ($detail) {
+                        $dateFormatted = $detail->date_frais->format('d/m/Y');
+                        $montantFormatted = number_format($detail->montant_ttc_calcule, 2, ',', ' ') . ' €';
+                        $label = "{$dateFormatted} - {$detail->libelle} - {$montantFormatted}";
+                        return [$detail->id => $label];
+                    }))
+                    ->default($this->frais->details->pluck('id')->toArray()),
             ])
             ->action(function (array $data) {
-                $this->frais->valider(Auth::user(), $data['commentaire_validateur']);
+                // Récupérer les détails sélectionnés depuis le formulaire
+                $detailsSelectionnes = $data['details'] ?? [];
+
+                $this->frais->valider(Auth::user(), $data['commentaire_validateur'], $detailsSelectionnes);
                 app(GenerateNoteFrais::class)->handle($this->frais);
                 Mail::to($this->frais->employe->user->email)
                     ->send(new ProfessionalMail(
                         emailSubject: "Votre note de frais n°{$this->frais->numero} a été validée",
                         greeting: "Bonjour {$this->frais->employe->full_name},",
                         content: "Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Merci de ne pas répondre à ce message.",
-                        emailAttachments: ['invoice' => Storage::disk('ged')->path($this->frais->employe->matricule.'/documents/frais/'.now()->year.'/'.now()->month.'/'.$this->frais->numero.'.pdf')]
                     ));
             });
     }
