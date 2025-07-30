@@ -1,3 +1,28 @@
+# [1.13.0](https://github.com/vortechstudio/batistack2/compare/v1.12.0...v1.13.0) (2025-07-30)
+
+
+### Bug Fixes
+
+* conditionally render bank table and remove extra attachments ([39e9b29](https://github.com/vortechstudio/batistack2/commit/39e9b29ee7e86f2bb2ce655527cbd8e996350cb8))
+* **portail:** add missing scripts to sidebar layout ([445a0b8](https://github.com/vortechstudio/batistack2/commit/445a0b88e5b5f7808e038cd3f79324ea5611c61f))
+* replace deprecated faker methods with randomNumber ([0ad101a](https://github.com/vortechstudio/batistack2/commit/0ad101aa2ff34a0c1b8be8e82f30bc534f2bd5f1))
+* **RH:** filter reimbursable details and improve UI/UX ([fae5386](https://github.com/vortechstudio/batistack2/commit/fae53869316757e72d60f42a7574e3e8715a9363))
+* **RH:** handle null dates in frais display and update delete action ([d694941](https://github.com/vortechstudio/batistack2/commit/d69494113d4c02e8231ddd3a60521730d72f4c9d))
+
+
+### Features
+
+* **core:** add user impersonation and role-based routing ([2518fbf](https://github.com/vortechstudio/batistack2/commit/2518fbf6723b8a3ec95192fc2e068699084e19e0))
+* **frais:** add refused status check and improve expense management ([c7010e9](https://github.com/vortechstudio/batistack2/commit/c7010e9cb501720e084d50a53f3d95def0cabdfb))
+* **portail/salarie/frais:** add expense notes feature for employees ([95a1f60](https://github.com/vortechstudio/batistack2/commit/95a1f60c7bcbf8a5b4f25e03a441141509ffadcb))
+* **portail/salarie/frais:** add show page for expense notes ([161cc6d](https://github.com/vortechstudio/batistack2/commit/161cc6d492f64e652d07390d6505d5a1b8a02beb))
+* **portail/salarie/frais:** enhance expense note management with filters and columns ([9d204e8](https://github.com/vortechstudio/batistack2/commit/9d204e8417683902cb726fc68c5299ed337256d5))
+* **RH:** add notifications for expense submission and payment ([f70f9fc](https://github.com/vortechstudio/batistack2/commit/f70f9fc4a82a48fcb7b56f9ea3dc0b12c815d2b3))
+* **RH:** add partial validation for expense report details ([8cbb9c0](https://github.com/vortechstudio/batistack2/commit/8cbb9c081295e938faf71abfd2a9ac559d520f90))
+* **RH:** add refuse action and reimbursable indicator ([21dc8aa](https://github.com/vortechstudio/batistack2/commit/21dc8aa4f5865972ba9825437c3b962ae966a83d))
+* **RH:** add submit action for modifiable expenses ([6944f61](https://github.com/vortechstudio/batistack2/commit/6944f612a512d725a6a6f9de7165a3f7018ef7d6))
+* **RH:** implement expense details table and related features ([40812fd](https://github.com/vortechstudio/batistack2/commit/40812fd67855c255a20252db2d76f68788956389))
+
 # [1.12.0](https://github.com/vortechstudio/batistack2/compare/v1.11.0...v1.12.0) (2025-07-27)
 
 
