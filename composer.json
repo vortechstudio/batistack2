@@ -19,6 +19,7 @@
         "intervention/image-laravel": "^1.5",
         "intervention/validation": "^4.6",
         "itsgoingd/clockwork": "^5.3",
+        "lab404/laravel-impersonate": "^1.7",
         "laravel/framework": "^12.0",
         "laravel/horizon": "^5.33",
         "laravel/nightwatch": "^1.10",

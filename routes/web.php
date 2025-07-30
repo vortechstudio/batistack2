@@ -35,7 +35,7 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role.redirect'])->group(function () {
     Route::get('notifications', App\Livewire\Core\Pages\Notification::class)->name('notifications');
 
     Route::redirect('settings', 'settings/profile');
@@ -122,4 +122,5 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/api/bank/connect', [App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');
 Route::post('/csp-report', [App\Http\Controllers\CspReportController::class, 'report'])->name('csp.report');
 Route::get('/analyse/phpstan', PhpStan::class)->name('analyse.phpstan');
+Route::impersonate();
 require __DIR__.'/auth.php';

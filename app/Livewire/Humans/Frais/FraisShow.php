@@ -20,6 +20,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -141,6 +142,12 @@ final class FraisShow extends Component implements HasActions, HasSchemas
                         greeting: "Bonjour {$this->frais->employe->full_name},",
                         content: "Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Le document relatif à cette note est disponible dans votre espace.<br><br>Merci de ne pas répondre à ce message.",
                     ));
+
+                Notification::make()
+                    ->title('Note de frais validée')
+                    ->success()
+                    ->body("Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Le document relatif à cette note est disponible dans votre espace.")
+                    ->sendToDatabase(Auth::user());
             });
     }
 
@@ -215,13 +222,23 @@ final class FraisShow extends Component implements HasActions, HasSchemas
             ])
             ->action(function (array $data) {
                 $this->frais->refuser(Auth::user(), $data['commentaire_validateur']);
+
                 Mail::to($this->frais->employe->user->email)
                     ->send(new ProfessionalMail(
                         emailSubject: "Votre note de frais n°{$this->frais->numero} a été refusée",
                         greeting: "Bonjour {$this->frais->employe->full_name},",
                         content: "Votre note de frais n°{$this->frais->numero} a été refusée le {$this->frais->date_refus->format('d/m/Y')}.<br><br>{$this->frais->commentaire_validateur}<br><br>Merci de ne pas répondre à ce message.",
                     ));
+
+                Notification::make()
+                    ->title('Note de frais refusé')
+                    ->danger()
+                    ->body("Votre note de frais n°{$this->frais->numero} a été refusé le {$this->frais->date_refus->format('d/m/Y')}.<br><br>{$this->frais->commentaire_validateur}.")
+                    ->sendToDatabase(Auth::user());
+
             });
+
+
     }
 
     #[Title('Note de frais - Fiche')]

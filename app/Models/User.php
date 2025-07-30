@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Lab404\Impersonate\Models\Impersonate;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Zap\Models\Concerns\HasSchedules;
@@ -25,7 +26,7 @@ use Zap\Models\Concerns\HasSchedules;
 final class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasSchedules, InteractsWithMedia, Notifiable;
+    use HasFactory, HasSchedules, InteractsWithMedia, Notifiable, Impersonate;
 
     /**
      * The attributes that are mass assignable.

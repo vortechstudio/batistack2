@@ -41,14 +41,29 @@ new #[Layout('components.layouts.auth')] class extends Component {
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        if(Auth::user()->role->value === 'salarie') {
-            $this->redirectIntended(
-                default: route('portail.salarie.dashboard', absolute: false),
-                navigate: true,
-            );
-        } else {
-            $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
-        }
+        // Redirection basée sur le rôle
+        $redirectRoute = $this->getRedirectRouteByRole(Auth::user()->role);
+
+        $this->redirectIntended(
+            default: route($redirectRoute, absolute: false),
+            navigate: true,
+        );
+    }
+
+    /**
+     * Détermine la route de redirection selon le rôle
+     */
+    private function getRedirectRouteByRole(UserRole $role): string
+    {
+        return match ($role) {
+            UserRole::SALARIE => 'portail.salarie.dashboard',
+            UserRole::ADMINISTRATEUR => 'dashboard',
+            UserRole::COMPTABILITE => 'dashboard', // ou une route spécifique comptabilité
+            UserRole::COUNTERMASTER => 'chantiers.dashboard',
+            UserRole::CLIENT => 'dashboard', // ou un portail client
+            UserRole::FOURNISSEUR => 'dashboard', // ou un portail fournisseur
+            default => 'dashboard',
+        };
     }
 
     /**

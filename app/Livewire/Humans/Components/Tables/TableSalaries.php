@@ -9,6 +9,7 @@ use App\Helpers\RH\CreateEmploye;
 use App\Helpers\RH\UpdateEmploye;
 use App\Models\Core\Country;
 use App\Models\RH\Employe;
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
@@ -370,6 +371,12 @@ final class TableSalaries extends Component implements HasActions, HasSchemas, H
                         Storage::disk('public')->deleteDirectory('rh/salarie/'.$record->id);
                         $record->delete();
                     }),
+
+                Action::make('impersonate')
+                    ->tooltip("Ce connecte en tant que ce salarié")
+                    ->icon(Heroicon::Key)
+                    ->iconButton()
+                    ->url(fn (?Model $record) => route('impersonate', $record->user->id)),
 
             ]);
     }
