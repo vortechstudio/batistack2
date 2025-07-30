@@ -2,6 +2,7 @@
     <div class="flex justify-end gap-5 p-5 bg-gray-100 rounded mb-5">
         {{ $this->sendMailAction }}
 
+        {{ $this->frais->est_modifiable ? $this->submitAction : null }}
         {{ $this->frais->est_modifiable ? $this->editAction : null }}
         {{ $this->frais->est_validable ? $this->validateAction : null }}
         {{ $this->frais->est_payable ? $this->payerAction : null }}

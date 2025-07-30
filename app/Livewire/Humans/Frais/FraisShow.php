@@ -165,6 +165,16 @@ final class FraisShow extends Component implements HasActions, HasSchemas
             });
     }
 
+    public function submitAction(): Action
+    {
+        return Action::make('submit')
+            ->label('Soumettre')
+            ->icon(Heroicon::PaperAirplane)
+            ->action(function () {
+                $this->frais->soumettre();
+            });
+    }
+
     public function deleteAction(): Action
     {
         return Action::make('delete')
