@@ -1,13 +1,8 @@
 <div>
     <div class="flex justify-end gap-5 p-5 bg-gray-100 rounded mb-5">
-        {{ $this->sendMailAction }}
-
         @if(!$frais->est_refuse)
             {{ $this->frais->est_modifiable ? $this->submitAction : null }}
             {{ $this->frais->est_modifiable ? $this->editAction : null }}
-            {{ $this->frais->est_validable ? $this->validateAction : null }}
-            {{ $this->frais->est_validable ? $this->refuseAction : null }}
-            {{ $this->frais->est_payable ? $this->payerAction : null }}
 
             {{ $this->frais->est_modifiable ? $this->deleteAction : null }}
         @endif
@@ -23,7 +18,6 @@
         </div>
         <div class="flex flex-col">
             <x-ui.badge :color="$frais->statut->color()" :text="$frais->statut->label()" size="xl" />
-            <p>Pas encore en comptabilité</p>
         </div>
     </div>
     <div class="flex justify-between gap-5 mb-10">
@@ -31,10 +25,6 @@
             <div class="overflow-x-auto">
                 <table class="table w-[100%]">
                     <tbody>
-                        <tr>
-                            <td class="font-bold">Salarié</td>
-                            <td class="text-right">{{ $frais->employe->full_name }}</td>
-                        </tr>
                         <tr>
                             <td class="font-bold">Période</td>
                             <td class="text-right">{{ $frais->date_debut->format("d/m/Y") }} au {{ $frais->date_fin->format("d/m/Y") }}</td>

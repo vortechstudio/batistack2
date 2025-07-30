@@ -2,25 +2,29 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire\Humans\Frais;
+namespace App\Livewire\Portail\Salarie;
 
-use App\Models\RH\Employe;
+use App\Enums\RH\StatusNoteFrais;
 use App\Models\RH\NoteFrais;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\QueryBuilder;
+use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -33,12 +37,12 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(NoteFrais::query())
-            ->heading('Liste des notes de frais')
-            ->emptyStateHeading('Aucune note de frais trouvée')
+            ->heading('Mes notes de frais')
+            ->emptyStateHeading('Aucune note de frais')
+            ->emptyStateDescription('Veuillez ajouter une note de frais')
             ->headerActions([
                 CreateAction::make('create')
-                    ->label('Créer une note de frais')
+                    ->label('Ajouter une note de frais')
                     ->icon(Heroicon::PlusCircle)
                     ->schema([
                         DatePicker::make('date_debut')
@@ -49,39 +53,39 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
                             ->label('Date de fin')
                             ->required(),
 
-                        Select::make('employe_id')
-                            ->label('Employé')
-                            ->options(Employe::pluck('nom', 'id'))
-                            ->required(),
-
                         Textarea::make('commentaire_employe')
                             ->label('Commentaire'),
+                    ])
+                    ->using(function (array $data) {
+                        $data['employe_id'] = Auth::user()->employe->id;
+                        NoteFrais::create([
+                            'employe_id' => $data['employe_id'],
+                            'date_debut' => $data['date_debut'],
+                            'date_fin' => $data['date_fin'],
+                            'commentaire_employe' => $data['commentaire_employe'],
+                        ]);
+                    }),
+            ])
+            ->filters([
+                SelectFilter::make('statut')
+                    ->options(StatusNoteFrais::getSelectOptions()),
+
+                QueryBuilder::make()
+                    ->constraints([
+                        DateConstraint::make('date_debut'),
+                        DateConstraint::make('date_fin'),
                     ]),
             ])
-            ->recordUrl(fn (?Model $record) => route('humans.frais.show', $record->id))
+            ->filtersFormWidth(Width::FourExtraLarge)
+            ->query(NoteFrais::query()->where('employe_id', Auth::user()->employe->id))
+            ->recordUrl(fn (?Model $record) => route('portail.salarie.frais.show', $record->id))
             ->columns([
                 TextColumn::make('numero')
                     ->label('Réf.')
                     ->searchable(isIndividual: true),
 
-                TextColumn::make('employe.full_name')
-                    ->label('Employé')
-                    ->sortable()
-                    ->formatStateUsing(function ($state, $record) {
-                        $employe = $record->employe;
-                        if (! $employe) {
-                            return '-';
-                        }
-
-                        $avatar = $employe->getFirstMediaUrl();
-                        $avatarHtml = "<img src='{$avatar}' class='w-8 h-8 rounded-full mr-2 inline-block' alt='Avatar'>";
-
-                        return new HtmlString($avatarHtml.$employe->full_name);
-                    })
-                    ->html(),
-
                 TextColumn::make('date_debut')
-                    ->label('Date début')
+                    ->label('Date de début')
                     ->sortable()
                     ->date('d/m/Y'),
 
@@ -124,10 +128,10 @@ final class Frais extends Component implements HasActions, HasSchemas, HasTable
             ]);
     }
 
-    #[Title('Note de Frais')]
-    #[Layout('components.layouts.humans')]
+    #[Title('Mes Frais')]
+    #[Layout('components.layouts.portail.salarie')]
     public function render()
     {
-        return view('livewire.humans.frais.frais');
+        return view('livewire.portail.salarie.frais');
     }
 }

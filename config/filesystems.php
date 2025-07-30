@@ -71,6 +71,15 @@ return [
             'report' => false,
         ],
 
+        'frais' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/ged/comptabilite/frais'),
+            'url' => env('APP_URL').'/storage/ged/comptabilite/frais',
+            'visibility' => 'public',
+            'throw' => true,
+            'report' => false,
+        ],
+
         'tmp-for-tests' => [
             'driver' => 'local',
             'root' => storage_path('app/livewire-tmp'),

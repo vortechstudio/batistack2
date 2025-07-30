@@ -107,6 +107,15 @@ final class NoteFrais extends Model implements HasMedia
         return $statut === StatusNoteFrais::VALIDEE;
     }
 
+    public function getEstRefuseAttribute(): bool
+    {
+        $statut = $this->statut instanceof StatusNoteFrais
+            ? $this->statut
+            : StatusNoteFrais::from($this->statut ?? StatusNoteFrais::BROUILLON->value);
+
+        return $statut === StatusNoteFrais::REFUSEE;
+    }
+
     /**
      * Scopes
      */
@@ -152,7 +161,7 @@ final class NoteFrais extends Model implements HasMedia
         return true;
     }
 
-    public function valider($validateur, ?string $commentaire = null): bool
+    public function valider($validateur, ?string $commentaire = null, ?array $detailsSelectionnes = null): bool
     {
         $statut = $this->statut instanceof StatusNoteFrais
             ? $this->statut
@@ -163,12 +172,30 @@ final class NoteFrais extends Model implements HasMedia
 
         $validateurId = $validateur instanceof User ? $validateur->id : $validateur;
 
+        // Calculer le montant validé basé sur les détails sélectionnés
+        $montantValide = $this->montant_total; // Par défaut, tout le montant
+
+        if ($detailsSelectionnes !== null && is_array($detailsSelectionnes) && ! empty($detailsSelectionnes)) {
+            // Calculer le montant des détails sélectionnés uniquement
+            $montantValide = $this->details()
+                ->whereIn('id', $detailsSelectionnes)
+                ->sum('montant_ttc');
+
+            // Mettre à jour les détails non sélectionnés avec le commentaire "Frais personnel non remboursable"
+            $this->details()
+                ->whereNotIn('id', $detailsSelectionnes)
+                ->update([
+                    'commentaire' => 'Frais personnel non remboursable',
+                    'remboursable' => false,
+                ]);
+        }
+
         $this->update([
             'statut' => StatusNoteFrais::VALIDEE,
             'validateur_id' => $validateurId,
             'date_validation' => now(),
             'commentaire_validateur' => $commentaire,
-            'montant_valide' => $this->montant_total,
+            'montant_valide' => $montantValide,
         ]);
 
         return true;

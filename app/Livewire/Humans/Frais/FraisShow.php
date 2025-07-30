@@ -13,13 +13,14 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -104,29 +105,49 @@ final class FraisShow extends Component implements HasActions, HasSchemas
             ->using(function (array $data) {});
     }
 
-    public function validateAction(): EditAction
+    public function validateAction(): Action
     {
-        return EditAction::make('validate')
+        return Action::make('validate')
             ->label('Valider pour approbation')
             ->icon(Heroicon::CheckCircle)
             ->schema([
                 TextInput::make('montant_total')
                     ->label('Montant déclaré')
+                    ->default($this->frais->montant_total)
                     ->disabled(),
 
                 Textarea::make('commentaire_validateur')
                     ->label('commentaire'),
+
+                CheckboxList::make('details')
+                    ->label('Détails à valider')
+                    ->options($this->frais->details->mapWithKeys(function ($detail) {
+                        $dateFormatted = $detail->date_frais->format('d/m/Y');
+                        $montantFormatted = number_format($detail->montant_ttc_calcule, 2, ',', ' ').' €';
+                        $label = "{$dateFormatted} - {$detail->libelle} - {$montantFormatted}";
+
+                        return [$detail->id => $label];
+                    }))
+                    ->default($this->frais->details->pluck('id')->toArray()),
             ])
-            ->using(function (array $data) {
-                $this->frais->valider(Auth::user(), $data['commentaire_validateur']);
-                $invoice = app(GenerateNoteFrais::class)->handle($this->frais);
+            ->action(function (array $data) {
+                // Récupérer les détails sélectionnés depuis le formulaire
+                $detailsSelectionnes = $data['details'] ?? [];
+
+                $this->frais->valider(Auth::user(), $data['commentaire_validateur'], $detailsSelectionnes);
+                app(GenerateNoteFrais::class)->handle($this->frais);
                 Mail::to($this->frais->employe->user->email)
                     ->send(new ProfessionalMail(
                         emailSubject: "Votre note de frais n°{$this->frais->numero} a été validée",
                         greeting: "Bonjour {$this->frais->employe->full_name},",
-                        content: "Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Merci de ne pas répondre à ce message.",
-                        emailAttachments: ['invoice' => $invoice->url()]
+                        content: "Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Le document relatif à cette note est disponible dans votre espace.<br><br>Merci de ne pas répondre à ce message.",
                     ));
+
+                Notification::make()
+                    ->title('Note de frais validée')
+                    ->success()
+                    ->body("Votre note de frais n°{$this->frais->numero} a été validée le {$this->frais->date_validation->format('d/m/Y')}.<br><br>Le document relatif à cette note est disponible dans votre espace.")
+                    ->sendToDatabase(Auth::user());
             });
     }
 
@@ -161,18 +182,68 @@ final class FraisShow extends Component implements HasActions, HasSchemas
                     'montant' => $data['montant'],
                 ]);
                 $this->frais->marquerPayee($paiement->numero_paiement);
+                Notification::make()
+                    ->success()
+                    ->title("Nouveau paiement de note de frais")
+                    ->body("La note de frais n°{$this->frais->numero} a été payée.")
+                    ->sendToDatabase($this->frais->employe->user);
             });
     }
 
-    public function deleteAction(): DeleteAction
+    public function submitAction(): Action
     {
-        return DeleteAction::make('delete')
+        return Action::make('submit')
+            ->label('Soumettre')
+            ->icon(Heroicon::PaperAirplane)
+            ->action(function () {
+                $this->frais->soumettre();
+                $this->frais->refresh();
+            });
+    }
+
+    public function deleteAction(): Action
+    {
+        return Action::make('delete')
             ->label('Supprimer')
             ->icon(Heroicon::Trash)
             ->requiresConfirmation()
             ->action(function () {
                 $this->frais->delete();
             });
+    }
+
+    public function refuseAction(): Action
+    {
+        return Action::make('refuse')
+            ->label('Refuser')
+            ->icon(Heroicon::XMark)
+            ->requiresConfirmation()
+            ->modalHeading('Refuser la note de frais')
+            ->modalDescription('Êtes-vous sûr de vouloir refuser la note de frais ?')
+            ->schema([
+                Textarea::make('commentaire_validateur')
+                    ->label('Commentaire')
+                    ->required(),
+            ])
+            ->action(function (array $data) {
+                $this->frais->refuser(Auth::user(), $data['commentaire_validateur']);
+
+                Mail::to($this->frais->employe->user->email)
+                    ->send(new ProfessionalMail(
+                        emailSubject: "Votre note de frais n°{$this->frais->numero} a été refusée",
+                        greeting: "Bonjour {$this->frais->employe->full_name},",
+                        content: "Votre note de frais n°{$this->frais->numero} a été refusée le {$this->frais->updated_at->format('d/m/Y')}.<br><br>{$this->frais->commentaire_validateur}<br><br>Merci de ne pas répondre à ce message.",
+                    ));
+
+                Notification::make()
+                    ->title('Note de frais refusé')
+                    ->danger()
+                    ->body("Votre note de frais n°{$this->frais->numero} a été refusé le {$this->frais->updated_at->format('d/m/Y')}.<br><br>{$this->frais->commentaire_validateur}.")
+                    ->sendToDatabase(Auth::user());
+
+            });
+
+
     }
 
     #[Title('Note de frais - Fiche')]

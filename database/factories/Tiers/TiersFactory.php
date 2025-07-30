@@ -25,7 +25,7 @@ final class TiersFactory extends Factory
             'nature' => $nature,
             'type' => $type,
             'code_tiers' => $nature === 'fournisseur' ? 'FOUR2026-'.random_int(1, 600) : 'CLT2026-'.random_int(1, 600),
-            'siren' => $this->faker->siren(),
+            'siren' => $this->faker->numerify('#########'), // 9 chiffres pour un SIREN valide
             'tva' => $tva,
             'num_tva' => $tva ? $this->faker->vat() : null,
         ];

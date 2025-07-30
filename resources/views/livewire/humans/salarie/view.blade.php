@@ -166,7 +166,9 @@
                         @livewire('humans.components.tables.table-conges', ['employe' => $salarie])
                     </div>
                 </div>
-                @livewire('humans.components.tables.table-bank', ['employe' => $salarie])
+                @if($salarie->bank)
+                    @livewire('humans.components.tables.table-bank', ['employe' => $salarie])
+                @endif
             </div>
             <div x-show="tabs === 'planning'">
                 <div class="flex flex-row justify-between items-center">
