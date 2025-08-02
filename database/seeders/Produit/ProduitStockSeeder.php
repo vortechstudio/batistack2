@@ -17,9 +17,9 @@ class ProduitStockSeeder extends Seeder
     {
         $this->command->info('📦 Création des stocks de produits...');
 
-        // Récupérer tous les produits et entrepôts
-        $produits = Produit::all();
-        $entrepots = Entrepot::all();
+        // Récupérer un échantillon réduit de produits et entrepôts
+        $produits = Produit::take(20)->get(); // Limité à 20 produits
+        $entrepots = Entrepot::take(5)->get(); // Limité à 5 entrepôts
 
         if ($produits->isEmpty()) {
             $this->command->warn('Aucun produit trouvé. Veuillez d\'abord exécuter ProduitSeeder.');
@@ -36,59 +36,55 @@ class ProduitStockSeeder extends Seeder
         $stocksCritiques = 0;
         $stocksNormaux = 0;
 
-        // Créer des stocks pour chaque produit dans chaque entrepôt
+        // Créer des stocks pour un échantillon de produits dans quelques entrepôts
         foreach ($produits as $produit) {
-            foreach ($entrepots as $entrepot) {
-                // 70% de chance d'avoir du stock dans cet entrepôt
-                if (rand(1, 100) <= 70) {
-                    // Déterminer le type de stock
-                    $typeStock = $this->determinerTypeStock();
+            // Chaque produit n'aura du stock que dans 1 à 3 entrepôts maximum
+            $entrepotsSelectionnes = $entrepots->random(rand(1, min(3, $entrepots->count())));
 
-                    $stock = match($typeStock) {
-                        'rupture' => ProduitStock::factory()
-                            ->enRupture()
-                            ->pourProduit($produit)
-                            ->pourEntrepot($entrepot)
-                            ->create(),
-                        'critique' => ProduitStock::factory()
-                            ->stockCritique()
-                            ->pourProduit($produit)
-                            ->pourEntrepot($entrepot)
-                            ->create(),
-                        'faible' => ProduitStock::factory()
-                            ->stockFaible()
-                            ->pourProduit($produit)
-                            ->pourEntrepot($entrepot)
-                            ->create(),
-                        'normal' => ProduitStock::factory()
-                            ->stockNormal()
-                            ->pourProduit($produit)
-                            ->pourEntrepot($entrepot)
-                            ->create(),
-                        'eleve' => ProduitStock::factory()
-                            ->stockEleve()
-                            ->pourProduit($produit)
-                            ->pourEntrepot($entrepot)
-                            ->create(),
-                    };
+            foreach ($entrepotsSelectionnes as $entrepot) {
+                // Déterminer le type de stock
+                $typeStock = $this->determinerTypeStock();
 
-                    $totalStocks++;
+                $stock = match($typeStock) {
+                    'rupture' => ProduitStock::factory()
+                        ->enRupture()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                    'critique' => ProduitStock::factory()
+                        ->stockCritique()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                    'faible' => ProduitStock::factory()
+                        ->stockFaible()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                    'normal' => ProduitStock::factory()
+                        ->stockNormal()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                    'eleve' => ProduitStock::factory()
+                        ->stockEleve()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                };
 
-                    // Compter par type
-                    match($typeStock) {
-                        'rupture' => $stocksEnRupture++,
-                        'critique' => $stocksCritiques++,
-                        default => $stocksNormaux++,
-                    };
+                $totalStocks++;
 
-                    if ($totalStocks % 50 === 0) {
-                        $this->command->info("✅ {$totalStocks} stocks créés...");
-                    }
-                }
+                // Compter par type
+                match($typeStock) {
+                    'rupture' => $stocksEnRupture++,
+                    'critique' => $stocksCritiques++,
+                    default => $stocksNormaux++,
+                };
             }
         }
 
-        // Créer quelques stocks spécifiques pour les tests
+        // Créer quelques stocks spécifiques pour les tests (réduit)
         $this->creerStocksSpecifiques();
 
         // Statistiques finales
@@ -117,30 +113,37 @@ class ProduitStockSeeder extends Seeder
     }
 
     /**
-     * Créer des stocks spécifiques pour les tests
+     * Créer des stocks spécifiques pour les tests (version réduite)
      */
     private function creerStocksSpecifiques(): void
     {
         $this->command->info('🎯 Création de stocks spécifiques...');
 
         $entrepotPrincipal = Entrepot::first();
-        $produits = Produit::take(10)->get();
+        $produits = Produit::take(5)->get(); // Réduit à 5 produits
 
         foreach ($produits as $produit) {
-            // Stock élevé pour les 5 premiers produits
-            if ($produits->search($produit) < 5) {
-                ProduitStock::factory()
-                    ->stockEleve()
-                    ->pourProduit($produit)
-                    ->pourEntrepot($entrepotPrincipal)
-                    ->create();
-            } else {
-                // Stock critique pour les autres
-                ProduitStock::factory()
-                    ->stockCritique()
-                    ->pourProduit($produit)
-                    ->pourEntrepot($entrepotPrincipal)
-                    ->create();
+            // Éviter les doublons - vérifier si le stock existe déjà
+            $stockExistant = ProduitStock::where('produit_id', $produit->id)
+                ->where('entrepot_id', $entrepotPrincipal->id)
+                ->exists();
+
+            if (!$stockExistant) {
+                // Stock élevé pour les 3 premiers produits
+                if ($produits->search($produit) < 3) {
+                    ProduitStock::factory()
+                        ->stockEleve()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepotPrincipal)
+                        ->create();
+                } else {
+                    // Stock critique pour les autres
+                    ProduitStock::factory()
+                        ->stockCritique()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepotPrincipal)
+                        ->create();
+                }
             }
         }
 

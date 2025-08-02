@@ -4,11 +4,11 @@ namespace App\Enums\Produits;
 
 enum TauxTVA: string
 {
-    case ZERO = 0.0;
-    case REDUIT_2_1 = 2.1;
-    case REDUIT_5_5 = 5.5;
-    case INTERMEDIAIRE = 10.0;
-    case NORMAL = 20.0;
+    case ZERO = '0.0';
+    case REDUIT_2_1 = '2.1';
+    case REDUIT_5_5 = '5.5';
+    case INTERMEDIAIRE = '10.0';
+    case NORMAL = '20.0';
 
     public function label(): string
     {
@@ -57,7 +57,7 @@ enum TauxTVA: string
      */
     public function calculerTTC(float $montantHT): float
     {
-        return $montantHT * (1 + $this->value / 100);
+        return $montantHT * (1 + (float)$this->value / 100);
     }
 
     /**
@@ -65,6 +65,14 @@ enum TauxTVA: string
      */
     public function calculerMontantTVA(float $montantHT): float
     {
-        return $montantHT * ($this->value / 100);
+        return $montantHT * ((float)$this->value / 100);
+    }
+
+    /**
+     * Obtient la valeur numérique du taux
+     */
+    public function getNumericValue(): float
+    {
+        return (float)$this->value;
     }
 }

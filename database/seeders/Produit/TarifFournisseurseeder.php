@@ -65,14 +65,12 @@ class TarifFournisseurSeeder extends Seeder
             $this->command->info("✅ Tarif fournisseur créé : {$tarifData['ref_fournisseur']}");
         }
 
-        // Créer des tarifs pour chaque produit
+        // Créer seulement 1 tarif par produit (au lieu de 1-4)
         $totalTarifsGeneres = 0;
 
         foreach ($produits as $produit) {
-            // Nombre de tarifs fournisseurs par produit (entre 1 et 4)
-            $nombreTarifs = rand(1, 4);
-
-            for ($i = 0; $i < $nombreTarifs; $i++) {
+            // Seulement 60% des produits ont un tarif fournisseur
+            if (rand(1, 100) <= 60) {
                 TarifFournisseur::factory()
                     ->pourProduit($produit->id)
                     ->create();
@@ -83,24 +81,18 @@ class TarifFournisseurSeeder extends Seeder
 
         $this->command->info("📦 {$totalTarifsGeneres} tarifs générés pour les produits existants");
 
-        // Créer des tarifs spécialisés
+        // Créer seulement quelques tarifs spécialisés
         $tarifsSpecialises = [
             // Tarifs pour matériaux de construction
-            TarifFournisseur::factory()->count(20)->materiauConstruction()->create(),
+            TarifFournisseur::factory()->count(4)->materiauConstruction()->create(),
             // Tarifs pour outillage
-            TarifFournisseur::factory()->count(15)->outillage()->create(),
+            TarifFournisseur::factory()->count(3)->outillage()->create(),
             // Tarifs avec livraison rapide
-            TarifFournisseur::factory()->count(10)->livraisonRapide()->create(),
-            // Tarifs avec quantité minimale élevée
-            TarifFournisseur::factory()->count(8)->quantiteMinimaleElevee()->create(),
+            TarifFournisseur::factory()->count(2)->livraisonRapide()->create(),
             // Tarifs économiques
-            TarifFournisseur::factory()->count(12)->economique()->create(),
-            // Tarifs premium
-            TarifFournisseur::factory()->count(6)->premium()->create(),
+            TarifFournisseur::factory()->count(3)->economique()->create(),
             // Tarifs avec code-barres
-            TarifFournisseur::factory()->count(25)->avecCodeBarre()->create(),
-            // Tarifs sans code-barres
-            TarifFournisseur::factory()->count(10)->sansCodeBarre()->create(),
+            TarifFournisseur::factory()->count(5)->avecCodeBarre()->create(),
         ];
 
         $totalSpecialises = array_sum(array_map('count', $tarifsSpecialises));

@@ -66,16 +66,10 @@ class TarifClientSeeder extends Seeder
                     'service_id' => $services->where('reference', 'SRV-000001')->first()?->id ?? $services->random()->id,
                 ],
                 [
-                    'prix_unitaire' => 35.00,
-                    'taux_tva' => TauxTVA::INTERMEDIAIRE->value, // TVA intermédiaire pour amélioration
-                    'produit_id' => null,
-                    'service_id' => $services->where('reference', 'SRV-000002')->first()?->id ?? $services->random()->id,
-                ],
-                [
                     'prix_unitaire' => 850.00,
                     'taux_tva' => TauxTVA::REDUIT_5_5->value,
                     'produit_id' => null,
-                    'service_id' => $services->where('reference', 'SRV-000003')->first()?->id ?? $services->random()->id,
+                    'service_id' => $services->where('reference', 'SRV-000002')->first()?->id ?? $services->random()->id,
                 ],
             ]);
         }
@@ -87,62 +81,48 @@ class TarifClientSeeder extends Seeder
             $this->command->info("✅ Tarif client créé : {$elementType} ID {$elementId} - {$tarifData['prix_unitaire']}€ HT");
         }
 
-        // Créer des tarifs pour chaque produit
+        // Créer des tarifs seulement pour quelques produits (50% au lieu de 80%)
         $totalTarifsGeneres = 0;
 
         if (!$produits->isEmpty()) {
-            foreach ($produits as $produit) {
-                // 80% des produits ont un tarif client
-                if (rand(1, 100) <= 80) {
-                    TarifClient::factory()
-                        ->pourProduit($produit->id)
-                        ->create();
+            $produitsAvecTarifs = $produits->take(ceil($produits->count() * 0.5));
+            foreach ($produitsAvecTarifs as $produit) {
+                TarifClient::factory()
+                    ->pourProduit($produit->id)
+                    ->create();
 
-                    $totalTarifsGeneres++;
-                }
+                $totalTarifsGeneres++;
             }
 
-            $this->command->info("📦 Tarifs générés pour les produits : " . $produits->count() * 0.8);
+            $this->command->info("📦 Tarifs générés pour " . $produitsAvecTarifs->count() . " produits");
         }
 
-        // Créer des tarifs pour chaque service
+        // Créer des tarifs seulement pour quelques services (60% au lieu de 90%)
         if (!$services->isEmpty()) {
-            foreach ($services as $service) {
-                // 90% des services ont un tarif client
-                if (rand(1, 100) <= 90) {
-                    TarifClient::factory()
-                        ->pourService($service->id)
-                        ->create();
+            $servicesAvecTarifs = $services->take(ceil($services->count() * 0.6));
+            foreach ($servicesAvecTarifs as $service) {
+                TarifClient::factory()
+                    ->pourService($service->id)
+                    ->create();
 
-                    $totalTarifsGeneres++;
-                }
+                $totalTarifsGeneres++;
             }
 
-            $this->command->info("🔧 Tarifs générés pour les services : " . $services->count() * 0.9);
+            $this->command->info("🔧 Tarifs générés pour " . $servicesAvecTarifs->count() . " services");
         }
 
-        // Créer des tarifs spécialisés
+        // Créer seulement quelques tarifs spécialisés
         $tarifsSpecialises = [
             // Tarifs économiques
-            TarifClient::factory()->count(15)->economique()->create(),
+            TarifClient::factory()->count(3)->economique()->create(),
             // Tarifs standard
-            TarifClient::factory()->count(25)->standard()->create(),
+            TarifClient::factory()->count(5)->standard()->create(),
             // Tarifs premium
-            TarifClient::factory()->count(8)->premium()->create(),
-            // Tarifs pour matériaux de construction
-            TarifClient::factory()->count(20)->materiauConstruction()->create(),
-            // Tarifs pour services de rénovation (TVA réduite)
-            TarifClient::factory()->count(12)->serviceRenovation()->create(),
-            // Tarifs pour services d'amélioration (TVA intermédiaire)
-            TarifClient::factory()->count(10)->serviceAmelioration()->create(),
+            TarifClient::factory()->count(2)->premium()->create(),
             // Tarifs avec TVA normale
-            TarifClient::factory()->count(30)->tvaNormale()->create(),
+            TarifClient::factory()->count(4)->tvaNormale()->create(),
             // Tarifs avec TVA réduite
-            TarifClient::factory()->count(8)->tvaReduite()->create(),
-            // Tarifs avec TVA intermédiaire
-            TarifClient::factory()->count(6)->tvaIntermediaire()->create(),
-            // Tarifs exonérés de TVA
-            TarifClient::factory()->count(3)->tvaZero()->create(),
+            TarifClient::factory()->count(2)->tvaReduite()->create(),
         ];
 
         $totalSpecialises = array_sum(array_map('count', $tarifsSpecialises));

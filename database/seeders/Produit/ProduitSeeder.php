@@ -122,46 +122,35 @@ class ProduitSeeder extends Seeder
             $this->command->info("✅ Produit créé : {$produitData['name']}");
         }
 
-        // Générer des produits aléatoires par catégorie et entrepôt
+        // Générer seulement quelques produits aléatoires (2-3 par catégorie principale)
         $totalProduitsGeneres = 0;
+        $categoriesPrincipales = $categories->whereNull('category_id');
 
-        foreach ($categories as $category) {
-            foreach ($entrepots as $entrepot) {
-                // Nombre de produits par catégorie/entrepôt (entre 5 et 15)
-                $nombreProduits = rand(5, 15);
+        foreach ($categoriesPrincipales as $category) {
+            // Seulement 2-3 produits par catégorie principale
+            $nombreProduits = rand(2, 3);
 
-                // Répartition : 80% produits physiques, 20% services (mais les services sont dans une autre table maintenant)
-                // Donc on ne crée que des produits physiques ici
-                Produit::factory()
-                    ->count($nombreProduits)
-                    ->produit()
-                    ->pourCategorie($category->id)
-                    ->pourEntrepot($entrepot->id)
-                    ->create();
+            Produit::factory()
+                ->count($nombreProduits)
+                ->produit()
+                ->pourCategorie($category->id)
+                ->pourEntrepot($entrepots->random()->id)
+                ->create();
 
-                $totalProduitsGeneres += $nombreProduits;
-            }
-
-            $this->command->info("📦 Produits créés pour la catégorie : {$category->name}");
+            $totalProduitsGeneres += $nombreProduits;
+            $this->command->info("📦 {$nombreProduits} produits créés pour la catégorie : {$category->name}");
         }
 
-        // Créer quelques produits spécialisés
+        // Créer seulement quelques produits spécialisés
         $produitsSpecialises = [
             // Matériaux de construction lourds
-            Produit::factory()->count(15)->materiauConstruction()->create(),
+            Produit::factory()->count(3)->materiauConstruction()->create(),
             // Outillage léger
-            Produit::factory()->count(20)->outillage()->create(),
+            Produit::factory()->count(4)->outillage()->create(),
             // Produits avec dimensions spécifiques
-            Produit::factory()->count(10)->avecDimensions()->create(),
+            Produit::factory()->count(2)->avecDimensions()->create(),
             // Produits avec gestion de stock
-            Produit::factory()->count(12)->avecStock()->create(),
-            // Produits non disponibles à l'achat
-            Produit::factory()->count(5)->nonDisponibleAchat()->create(),
-            // Produits avec descriptions complètes
-            Produit::factory()->count(8)->state(['description' => function() {
-                return fake()->paragraphs(3, true) . "\n\nCaractéristiques techniques :\n" .
-                    "- " . implode("\n- ", fake()->sentences(4));
-            }])->create(),
+            Produit::factory()->count(3)->avecStock()->create(),
         ];
 
         $totalSpecialises = array_sum(array_map('count', $produitsSpecialises));

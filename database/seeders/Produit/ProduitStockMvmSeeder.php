@@ -29,10 +29,10 @@ class ProduitStockMvmSeeder extends Seeder
         $entrees = 0;
         $sorties = 0;
 
-        // Créer des mouvements pour chaque stock
+        // Créer des mouvements pour chaque stock (RÉDUIT)
         foreach ($stocks as $stock) {
-            // Nombre de mouvements par stock (entre 3 et 15)
-            $nombreMouvements = rand(3, 15);
+            // Nombre de mouvements par stock réduit (entre 2 et 5 au lieu de 3-15)
+            $nombreMouvements = rand(2, 5);
 
             for ($i = 0; $i < $nombreMouvements; $i++) {
                 // 60% d'entrées, 40% de sorties
@@ -57,16 +57,16 @@ class ProduitStockMvmSeeder extends Seeder
                     $sorties++;
                 }
 
-                if ($totalMouvements % 100 === 0) {
+                if ($totalMouvements % 50 === 0) {
                     $this->command->info("✅ {$totalMouvements} mouvements créés...");
                 }
             }
         }
 
-        // Créer des mouvements spécifiques
+        // Créer des mouvements spécifiques (réduit)
         $this->creerMouvementsSpecifiques();
 
-        // Créer des mouvements récents et anciens
+        // Créer des mouvements récents et anciens (réduit)
         $this->creerMouvementsTemporels();
 
         // Statistiques finales
@@ -83,13 +83,13 @@ class ProduitStockMvmSeeder extends Seeder
     }
 
     /**
-     * Créer des mouvements spécifiques pour les tests
+     * Créer des mouvements spécifiques pour les tests (réduit)
      */
     private function creerMouvementsSpecifiques(): void
     {
         $this->command->info('🎯 Création de mouvements spécifiques...');
 
-        $stocks = ProduitStock::take(5)->get();
+        $stocks = ProduitStock::take(3)->get(); // Réduit à 3 stocks
 
         foreach ($stocks as $stock) {
             // Mouvement d'entrée important
@@ -109,40 +109,31 @@ class ProduitStockMvmSeeder extends Seeder
                 ->create([
                     'libelle' => 'Livraison client importante - Test',
                 ]);
-
-            // Petit mouvement d'ajustement
-            ProduitStockMvm::factory()
-                ->entree()
-                ->petiteQuantite()
-                ->pourStock($stock)
-                ->create([
-                    'libelle' => 'Ajustement inventaire - Test',
-                ]);
         }
 
         $this->command->info('✅ Mouvements spécifiques créés');
     }
 
     /**
-     * Créer des mouvements avec différentes dates
+     * Créer des mouvements avec différentes dates (réduit)
      */
     private function creerMouvementsTemporels(): void
     {
         $this->command->info('📅 Création de mouvements temporels...');
 
-        $stocks = ProduitStock::take(10)->get();
+        $stocks = ProduitStock::take(5)->get(); // Réduit à 5 stocks
 
         foreach ($stocks as $stock) {
-            // Mouvements récents (dernière semaine)
+            // Mouvements récents (dernière semaine) - réduit
             ProduitStockMvm::factory()
-                ->count(3)
+                ->count(2) // Réduit de 3 à 2
                 ->recent()
                 ->pourStock($stock)
                 ->create();
 
-            // Mouvements anciens (il y a plusieurs mois)
+            // Mouvements anciens (il y a plusieurs mois) - réduit
             ProduitStockMvm::factory()
-                ->count(2)
+                ->count(1) // Réduit de 2 à 1
                 ->ancien()
                 ->pourStock($stock)
                 ->create();

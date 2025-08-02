@@ -13,91 +13,23 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        // Créer les catégories principales
+        // Créer seulement quelques catégories principales pour les tests
         $categoriesPrincipales = [
             'Gros œuvre' => [
                 'Béton et mortier',
                 'Maçonnerie',
-                'Ferraillage',
-                'Coffrages',
-                'Étanchéité',
-            ],
-            'Second œuvre' => [
-                'Cloisons',
-                'Isolation',
-                'Plâtrerie',
-                'Menuiserie intérieure',
-                'Revêtements muraux',
             ],
             'Plomberie' => [
                 'Tubes et raccords',
-                'Robinetterie',
                 'Sanitaires',
-                'Chauffage',
-                'Évacuation',
             ],
             'Électricité' => [
                 'Câbles et fils',
-                'Appareillage',
-                'Tableaux électriques',
                 'Éclairage',
-                'Domotique',
-            ],
-            'Menuiserie' => [
-                'Portes',
-                'Fenêtres',
-                'Volets',
-                'Escaliers',
-                'Parquets',
-            ],
-            'Carrelage' => [
-                'Carreaux sol',
-                'Carreaux mur',
-                'Faïence',
-                'Mosaïque',
-                'Accessoires pose',
-            ],
-            'Peinture' => [
-                'Peinture intérieure',
-                'Peinture extérieure',
-                'Enduits',
-                'Lasures et vernis',
-                'Accessoires peinture',
             ],
             'Outillage' => [
                 'Outillage électroportatif',
                 'Outillage à main',
-                'Machines de chantier',
-                'Équipements de mesure',
-                'Consommables',
-            ],
-            'Équipements de sécurité' => [
-                'Protection individuelle',
-                'Signalisation',
-                'Échafaudages',
-                'Garde-corps',
-                'Équipements collectifs',
-            ],
-            'Matériaux de toiture' => [
-                'Tuiles',
-                'Ardoises',
-                'Bacs acier',
-                'Gouttières',
-                'Isolation toiture',
-            ],
-            'Quincaillerie' => [
-                'Visserie',
-                'Boulonnerie',
-                'Charnières',
-                'Serrurerie',
-                'Fixations',
-            ],
-            'Jardinage et espaces verts' => [
-                'Outillage jardin',
-                'Arrosage',
-                'Clôtures',
-                'Mobilier extérieur',
-                'Éclairage extérieur',
             ],
         ];
 
@@ -117,13 +49,13 @@ class CategorySeeder extends Seeder
             }
         }
 
-        // Créer quelques catégories supplémentaires avec la factory pour la diversité
-        Category::factory()->count(5)->principale()->create();
-        
-        // Créer des sous-catégories aléatoires pour certaines catégories existantes
+        // Créer seulement 2 catégories supplémentaires avec la factory
+        Category::factory()->count(2)->principale()->create();
+
+        // Créer quelques sous-catégories aléatoires pour 2 catégories existantes
         $categoriesExistantes = Category::whereNull('category_id')->get();
-        foreach ($categoriesExistantes->take(3) as $categorie) {
-            Category::factory()->count(rand(2, 4))->sousCategorie($categorie->id)->create();
+        foreach ($categoriesExistantes->take(2) as $categorie) {
+            Category::factory()->count(rand(1, 2))->sousCategorie($categorie->id)->create();
         }
 
         $this->command->info('Categories créées avec succès !');
