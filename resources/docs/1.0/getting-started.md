@@ -308,9 +308,8 @@ Une fois ces premiers pas maîtrisés, vous pourrez :
 
 ### Configuration initiale
 - [ ] Créer votre premier client
-- [ ] Créer votre premier produit dans le catalogue
 - [ ] Créer votre premier chantier
-- [ ] Créer votre premier devis avec des produits du catalogue
+- [ ] Créer votre premier devis
 - [ ] Ajouter votre premier employé avec UUID/matricule
 - [ ] **🆕 Configurer les informations bancaires avec validation IBAN**
 - [ ] **🆕 Tester la signature électronique avec un contrat simple**

@@ -43,14 +43,6 @@ Ce module s'intègre parfaitement avec les autres modules de Batistack, notammen
 - **Enregistrement des dépenses** : Saisissez les dépenses par type (matériel, main d'œuvre, sous-traitance, transport).
 - **Justificatifs** : Attachez des pièces justificatives aux dépenses.
 - **Catégorisation** : Classez les dépenses pour faciliter l'analyse financière.
-- **Liaison avec les produits** : Associez les achats aux produits du catalogue pour un suivi précis des consommations.
-
-### Gestion des matériaux et services
-
-- **Catalogue intégré** : Accès direct au catalogue de produits et services depuis le chantier.
-- **Consommations** : Suivi des quantités de matériaux utilisées par chantier.
-- **Coûts réels** : Calcul automatique des coûts basé sur les tarifs fournisseurs.
-- **Facturation** : Utilisation des tarifs clients pour l'établissement des devis et factures.
 
 ### Galerie photo
 

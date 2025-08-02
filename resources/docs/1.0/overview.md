@@ -77,7 +77,6 @@ Cette documentation est organisée pour vous accompagner dans :
 - [Module Chantiers](./chantiers) : Gestion complète de vos projets
 - [Module RH](./hr) : Ressources humaines et paie avec les dernières nouveautés
 - [Module Produits & Services](./produits) : Catalogue et tarification
-- [Module Commerce](./commerce) : Devis, commandes, factures et paiements
 - [Module Tiers](./tiers) : Gestion des clients et fournisseurs
 - [Portail Salarié](./portail-salarie) : Guide pour vos employés avec les nouvelles fonctionnalités
 

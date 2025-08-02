@@ -117,12 +117,6 @@ Le module Paramètres de Batistack vous permet de personnaliser et configurer vo
 - **Calendrier** : Configuration des jours ouvrés et fériés
 - **Absences** : Types d'absences et règles de gestion
 
-### Module Produits & Services
-- **Catégories par défaut** : Configuration des catégories de base
-- **Unités de mesure** : Paramétrage des unités et conversions
-- **Tarification** : Règles de calcul des prix et marges
-- **Codes automatiques** : Configuration de la génération des références produits
-
 ### Module Commerce
 - **Modèles de documents** : Personnalisation des devis et factures
 - **Conditions de règlement** : Paramétrage des délais de paiement

@@ -7,8 +7,8 @@ namespace Database\Factories\Tiers;
 use App\Enums\Tiers\TiersNature;
 use App\Enums\Tiers\TiersType;
 use App\Models\Tiers\Tiers;
-use Arr;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 
 final class TiersFactory extends Factory
 {
@@ -25,9 +25,9 @@ final class TiersFactory extends Factory
             'nature' => $nature,
             'type' => $type,
             'code_tiers' => $nature === 'fournisseur' ? 'FOUR2026-'.random_int(1, 600) : 'CLT2026-'.random_int(1, 600),
-            'siren' => $this->faker->numerify('#########'), // 9 chiffres pour un SIREN valide
+            'siren' => $this->faker->randomNumber(14),
             'tva' => $tva,
-            'num_tva' => $tva ? $this->faker->numerify("FR###########") : null,
+            'num_tva' => $tva ? $this->faker->vat() : null,
         ];
     }
 }
