@@ -21,6 +21,9 @@ use App\Models\Commerce\FactureLigne;
 use App\Models\Commerce\FacturePaiement;
 use App\Models\Core\Company;
 use App\Models\Core\ModeReglement;
+use App\Models\Produit\Category;
+use App\Models\Produit\Entrepot;
+use App\Models\Produit\Produit;
 use App\Models\RH\Employe;
 use App\Models\RH\EmployeBank;
 use App\Models\RH\EmployeContrat;
@@ -36,10 +39,9 @@ use App\Models\Tiers\TiersContact;
 use App\Models\Tiers\TiersFournisseur;
 use App\Models\User;
 use Database\Seeders\Paie\ProfilPaieSeeder;
-use Database\Seeders\Produit\ProduitModuleSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
-use Str;
+use Illuminate\Support\Str;
 
 final class DatabaseSeeder extends Seeder
 {
@@ -527,10 +529,158 @@ final class DatabaseSeeder extends Seeder
     }
 
     /**
-     * Création des produits et services
+     * Création des produits
      */
     private function seedProduits(): void
     {
-        $this->call(ProduitModuleSeeder::class);
+        if (Produit::count() > 0) {
+            $this->command->warn('⚠️  Les produits existent déjà, passage...');
+            return;
+        }
+
+        $this->command->info('📦 Création des produits...');
+
+        // Créer d'abord les catégories et entrepôts si nécessaires
+        $this->ensureCategoriesAndEntrepots();
+
+        // Récupérer les catégories et entrepôts
+        $categories = Category::all();
+        $entrepots = Entrepot::all();
+
+        if ($categories->isEmpty() || $entrepots->isEmpty()) {
+            $this->command->warn('⚠️  Catégories ou entrepôts manquants, impossible de créer des produits');
+            return;
+        }
+
+        // Créer des produits spécifiques avec la factory en mode performance
+        $this->createSpecificProducts($categories, $entrepots);
+
+        // Créer des produits aléatoires par catégorie
+        $this->createRandomProducts($categories, $entrepots);
+
+        // Afficher les statistiques
+        $this->displayProductStats();
+    }
+
+    /**
+     * S'assurer que les catégories et entrepôts existent
+     */
+    private function ensureCategoriesAndEntrepots(): void
+    {
+        // Créer des catégories de base si elles n'existent pas
+        if (Category::count() === 0) {
+            $categories = [
+                ['name' => 'Gros Œuvre'],
+                ['name' => 'Plomberie'],
+                ['name' => 'Électricité'],
+                ['name' => 'Outillage'],
+                ['name' => 'Finitions'],
+            ];
+
+            foreach ($categories as $categoryData) {
+                Category::factory()->create($categoryData);
+            }
+            $this->command->info('✓ Catégories de base créées');
+        }
+
+        // Créer un entrepôt principal si aucun n'existe
+        if (Entrepot::count() === 0) {
+            Entrepot::factory()->create([
+                'name' => 'Entrepôt Principal',
+                'description' => 'Entrepôt principal de stockage',
+            ]);
+            $this->command->info('✓ Entrepôt principal créé');
+        }
+    }
+
+    /**
+     * Créer des produits spécifiques
+     */
+    private function createSpecificProducts($categories, $entrepots): void
+    {
+        $categorieGrosOeuvre = $categories->where('name', 'like', '%Gros%')->first();
+        $categoriePlomberie = $categories->where('name', 'like', '%Plomberie%')->first();
+        $categorieElectricite = $categories->where('name', 'like', '%Électricité%')->first();
+        $categorieOutillage = $categories->where('name', 'like', '%Outillage%')->first();
+        $entrepotPrincipal = $entrepots->where('name', 'like', '%Principal%')->first() ?? $entrepots->first();
+
+        // Utiliser la factory en mode performance pour créer des produits spécifiques
+        $produitsSpecifiques = [
+            [
+                'name' => 'Ciment Portland CEM II 32,5 - Sac 35kg',
+                'description' => 'Ciment Portland composé CEM II/A-LL 32,5 R conforme à la norme NF EN 197-1.',
+                'category_id' => $categorieGrosOeuvre?->id ?? $categories->random()->id,
+                'entrepot_id' => $entrepotPrincipal->id,
+            ],
+            [
+                'name' => 'Tube PVC évacuation Ø100 - Longueur 3m',
+                'description' => 'Tube PVC rigide pour évacuation eaux usées. Diamètre 100mm.',
+                'category_id' => $categoriePlomberie?->id ?? $categories->random()->id,
+                'entrepot_id' => $entrepotPrincipal->id,
+            ],
+            [
+                'name' => 'Câble électrique 3G2,5 - Couronne 100m',
+                'description' => 'Câble électrique souple 3x2,5mm² avec terre. Isolation PVC.',
+                'category_id' => $categorieElectricite?->id ?? $categories->random()->id,
+                'entrepot_id' => $entrepotPrincipal->id,
+            ],
+            [
+                'name' => 'Perceuse visseuse 18V Li-Ion',
+                'description' => 'Perceuse visseuse sans fil 18V avec batterie lithium-ion 2Ah.',
+                'category_id' => $categorieOutillage?->id ?? $categories->random()->id,
+                'entrepot_id' => $entrepotPrincipal->id,
+            ],
+        ];
+
+        foreach ($produitsSpecifiques as $produitData) {
+            Produit::factory()->performance()->create($produitData);
+        }
+
+        $this->command->info('✓ 4 produits spécifiques créés');
+    }
+
+    /**
+     * Créer des produits aléatoires
+     */
+    private function createRandomProducts($categories, $entrepots): void
+    {
+        $totalGeneres = 0;
+
+        // 2-3 produits par catégorie principale
+        $categoriesPrincipales = $categories->whereNull('category_id');
+        foreach ($categoriesPrincipales as $category) {
+            $nombreProduits = rand(2, 3);
+
+            Produit::factory()
+                ->performance()
+                ->count($nombreProduits)
+                ->create([
+                    'category_id' => $category->id,
+                    'entrepot_id' => $entrepots->random()->id,
+                ]);
+
+            $totalGeneres += $nombreProduits;
+        }
+
+        // Quelques produits spécialisés
+        $produitsSpecialises = [
+            Produit::factory()->performance()->count(3)->create(), // Matériaux
+            Produit::factory()->performance()->count(2)->create(), // Outillage
+            Produit::factory()->performance()->count(2)->create(), // Divers
+        ];
+
+        $totalSpecialises = 7; // 3 + 2 + 2
+        $totalGeneres += $totalSpecialises;
+
+        $this->command->info("✓ {$totalGeneres} produits aléatoires créés");
+    }
+
+    /**
+     * Afficher les statistiques des produits
+     */
+    private function displayProductStats(): void
+    {
+        $totalProduits = Produit::count();
+        $this->command->info("✓ {$totalProduits} produits créés au total");
     }
 }
