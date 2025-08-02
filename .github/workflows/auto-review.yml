@@ -2,34 +2,129 @@ name: Auto Review
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
 
 jobs:
   auto-review:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Auto Review
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
-            const { data: files } = await github.rest.pulls.listFiles({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            });
+            try {
+              const { data: files } = await github.rest.pulls.listFiles({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number
+              });
 
-            // Vérifications automatiques
-            const hasTests = files.some(f => f.filename.includes('test'));
-            const hasMigrations = files.some(f => f.filename.includes('migration'));
+              console.log(`Analyzing ${files.length} files in PR #${context.payload.pull_request.number}`);
 
-            if (!hasTests && files.length > 5) {
+              // Vérifications automatiques
+              const hasTests = files.some(f =>
+                f.filename.includes('test') ||
+                f.filename.includes('Test') ||
+                f.filename.includes('spec')
+              );
+
+              const hasMigrations = files.some(f =>
+                f.filename.includes('migration') ||
+                f.filename.includes('Migration')
+              );
+
+              const hasSeeder = files.some(f =>
+                f.filename.includes('seeder') ||
+                f.filename.includes('Seeder')
+              );
+
+              const hasPhpFiles = files.some(f => f.filename.endsWith('.php'));
+              const hasLargeChanges = files.some(f => f.changes > 100);
+
+              // Construire le message de review
+              let reviewBody = '';
+              let reviewEvent = 'COMMENT';
+              let needsAttention = false;
+
+              // Vérification des tests
+              if (!hasTests && files.length > 5 && hasPhpFiles) {
+                reviewBody += '⚠️ **Tests manquants** : Cette PR semble importante mais ne contient pas de tests.\n\n';
+                needsAttention = true;
+              }
+
+              // Vérification des migrations sans seeders
+              if (hasMigrations && !hasSeeder) {
+                reviewBody += '💡 **Suggestion** : Vous avez ajouté des migrations. Pensez à ajouter des seeders si nécessaire.\n\n';
+              }
+
+              // Vérification des gros changements
+              if (hasLargeChanges) {
+                reviewBody += '📏 **Gros changements détectés** : Certains fichiers ont plus de 100 lignes modifiées. Assurez-vous que la PR reste focalisée.\n\n';
+              }
+
+              // Statistiques
+              const phpFiles = files.filter(f => f.filename.endsWith('.php')).length;
+              const totalAdditions = files.reduce((sum, f) => sum + f.additions, 0);
+              const totalDeletions = files.reduce((sum, f) => sum + f.deletions, 0);
+
+              reviewBody += `📊 **Statistiques de la PR** :\n`;
+              reviewBody += `- ${files.length} fichier(s) modifié(s)\n`;
+              reviewBody += `- ${phpFiles} fichier(s) PHP\n`;
+              reviewBody += `- +${totalAdditions} / -${totalDeletions} lignes\n`;
+              reviewBody += `- Tests inclus : ${hasTests ? '✅' : '❌'}\n`;
+              reviewBody += `- Migrations : ${hasMigrations ? '✅' : '❌'}\n\n`;
+
+              // Conseils généraux
+              reviewBody += `💡 **Conseils** :\n`;
+              reviewBody += `- Vérifiez que votre code suit les standards PSR-12\n`;
+              reviewBody += `- Assurez-vous que les tests passent localement\n`;
+              reviewBody += `- Documentez les changements importants\n`;
+
+              // Déterminer le type de review
+              if (needsAttention && files.length > 10) {
+                reviewEvent = 'REQUEST_CHANGES';
+                reviewBody = '🔍 **Review automatique - Action requise**\n\n' + reviewBody;
+              } else if (needsAttention) {
+                reviewEvent = 'COMMENT';
+                reviewBody = '🤖 **Review automatique - Suggestions**\n\n' + reviewBody;
+              } else {
+                reviewEvent = 'COMMENT';
+                reviewBody = '🤖 **Review automatique - Tout semble bon !**\n\n' + reviewBody;
+                reviewBody += '\n✅ Aucun problème majeur détecté. Bon travail !';
+              }
+
+              // Créer la review
               await github.rest.pulls.createReview({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: context.issue.number,
-                body: '⚠️ Cette PR semble importante mais ne contient pas de tests.',
-                event: 'REQUEST_CHANGES'
+                pull_number: context.payload.pull_request.number,
+                body: reviewBody,
+                event: reviewEvent
+              });
+
+              console.log(`Review created with event: ${reviewEvent}`);
+
+            } catch (error) {
+              console.error('Error during auto-review:', error);
+
+              // Créer un commentaire d'erreur au lieu d'échouer
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: `🤖 **Erreur lors de la review automatique**\n\nUne erreur s'est produite lors de l'analyse automatique : ${error.message}`
               });
             }
