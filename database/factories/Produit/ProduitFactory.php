@@ -2,7 +2,11 @@
 
 namespace Database\Factories\Produit;
 
+use App\Enums\Produits\TypeProduit;
+use App\Enums\Produits\UniteMesure;
+use App\Enums\Produits\UnitePoids;
 use App\Models\Produit\Category;
+use App\Models\Produit\Entrepot;
 use App\Models\Produit\Produit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,16 +24,26 @@ class ProduitFactory extends Factory
      */
     public function definition(): array
     {
-        $type = $this->faker->randomElement(['produit', 'service']);
+        $type = 'produit';
+        $isPhysicalProduct = $type === 'produit';
 
         return [
-            'type' => $type,
             'reference' => $this->generateReference($type),
             'name' => $this->generateProductName($type),
             'achat' => $this->faker->boolean(90), // 90% disponibles à l'achat
             'vente' => $this->faker->boolean(95), // 95% disponibles à la vente
             'description' => $this->faker->optional(0.8)->paragraph(2),
+            'serial_number' => $isPhysicalProduct ? $this->faker->optional(0.3)->bothify('SN-####-????') : null,
+            'limit_stock' => $isPhysicalProduct ? $this->faker->randomFloat(2, 5, 50) : 0,
+            'optimal_stock' => $isPhysicalProduct ? $this->faker->randomFloat(2, 50, 200) : 0,
+            'poids_value' => $isPhysicalProduct ? $this->faker->randomFloat(2, 0.1, 100) : 0,
+            'poids_unite' => $isPhysicalProduct ? $this->faker->randomElement(UnitePoids::values()) : UnitePoids::KILOGRAMME->value,
+            'longueur' => $isPhysicalProduct ? $this->faker->randomFloat(2, 10, 5000) : 0,
+            'largeur' => $isPhysicalProduct ? $this->faker->randomFloat(2, 10, 3000) : 0,
+            'hauteur' => $isPhysicalProduct ? $this->faker->randomFloat(2, 5, 2000) : 0,
+            'llh_unite' => $isPhysicalProduct ? $this->faker->randomElement(UniteMesure::values()) : UniteMesure::MILLIMETRE->value,
             'category_id' => Category::factory(),
+            'entrepot_id' => Entrepot::factory(),
         ];
     }
 
@@ -227,12 +241,90 @@ class ProduitFactory extends Factory
     }
 
     /**
-     * Pour une catégorie spécifique
+     * Produit avec dimensions spécifiques
+     */
+    public function avecDimensions(?float $longueur = null, ?float $largeur = null, ?float $hauteur = null, ?UniteMesure $unite = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'longueur' => $longueur ?? $this->faker->randomFloat(2, 100, 3000),
+            'largeur' => $largeur ?? $this->faker->randomFloat(2, 100, 2000),
+            'hauteur' => $hauteur ?? $this->faker->randomFloat(2, 50, 1000),
+            'llh_unite' => ($unite ?? UniteMesure::MILLIMETRE)->value,
+        ]);
+    }
+
+    /**
+     * Produit avec poids spécifique
+     */
+    public function avecPoids(?float $poids = null, ?UnitePoids $unite = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'poids_value' => $poids ?? $this->faker->randomFloat(2, 0.5, 50),
+            'poids_unite' => ($unite ?? UnitePoids::KILOGRAMME)->value,
+        ]);
+    }
+
+    /**
+     * Produit avec gestion de stock
+     */
+    public function avecStock(?float $limitStock = null, ?float $optimalStock = null): static
+    {
+        $limit = $limitStock ?? $this->faker->randomFloat(2, 5, 30);
+        $optimal = $optimalStock ?? $this->faker->randomFloat(2, $limit + 10, $limit + 100);
+
+        return $this->state(fn (array $attributes) => [
+            'limit_stock' => $limit,
+            'optimal_stock' => $optimal,
+        ]);
+    }
+
+    /**
+     * Produit pour une catégorie spécifique
      */
     public function pourCategorie(int $categoryId): static
     {
         return $this->state(fn (array $attributes) => [
             'category_id' => $categoryId,
+        ]);
+    }
+
+    /**
+     * Produit pour un entrepôt spécifique
+     */
+    public function pourEntrepot(int $entrepotId): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'entrepot_id' => $entrepotId,
+        ]);
+    }
+
+    /**
+     * Produit de construction (matériaux lourds)
+     */
+    public function materiauConstruction(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'poids_value' => $this->faker->randomFloat(2, 10, 500),
+            'poids_unite' => UnitePoids::KILOGRAMME->value,
+            'longueur' => $this->faker->randomFloat(2, 500, 6000),
+            'largeur' => $this->faker->randomFloat(2, 200, 2500),
+            'hauteur' => $this->faker->randomFloat(2, 50, 500),
+            'llh_unite' => UniteMesure::MILLIMETRE->value,
+        ]);
+    }
+
+    /**
+     * Outillage léger
+     */
+    public function outillage(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'poids_value' => $this->faker->randomFloat(2, 0.1, 10),
+            'poids_unite' => UnitePoids::KILOGRAMME->value,
+            'longueur' => $this->faker->randomFloat(2, 50, 800),
+            'largeur' => $this->faker->randomFloat(2, 30, 300),
+            'hauteur' => $this->faker->randomFloat(2, 20, 200),
+            'llh_unite' => UniteMesure::MILLIMETRE->value,
         ]);
     }
 }
