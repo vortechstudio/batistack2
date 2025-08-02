@@ -34,6 +34,13 @@ jobs:
 
               console.log(`Analyzing ${files.length} files in PR #${context.payload.pull_request.number}`);
 
+              // Vérifier si c'est l'auteur de la PR qui exécute le workflow
+              const prAuthor = context.payload.pull_request.user.login;
+              const workflowActor = context.actor;
+              const isOwnPR = prAuthor === workflowActor;
+
+              console.log(`PR Author: ${prAuthor}, Workflow Actor: ${workflowActor}, Is Own PR: ${isOwnPR}`);
+
               // Vérifications automatiques
               const hasTests = files.some(f =>
                 f.filename.includes('test') ||
@@ -56,13 +63,13 @@ jobs:
 
               // Construire le message de review
               let reviewBody = '';
-              let reviewEvent = 'COMMENT';
-              let needsAttention = false;
+              let reviewEvent = 'COMMENT'; // Par défaut, toujours COMMENT
+              let hasIssues = false;
 
               // Vérification des tests
               if (!hasTests && files.length > 5 && hasPhpFiles) {
                 reviewBody += '⚠️ **Tests manquants** : Cette PR semble importante mais ne contient pas de tests.\n\n';
-                needsAttention = true;
+                hasIssues = true;
               }
 
               // Vérification des migrations sans seeders
@@ -93,29 +100,70 @@ jobs:
               reviewBody += `- Assurez-vous que les tests passent localement\n`;
               reviewBody += `- Documentez les changements importants\n`;
 
-              // Déterminer le type de review
-              if (needsAttention && files.length > 10) {
+              // Déterminer le type de review et le message
+              if (hasIssues && !isOwnPR && files.length > 10) {
+                // Seulement REQUEST_CHANGES si ce n'est pas sa propre PR et qu'il y a de vrais problèmes
                 reviewEvent = 'REQUEST_CHANGES';
                 reviewBody = '🔍 **Review automatique - Action requise**\n\n' + reviewBody;
-              } else if (needsAttention) {
+                reviewBody += '\n❌ **Des améliorations sont nécessaires avant la fusion.**';
+              } else if (hasIssues) {
+                // Sinon, juste un commentaire avec suggestions
                 reviewEvent = 'COMMENT';
                 reviewBody = '🤖 **Review automatique - Suggestions**\n\n' + reviewBody;
+                if (isOwnPR) {
+                  reviewBody += '\n💡 **Note** : Comme c\'est votre propre PR, voici quelques suggestions d\'amélioration.';
+                }
               } else {
                 reviewEvent = 'COMMENT';
                 reviewBody = '🤖 **Review automatique - Tout semble bon !**\n\n' + reviewBody;
                 reviewBody += '\n✅ Aucun problème majeur détecté. Bon travail !';
               }
 
-              // Créer la review
-              await github.rest.pulls.createReview({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
-                body: reviewBody,
-                event: reviewEvent
-              });
+              // Si c'est sa propre PR et qu'il y a des problèmes, créer un commentaire au lieu d'une review
+              if (isOwnPR && hasIssues && files.length > 10) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  body: `🤖 **Auto-analyse de votre PR**\n\n${reviewBody}\n\n⚠️ **Attention** : Cette PR nécessite des améliorations avant d'être fusionnée.`
+                });
+                console.log('Comment created instead of review for own PR');
+              } else {
+                // Créer la review normale
+                await github.rest.pulls.createReview({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: context.payload.pull_request.number,
+                  body: reviewBody,
+                  event: reviewEvent
+                });
+                console.log(`Review created with event: ${reviewEvent}`);
+              }
 
-              console.log(`Review created with event: ${reviewEvent}`);
+              // Ajouter des labels automatiques basés sur l'analyse
+              const labelsToAdd = [];
+
+              if (!hasTests && hasPhpFiles) {
+                labelsToAdd.push('needs-tests');
+              }
+
+              if (hasLargeChanges) {
+                labelsToAdd.push('large-changes');
+              }
+
+              if (hasMigrations) {
+                labelsToAdd.push('database-changes');
+              }
+
+              if (labelsToAdd.length > 0) {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  labels: labelsToAdd
+                });
+                console.log(`Labels added: ${labelsToAdd.join(', ')}`);
+              }
 
             } catch (error) {
               console.error('Error during auto-review:', error);
@@ -125,6 +173,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.pull_request.number,
-                body: `🤖 **Erreur lors de la review automatique**\n\nUne erreur s'est produite lors de l'analyse automatique : ${error.message}`
+                body: `🤖 **Erreur lors de la review automatique**\n\nUne erreur s'est produite lors de l'analyse automatique : ${error.message}\n\n*Cette erreur a été automatiquement rapportée.*`
               });
             }
