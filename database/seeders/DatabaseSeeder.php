@@ -38,7 +38,7 @@ use App\Models\User;
 use Database\Seeders\Paie\ProfilPaieSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
-use Str;
+use Illuminate\Support\Str;
 
 final class DatabaseSeeder extends Seeder
 {
@@ -61,6 +61,48 @@ final class DatabaseSeeder extends Seeder
         $this->command->info('✅ Seeding terminé avec succès !');
     }
 
+    public function seedProduits()
+    {
+        $this->command->info('📦 === SEEDING DES PRODUITS ET SERVICES ===');
+
+        // Vérifier si les données existent déjà
+        if (\App\Models\Produit\Category::count() > 0) {
+            $this->command->warn('⚠️  Les catégories existent déjà, passage...');
+
+            return;
+        }
+
+        // 1. Données de référence (catégories, entrepôts)
+        $this->command->info('📂 Création des données de référence...');
+        $this->call(Produit\CategorySeeder::class);
+        $this->call(Produit\EntrepotSeeder::class);
+
+        // 2. Produits et Services
+        $this->command->info('📦 Création des produits et services...');
+        $this->call(Produit\ProduitServiceSeeder::class);
+
+        // 3. Gestion des stocks
+        $this->command->info('📊 Création des stocks et mouvements...');
+        $this->call(Produit\StockSeeder::class);
+
+        // 4. Tarification
+        $this->command->info('💰 Création des tarifs...');
+        $this->call(Produit\TarifSeeder::class);
+
+        // Statistiques finales
+        $this->command->info('');
+        $this->command->info('📊 Résumé des données produits créées :');
+        $this->command->info('• Catégories : '.\App\Models\Produit\Category::count());
+        $this->command->info('• Entrepôts : '.\App\Models\Produit\Entrepot::count());
+        $this->command->info('• Produits : '.\App\Models\Produit\Produit::count());
+        $this->command->info('• Services : '.\App\Models\Produit\Service::count());
+        $this->command->info('• Stocks : '.\App\Models\Produit\ProduitStock::count());
+        $this->command->info('• Mouvements de stock : '.\App\Models\Produit\ProduitStockMvm::count());
+        $this->command->info('• Tarifs fournisseurs : '.\App\Models\Produit\TarifFournisseur::count());
+        $this->command->info('• Tarifs clients : '.\App\Models\Produit\TarifClient::count());
+        $this->command->info('✅ Module produits/services terminé avec succès !');
+    }
+
     /**
      * Seed des données de base (utilisateurs, entreprise, stockage)
      */
@@ -81,6 +123,7 @@ final class DatabaseSeeder extends Seeder
         $this->command->info('🏢 Seeding des données métier...');
 
         $this->seedTiers();
+        $this->seedProduits();
         $this->seedChantiers();
         $this->seedCommerce();
     }

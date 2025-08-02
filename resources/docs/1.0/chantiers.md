@@ -54,6 +54,7 @@ Ce module s'intègre parfaitement avec les autres modules de Batistack, notammen
 - **Lien avec les tiers** : Association des chantiers aux clients et fournisseurs.
 - **Documents commerciaux** : Création de devis, factures et avoirs directement depuis le chantier.
 - **Ressources humaines** : Synchronisation avec le module RH pour l'affectation du personnel.
+- **Produits & Services** : Utilisation du catalogue pour les achats, consommations et facturation des matériaux et services.
 
 ## Utilisation
 

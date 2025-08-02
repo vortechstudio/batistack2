@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Chantiers\Chantiers;
-use App\Models\Commerce\frais;
+use App\Models\Commerce\Frais;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-final class fraisFactory extends Factory
+final class FraisFactory extends Factory
 {
-    protected $model = frais::class;
+    protected $model = Frais::class;
 
     public function definition(): array
     {

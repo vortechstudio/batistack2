@@ -26,7 +26,7 @@ use Zap\Models\Concerns\HasSchedules;
 final class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasSchedules, InteractsWithMedia, Notifiable, Impersonate;
+    use HasFactory, HasSchedules, Impersonate, InteractsWithMedia, Notifiable;
 
     /**
      * The attributes that are mass assignable.

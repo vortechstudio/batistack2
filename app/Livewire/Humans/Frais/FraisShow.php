@@ -184,7 +184,7 @@ final class FraisShow extends Component implements HasActions, HasSchemas
                 $this->frais->marquerPayee($paiement->numero_paiement);
                 Notification::make()
                     ->success()
-                    ->title("Nouveau paiement de note de frais")
+                    ->title('Nouveau paiement de note de frais')
                     ->body("La note de frais n°{$this->frais->numero} a été payée.")
                     ->sendToDatabase($this->frais->employe->user);
             });
@@ -242,7 +242,6 @@ final class FraisShow extends Component implements HasActions, HasSchemas
                     ->sendToDatabase(Auth::user());
 
             });
-
 
     }
 

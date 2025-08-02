@@ -72,7 +72,8 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "exclude-from-classmap": ["/Livewire\\Mechanisms\\RenderComponent/"]
     },
     "autoload-dev": {
         "psr-4": {

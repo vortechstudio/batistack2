@@ -37,6 +37,15 @@ Optimisez vos relations clients avec :
 - **Gestion des paiements** : Suivez vos encaissements
 - **Relances automatiques** : Automatisez le recouvrement
 
+### 📦 **Produits & Services**
+Gérez votre catalogue avec :
+- **Catalogue unifié** : Matériaux, outillage, main d'œuvre, services
+- **Catégorisation avancée** : Organisation hiérarchique des produits
+- **Unités de mesure** : Gestion des conversions et unités dérivées
+- **Tarification flexible** : Prix fournisseurs et clients avec remises
+- **Types de produits** : 9 types différents (matériau, outillage, main d'œuvre, etc.)
+- **Intégration complète** : Liaison avec chantiers, devis et factures
+
 ### 🏢 **Gestion des Tiers**
 Centralisez vos contacts avec :
 - **Carnet d'adresses** : Clients et fournisseurs en un seul endroit
@@ -67,6 +76,7 @@ Cette documentation est organisée pour vous accompagner dans :
 ### 📚 **Guides par module**
 - [Module Chantiers](./chantiers) : Gestion complète de vos projets
 - [Module RH](./hr) : Ressources humaines et paie avec les dernières nouveautés
+- [Module Produits & Services](./produits) : Catalogue et tarification
 - [Module Tiers](./tiers) : Gestion des clients et fournisseurs
 - [Portail Salarié](./portail-salarie) : Guide pour vos employés avec les nouvelles fonctionnalités
 
