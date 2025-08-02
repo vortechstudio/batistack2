@@ -24,12 +24,11 @@ class ProduitFactory extends Factory
      */
     public function definition(): array
     {
-        $type = 'produit';
-        $isPhysicalProduct = $type === 'produit';
+        $isPhysicalProduct = true; // Par défaut, on considère que c'est un produit physique
 
         return [
-            'reference' => $this->generateReference($type),
-            'name' => $this->generateProductName($type),
+            'reference' => $this->generateUniqueReference('produit'),
+            'name' => $this->generateProductName('produit'),
             'achat' => $this->faker->boolean(90), // 90% disponibles à l'achat
             'vente' => $this->faker->boolean(95), // 95% disponibles à la vente
             'description' => $this->faker->optional(0.8)->paragraph(2),
@@ -48,14 +47,18 @@ class ProduitFactory extends Factory
     }
 
     /**
-     * Génère une référence unique
+     * Génère une référence unique en vérifiant la base de données
      */
-    private function generateReference(string $type): string
+    private function generateUniqueReference(string $type): string
     {
         $prefix = $type === 'service' ? 'SRV' : 'PRD';
-        $number = str_pad($this->faker->unique()->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
 
-        return $prefix . '-' . $number;
+        do {
+            $number = str_pad($this->faker->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
+            $reference = $prefix . '-' . $number;
+        } while (Produit::where('reference', $reference)->exists());
+
+        return $reference;
     }
 
     /**
@@ -172,8 +175,7 @@ class ProduitFactory extends Factory
     public function produit(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'produit',
-            'reference' => $this->generateReference('produit'),
+            'reference' => $this->generateUniqueReference('produit'),
             'name' => $this->generateProductName('produit'),
         ]);
     }
@@ -184,9 +186,16 @@ class ProduitFactory extends Factory
     public function service(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'service',
-            'reference' => $this->generateReference('service'),
+            'reference' => $this->generateUniqueReference('service'),
             'name' => $this->generateProductName('service'),
+            // Pour les services, pas de dimensions ni poids
+            'serial_number' => null,
+            'limit_stock' => 0,
+            'optimal_stock' => 0,
+            'poids_value' => 0,
+            'longueur' => 0,
+            'largeur' => 0,
+            'hauteur' => 0,
         ]);
     }
 

@@ -10,5 +10,5 @@ class Entrepot extends Model
     /** @use HasFactory<\Database\Factories\Produit\EntrepotFactory> */
     use HasFactory;
     protected $guarded = [];
-    public $timestamp = false;
+    public $timestamps = false;
 }
