@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +18,7 @@ return new class extends Migration
             $table->string('ref_fournisseur')->unique();
             $table->decimal('qte_minimal')->default(1);
             $table->decimal('prix_unitaire')->default(0);
-            $table->integer('delai_livraison')->default(1); //En jours
+            $table->integer('delai_livraison')->default(1); // En jours
             $table->string('barrecode')->nullable()->unique();
 
             $table->foreignId('produit_id')->constrained()->cascadeOnDelete();

@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Produit;
 
 use App\Enums\Produits\TauxTVA;
 use App\Models\Produit\Produit;
 use App\Models\Produit\Service;
 use App\Models\Produit\TarifClient;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TarifClientSeeder extends Seeder
+final class TarifClientSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -24,6 +25,7 @@ class TarifClientSeeder extends Seeder
 
         if ($produits->isEmpty() && $services->isEmpty()) {
             $this->command->warn('Aucun produit ou service trouvé. Veuillez d\'abord exécuter ProduitSeeder et ServiceSeeder.');
+
             return;
         }
 
@@ -57,7 +59,7 @@ class TarifClientSeeder extends Seeder
         ];
 
         // Ajouter des tarifs pour services si ils existent
-        if (!$services->isEmpty()) {
+        if (! $services->isEmpty()) {
             $tarifsSpecifiques = array_merge($tarifsSpecifiques, [
                 [
                     'prix_unitaire' => 450.00,
@@ -84,7 +86,7 @@ class TarifClientSeeder extends Seeder
         // Créer des tarifs seulement pour quelques produits (50% au lieu de 80%)
         $totalTarifsGeneres = 0;
 
-        if (!$produits->isEmpty()) {
+        if (! $produits->isEmpty()) {
             $produitsAvecTarifs = $produits->take(ceil($produits->count() * 0.5));
             foreach ($produitsAvecTarifs as $produit) {
                 TarifClient::factory()
@@ -94,11 +96,11 @@ class TarifClientSeeder extends Seeder
                 $totalTarifsGeneres++;
             }
 
-            $this->command->info("📦 Tarifs générés pour " . $produitsAvecTarifs->count() . " produits");
+            $this->command->info('📦 Tarifs générés pour '.$produitsAvecTarifs->count().' produits');
         }
 
         // Créer des tarifs seulement pour quelques services (60% au lieu de 90%)
-        if (!$services->isEmpty()) {
+        if (! $services->isEmpty()) {
             $servicesAvecTarifs = $services->take(ceil($services->count() * 0.6));
             foreach ($servicesAvecTarifs as $service) {
                 TarifClient::factory()
@@ -108,7 +110,7 @@ class TarifClientSeeder extends Seeder
                 $totalTarifsGeneres++;
             }
 
-            $this->command->info("🔧 Tarifs générés pour " . $servicesAvecTarifs->count() . " services");
+            $this->command->info('🔧 Tarifs générés pour '.$servicesAvecTarifs->count().' services');
         }
 
         // Créer seulement quelques tarifs spécialisés
@@ -138,15 +140,15 @@ class TarifClientSeeder extends Seeder
         $tarifsTVAReduite = TarifClient::avecTauxTVA(TauxTVA::REDUIT_5_5->value)->count();
         $tarifsTVAIntermediaire = TarifClient::avecTauxTVA(TauxTVA::INTERMEDIAIRE->value)->count();
 
-        $this->command->info("📊 === STATISTIQUES TARIFS CLIENTS ===");
+        $this->command->info('📊 === STATISTIQUES TARIFS CLIENTS ===');
         $this->command->info("💰 Total tarifs créés : {$totalTarifs}");
         $this->command->info("📦 Tarifs produits : {$tarifsProduits}");
         $this->command->info("🔧 Tarifs services : {$tarifsServices}");
         $this->command->info("📊 TVA normale (20%) : {$tarifsTVANormale}");
         $this->command->info("🏠 TVA réduite (5,5%) : {$tarifsTVAReduite}");
         $this->command->info("🔨 TVA intermédiaire (10%) : {$tarifsTVAIntermediaire}");
-        $this->command->info("🔧 Tarifs spécifiques : " . count($tarifsSpecifiques));
+        $this->command->info('🔧 Tarifs spécifiques : '.count($tarifsSpecifiques));
         $this->command->info("🎲 Tarifs générés aléatoirement : {$totalTarifsGeneres}");
-        $this->command->info("✅ Seeding des tarifs clients terminé avec succès !");
+        $this->command->info('✅ Seeding des tarifs clients terminé avec succès !');
     }
 }

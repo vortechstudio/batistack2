@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Produit;
 
 use App\Models\Produit\Entrepot;
@@ -8,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Produit\Entrepot>
  */
-class EntrepotFactory extends Factory
+final class EntrepotFactory extends Factory
 {
     protected $model = Entrepot::class;
 
@@ -76,7 +78,7 @@ class EntrepotFactory extends Factory
     public function principal(): static
     {
         return $this->state(fn (array $attributes) => [
-            'name' => 'Entrepôt Principal ' . $this->faker->city(),
+            'name' => 'Entrepôt Principal '.$this->faker->city(),
             'description' => 'Entrepôt principal de stockage et distribution des matériaux de construction. Capacité de stockage importante avec zones spécialisées pour différents types de produits.',
             'address' => $this->faker->streetAddress(),
             'code_postal' => $this->faker->postcode(),
@@ -91,7 +93,7 @@ class EntrepotFactory extends Factory
     public function regional(): static
     {
         return $this->state(fn (array $attributes) => [
-            'name' => 'Dépôt Régional ' . $this->faker->city(),
+            'name' => 'Dépôt Régional '.$this->faker->city(),
             'description' => 'Entrepôt régional pour la distribution locale des produits les plus demandés.',
             'status' => true,
         ]);
@@ -112,8 +114,8 @@ class EntrepotFactory extends Factory
         ];
 
         return $this->state(fn (array $attributes) => [
-            'name' => 'Entrepôt Spécialisé ' . $this->faker->city(),
-            'description' => 'Entrepôt spécialisé dans : ' . $this->faker->randomElement($specialites),
+            'name' => 'Entrepôt Spécialisé '.$this->faker->city(),
+            'description' => 'Entrepôt spécialisé dans : '.$this->faker->randomElement($specialites),
             'status' => true,
         ]);
     }

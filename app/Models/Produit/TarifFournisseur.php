@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Produit;
 
-use App\Models\Produit\Produit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use InvalidArgumentException;
 
-class TarifFournisseur extends Model
+final class TarifFournisseur extends Model
 {
     /** @use HasFactory<\Database\Factories\Produit\TarifFournisseurFactory> */
     use HasFactory;
@@ -19,6 +21,16 @@ class TarifFournisseur extends Model
         'prix_unitaire' => 'decimal:2',
         'delai_livraison' => 'integer',
     ];
+
+    /**
+     * Génère une référence fournisseur unique
+     */
+    public static function generateRefFournisseur(string $prefix = 'REF'): string
+    {
+        $number = mb_str_pad(self::count() + 1, 8, '0', STR_PAD_LEFT);
+
+        return $prefix.'-'.$number;
+    }
 
     /**
      * Relation avec le produit
@@ -53,21 +65,12 @@ class TarifFournisseur extends Model
     }
 
     /**
-     * Génère une référence fournisseur unique
-     */
-    public static function generateRefFournisseur(string $prefix = 'REF'): string
-    {
-        $number = str_pad(static::count() + 1, 8, '0', STR_PAD_LEFT);
-        return $prefix . '-' . $number;
-    }
-
-    /**
      * Calcule le prix total pour une quantité donnée
      */
     public function calculerPrixTotal(float $quantite): float
     {
         if ($quantite < $this->qte_minimal) {
-            throw new \InvalidArgumentException("La quantité doit être supérieure ou égale à {$this->qte_minimal}");
+            throw new InvalidArgumentException("La quantité doit être supérieure ou égale à {$this->qte_minimal}");
         }
 
         return $this->prix_unitaire * $quantite;
@@ -87,10 +90,10 @@ class TarifFournisseur extends Model
     public function getDelaiFormateAttribute(): string
     {
         if ($this->delai_livraison <= 1) {
-            return $this->delai_livraison . ' jour';
+            return $this->delai_livraison.' jour';
         }
 
-        return $this->delai_livraison . ' jours';
+        return $this->delai_livraison.' jours';
     }
 
     /**
@@ -98,6 +101,6 @@ class TarifFournisseur extends Model
      */
     public function getPrixFormateAttribute(): string
     {
-        return number_format($this->prix_unitaire, 2, ',', ' ') . ' €';
+        return number_format($this->prix_unitaire, 2, ',', ' ').' €';
     }
 }

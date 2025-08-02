@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Produit;
 
 use App\Enums\Produits\TauxTVA;
@@ -11,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Produit\TarifClient>
  */
-class TarifClientFactory extends Factory
+final class TarifClientFactory extends Factory
 {
     protected $model = TarifClient::class;
 
@@ -29,7 +31,7 @@ class TarifClientFactory extends Factory
             'prix_unitaire' => $this->faker->randomFloat(2, 1, 1000),
             'taux_tva' => $this->faker->randomElement(TauxTVA::values()),
             'produit_id' => $isProduit ? Produit::factory() : null,
-            'service_id' => !$isProduit ? Service::factory() : null,
+            'service_id' => ! $isProduit ? Service::factory() : null,
         ];
     }
 

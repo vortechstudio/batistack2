@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Produit;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -7,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ProduitStock extends Model
+final class ProduitStock extends Model
 {
     /** @use HasFactory<\Database\Factories\Produit\ProduitStockFactory> */
     use HasFactory;
@@ -95,7 +97,7 @@ class ProduitStock extends Model
      */
     public function isSousSeuilLimite(): bool
     {
-        if (!$this->produit->limit_stock) {
+        if (! $this->produit->limit_stock) {
             return false;
         }
 
@@ -107,7 +109,7 @@ class ProduitStock extends Model
      */
     public function isSousSeuilOptimal(): bool
     {
-        if (!$this->produit->optimal_stock) {
+        if (! $this->produit->optimal_stock) {
             return false;
         }
 
@@ -139,7 +141,7 @@ class ProduitStock extends Model
      */
     public function getCouleurStatut(): string
     {
-        return match($this->getStatutStock()) {
+        return match ($this->getStatutStock()) {
             'rupture' => 'red',
             'critique' => 'amber',
             'faible' => 'blue',
@@ -152,6 +154,6 @@ class ProduitStock extends Model
      */
     public function getQuantiteFormateeAttribute(): string
     {
-        return number_format($this->quantite, 0, ',', ' ') . ' unités';
+        return number_format($this->quantite, 0, ',', ' ').' unités';
     }
 }

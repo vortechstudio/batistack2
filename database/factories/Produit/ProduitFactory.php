@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Produit;
 
-use App\Enums\Produits\TypeProduit;
 use App\Enums\Produits\UniteMesure;
 use App\Enums\Produits\UnitePoids;
 use App\Models\Produit\Category;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Produit\Produit>
  */
-class ProduitFactory extends Factory
+final class ProduitFactory extends Factory
 {
     protected $model = Produit::class;
 
@@ -44,129 +45,6 @@ class ProduitFactory extends Factory
             'category_id' => Category::factory(),
             'entrepot_id' => Entrepot::factory(),
         ];
-    }
-
-    /**
-     * Génère une référence unique en vérifiant la base de données
-     */
-    private function generateUniqueReference(string $type): string
-    {
-        $prefix = $type === 'service' ? 'SRV' : 'PRD';
-
-        do {
-            $number = str_pad($this->faker->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
-            $reference = $prefix . '-' . $number;
-        } while (Produit::where('reference', $reference)->exists());
-
-        return $reference;
-    }
-
-    /**
-     * Génère un nom de produit réaliste selon le type
-     */
-    private function generateProductName(string $type): string
-    {
-        if ($type === 'service') {
-            return $this->faker->randomElement([
-                'Installation plomberie',
-                'Pose carrelage',
-                'Peinture intérieure',
-                'Montage cloisons',
-                'Installation électrique',
-                'Pose parquet',
-                'Isolation combles',
-                'Maçonnerie générale',
-                'Couverture toiture',
-                'Terrassement',
-                'Démolition',
-                'Nettoyage chantier',
-                'Transport matériaux',
-                'Location échafaudage',
-                'Expertise technique',
-                'Formation sécurité',
-                'Maintenance équipements',
-                'Conseil technique',
-                'Étude de faisabilité',
-                'Suivi de chantier',
-            ]);
-        }
-
-        return $this->faker->randomElement([
-            // Gros œuvre
-            'Ciment Portland CEM II 32,5',
-            'Sable 0/4 lavé',
-            'Graviers 6/20',
-            'Parpaing 20x20x50',
-            'Brique rouge 5x10x22',
-            'Poutrelle béton précontraint',
-            'Fer à béton HA 10',
-            'Mortier colle carrelage',
-
-            // Plomberie
-            'Tube PVC évacuation Ø100',
-            'Raccord PVC coude 90°',
-            'Robinet mitigeur lavabo',
-            'Siphon lavabo chromé',
-            'Radiateur acier 600x1200',
-            'Chaudière gaz condensation',
-
-            // Électricité
-            'Câble électrique 3G2,5',
-            'Prise 2P+T Legrand',
-            'Interrupteur va-et-vient',
-            'Tableau électrique 3 rangées',
-            'Disjoncteur 20A',
-            'Spot LED encastrable',
-
-            // Menuiserie
-            'Porte intérieure 83x204',
-            'Fenêtre PVC 120x100',
-            'Volet roulant électrique',
-            'Parquet chêne massif 14mm',
-            'Lambris sapin du Nord',
-
-            // Carrelage
-            'Carrelage grès cérame 60x60',
-            'Faïence salle de bain 25x40',
-            'Joint carrelage gris',
-            'Colle carrelage C2',
-            'Baguette finition alu',
-
-            // Peinture
-            'Peinture acrylique blanc mat',
-            'Lasure bois chêne moyen',
-            'Enduit de lissage',
-            'Primaire d\'accrochage',
-            'Rouleau laqueur 180mm',
-
-            // Outillage
-            'Perceuse visseuse 18V',
-            'Scie circulaire 190mm',
-            'Niveau laser rotatif',
-            'Marteau perforateur SDS+',
-            'Meuleuse 125mm',
-
-            // Sécurité
-            'Casque de chantier blanc',
-            'Gants manutention',
-            'Chaussures sécurité S3',
-            'Harnais antichute',
-            'Lunettes protection',
-
-            // Toiture
-            'Tuile béton rouge',
-            'Ardoise naturelle 32x22',
-            'Gouttière PVC 125mm',
-            'Laine de verre 200mm',
-            'Écran sous-toiture',
-
-            // Quincaillerie
-            'Vis agglo 4x50 (boîte 200)',
-            'Cheville nylon 8x40',
-            'Boulon tête hexagonale M12',
-            'Serre-joint 120cm',
-            'Cadenas haute sécurité',
-        ]);
     }
 
     /**
@@ -334,6 +212,129 @@ class ProduitFactory extends Factory
             'largeur' => $this->faker->randomFloat(2, 30, 300),
             'hauteur' => $this->faker->randomFloat(2, 20, 200),
             'llh_unite' => UniteMesure::MILLIMETRE->value,
+        ]);
+    }
+
+    /**
+     * Génère une référence unique en vérifiant la base de données
+     */
+    private function generateUniqueReference(string $type): string
+    {
+        $prefix = $type === 'service' ? 'SRV' : 'PRD';
+
+        do {
+            $number = mb_str_pad($this->faker->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
+            $reference = $prefix.'-'.$number;
+        } while (Produit::where('reference', $reference)->exists());
+
+        return $reference;
+    }
+
+    /**
+     * Génère un nom de produit réaliste selon le type
+     */
+    private function generateProductName(string $type): string
+    {
+        if ($type === 'service') {
+            return $this->faker->randomElement([
+                'Installation plomberie',
+                'Pose carrelage',
+                'Peinture intérieure',
+                'Montage cloisons',
+                'Installation électrique',
+                'Pose parquet',
+                'Isolation combles',
+                'Maçonnerie générale',
+                'Couverture toiture',
+                'Terrassement',
+                'Démolition',
+                'Nettoyage chantier',
+                'Transport matériaux',
+                'Location échafaudage',
+                'Expertise technique',
+                'Formation sécurité',
+                'Maintenance équipements',
+                'Conseil technique',
+                'Étude de faisabilité',
+                'Suivi de chantier',
+            ]);
+        }
+
+        return $this->faker->randomElement([
+            // Gros œuvre
+            'Ciment Portland CEM II 32,5',
+            'Sable 0/4 lavé',
+            'Graviers 6/20',
+            'Parpaing 20x20x50',
+            'Brique rouge 5x10x22',
+            'Poutrelle béton précontraint',
+            'Fer à béton HA 10',
+            'Mortier colle carrelage',
+
+            // Plomberie
+            'Tube PVC évacuation Ø100',
+            'Raccord PVC coude 90°',
+            'Robinet mitigeur lavabo',
+            'Siphon lavabo chromé',
+            'Radiateur acier 600x1200',
+            'Chaudière gaz condensation',
+
+            // Électricité
+            'Câble électrique 3G2,5',
+            'Prise 2P+T Legrand',
+            'Interrupteur va-et-vient',
+            'Tableau électrique 3 rangées',
+            'Disjoncteur 20A',
+            'Spot LED encastrable',
+
+            // Menuiserie
+            'Porte intérieure 83x204',
+            'Fenêtre PVC 120x100',
+            'Volet roulant électrique',
+            'Parquet chêne massif 14mm',
+            'Lambris sapin du Nord',
+
+            // Carrelage
+            'Carrelage grès cérame 60x60',
+            'Faïence salle de bain 25x40',
+            'Joint carrelage gris',
+            'Colle carrelage C2',
+            'Baguette finition alu',
+
+            // Peinture
+            'Peinture acrylique blanc mat',
+            'Lasure bois chêne moyen',
+            'Enduit de lissage',
+            'Primaire d\'accrochage',
+            'Rouleau laqueur 180mm',
+
+            // Outillage
+            'Perceuse visseuse 18V',
+            'Scie circulaire 190mm',
+            'Niveau laser rotatif',
+            'Marteau perforateur SDS+',
+            'Meuleuse 125mm',
+
+            // Sécurité
+            'Casque de chantier blanc',
+            'Gants manutention',
+            'Chaussures sécurité S3',
+            'Harnais antichute',
+            'Lunettes protection',
+
+            // Toiture
+            'Tuile béton rouge',
+            'Ardoise naturelle 32x22',
+            'Gouttière PVC 125mm',
+            'Laine de verre 200mm',
+            'Écran sous-toiture',
+
+            // Quincaillerie
+            'Vis agglo 4x50 (boîte 200)',
+            'Cheville nylon 8x40',
+            'Boulon tête hexagonale M12',
+            'Serre-joint 120cm',
+            'Cadenas haute sécurité',
         ]);
     }
 }

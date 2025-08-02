@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Produit;
 
 use App\Models\Produit\Produit;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Produit\TarifFournisseur>
  */
-class TarifFournisseurFactory extends Factory
+final class TarifFournisseurFactory extends Factory
 {
     protected $model = TarifFournisseur::class;
 
@@ -28,18 +30,6 @@ class TarifFournisseurFactory extends Factory
             'barrecode' => $this->faker->optional(0.7)->ean13(),
             'produit_id' => Produit::factory(),
         ];
-    }
-
-    /**
-     * Génère une référence fournisseur unique
-     */
-    private function generateRefFournisseur(): string
-    {
-        $prefixes = ['REF', 'ART', 'SKU', 'PROD', 'MAT'];
-        $prefix = $this->faker->randomElement($prefixes);
-        $number = str_pad($this->faker->unique()->numberBetween(1, 99999999), 8, '0', STR_PAD_LEFT);
-
-        return $prefix . '-' . $number;
     }
 
     /**
@@ -142,5 +132,17 @@ class TarifFournisseurFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'barrecode' => null,
         ]);
+    }
+
+    /**
+     * Génère une référence fournisseur unique
+     */
+    private function generateRefFournisseur(): string
+    {
+        $prefixes = ['REF', 'ART', 'SKU', 'PROD', 'MAT'];
+        $prefix = $this->faker->randomElement($prefixes);
+        $number = mb_str_pad($this->faker->unique()->numberBetween(1, 99999999), 8, '0', STR_PAD_LEFT);
+
+        return $prefix.'-'.$number;
     }
 }

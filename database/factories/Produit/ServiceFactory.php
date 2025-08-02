@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Produit;
 
 use App\Models\Produit\Category;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Produit\Service>
  */
-class ServiceFactory extends Factory
+final class ServiceFactory extends Factory
 {
     protected $model = Service::class;
 
@@ -26,73 +28,6 @@ class ServiceFactory extends Factory
             'description' => $this->faker->optional(0.9)->paragraph(3),
             'category_id' => Category::factory(),
         ];
-    }
-
-    /**
-     * Génère une référence unique
-     */
-    private function generateReference(): string
-    {
-        $number = str_pad($this->faker->unique()->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
-        return 'SRV-' . $number;
-    }
-
-    /**
-     * Génère un nom de service réaliste pour le BTP
-     */
-    private function generateServiceName(): string
-    {
-        return $this->faker->randomElement([
-            // Services de construction
-            'Installation plomberie complète',
-            'Pose carrelage au m²',
-            'Peinture intérieure et extérieure',
-            'Montage cloisons placo',
-            'Installation électrique résidentielle',
-            'Pose parquet et revêtements sols',
-            'Isolation thermique combles',
-            'Maçonnerie générale',
-            'Couverture et zinguerie',
-            'Terrassement et VRD',
-            'Démolition contrôlée',
-            'Nettoyage fin de chantier',
-
-            // Services spécialisés
-            'Étanchéité toiture terrasse',
-            'Installation chauffage central',
-            'Pose menuiseries extérieures',
-            'Ravalement de façade',
-            'Aménagement salle de bain',
-            'Installation cuisine équipée',
-            'Création escalier sur mesure',
-            'Pose velux et fenêtres de toit',
-
-            // Services techniques
-            'Diagnostic technique bâtiment',
-            'Étude de faisabilité',
-            'Maîtrise d\'œuvre',
-            'Coordination sécurité',
-            'Contrôle qualité travaux',
-            'Expertise sinistre',
-            'Formation sécurité chantier',
-            'Maintenance préventive',
-
-            // Services logistiques
-            'Transport matériaux',
-            'Location échafaudage',
-            'Livraison sur chantier',
-            'Évacuation gravats',
-            'Gardiennage chantier',
-            'Nettoyage quotidien',
-
-            // Services de finition
-            'Pose faïence et carrelage',
-            'Application enduits décoratifs',
-            'Installation domotique',
-            'Pose stores et volets',
-            'Aménagement espaces verts',
-            'Installation clôtures',
-        ]);
     }
 
     /**
@@ -162,8 +97,76 @@ class ServiceFactory extends Factory
     public function avecDescriptionComplete(): static
     {
         return $this->state(fn (array $attributes) => [
-            'description' => $this->faker->paragraphs(4, true) . "\n\nPrestations incluses :\n" .
-                "- " . implode("\n- ", $this->faker->sentences(5)),
+            'description' => $this->faker->paragraphs(4, true)."\n\nPrestations incluses :\n".
+                '- '.implode("\n- ", $this->faker->sentences(5)),
+        ]);
+    }
+
+    /**
+     * Génère une référence unique
+     */
+    private function generateReference(): string
+    {
+        $number = mb_str_pad($this->faker->unique()->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
+
+        return 'SRV-'.$number;
+    }
+
+    /**
+     * Génère un nom de service réaliste pour le BTP
+     */
+    private function generateServiceName(): string
+    {
+        return $this->faker->randomElement([
+            // Services de construction
+            'Installation plomberie complète',
+            'Pose carrelage au m²',
+            'Peinture intérieure et extérieure',
+            'Montage cloisons placo',
+            'Installation électrique résidentielle',
+            'Pose parquet et revêtements sols',
+            'Isolation thermique combles',
+            'Maçonnerie générale',
+            'Couverture et zinguerie',
+            'Terrassement et VRD',
+            'Démolition contrôlée',
+            'Nettoyage fin de chantier',
+
+            // Services spécialisés
+            'Étanchéité toiture terrasse',
+            'Installation chauffage central',
+            'Pose menuiseries extérieures',
+            'Ravalement de façade',
+            'Aménagement salle de bain',
+            'Installation cuisine équipée',
+            'Création escalier sur mesure',
+            'Pose velux et fenêtres de toit',
+
+            // Services techniques
+            'Diagnostic technique bâtiment',
+            'Étude de faisabilité',
+            'Maîtrise d\'œuvre',
+            'Coordination sécurité',
+            'Contrôle qualité travaux',
+            'Expertise sinistre',
+            'Formation sécurité chantier',
+            'Maintenance préventive',
+
+            // Services logistiques
+            'Transport matériaux',
+            'Location échafaudage',
+            'Livraison sur chantier',
+            'Évacuation gravats',
+            'Gardiennage chantier',
+            'Nettoyage quotidien',
+
+            // Services de finition
+            'Pose faïence et carrelage',
+            'Application enduits décoratifs',
+            'Installation domotique',
+            'Pose stores et volets',
+            'Aménagement espaces verts',
+            'Installation clôtures',
         ]);
     }
 }

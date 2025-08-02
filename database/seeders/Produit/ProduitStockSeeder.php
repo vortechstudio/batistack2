@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Produit;
 
 use App\Models\Produit\Entrepot;
 use App\Models\Produit\Produit;
 use App\Models\Produit\ProduitStock;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ProduitStockSeeder extends Seeder
+final class ProduitStockSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -23,11 +24,13 @@ class ProduitStockSeeder extends Seeder
 
         if ($produits->isEmpty()) {
             $this->command->warn('Aucun produit trouvé. Veuillez d\'abord exécuter ProduitSeeder.');
+
             return;
         }
 
         if ($entrepots->isEmpty()) {
             $this->command->warn('Aucun entrepôt trouvé. Veuillez d\'abord exécuter EntrepotSeeder.');
+
             return;
         }
 
@@ -45,7 +48,7 @@ class ProduitStockSeeder extends Seeder
                 // Déterminer le type de stock
                 $typeStock = $this->determinerTypeStock();
 
-                $stock = match($typeStock) {
+                $stock = match ($typeStock) {
                     'rupture' => ProduitStock::factory()
                         ->enRupture()
                         ->pourProduit($produit)
@@ -76,7 +79,7 @@ class ProduitStockSeeder extends Seeder
                 $totalStocks++;
 
                 // Compter par type
-                match($typeStock) {
+                match ($typeStock) {
                     'rupture' => $stocksEnRupture++,
                     'critique' => $stocksCritiques++,
                     default => $stocksNormaux++,
@@ -88,12 +91,12 @@ class ProduitStockSeeder extends Seeder
         $this->creerStocksSpecifiques();
 
         // Statistiques finales
-        $this->command->info("📊 Statistiques des stocks :");
+        $this->command->info('📊 Statistiques des stocks :');
         $this->command->info("📦 Total stocks créés : {$totalStocks}");
         $this->command->info("🔴 Stocks en rupture : {$stocksEnRupture}");
         $this->command->info("🟡 Stocks critiques : {$stocksCritiques}");
         $this->command->info("🟢 Stocks normaux/élevés : {$stocksNormaux}");
-        $this->command->info("✅ Seeding des stocks terminé avec succès !");
+        $this->command->info('✅ Seeding des stocks terminé avec succès !');
     }
 
     /**
@@ -103,7 +106,7 @@ class ProduitStockSeeder extends Seeder
     {
         $rand = rand(1, 100);
 
-        return match(true) {
+        return match (true) {
             $rand <= 5 => 'rupture',      // 5%
             $rand <= 15 => 'critique',    // 10%
             $rand <= 30 => 'faible',      // 15%
@@ -128,7 +131,7 @@ class ProduitStockSeeder extends Seeder
                 ->where('entrepot_id', $entrepotPrincipal->id)
                 ->exists();
 
-            if (!$stockExistant) {
+            if (! $stockExistant) {
                 // Stock élevé pour les 3 premiers produits
                 if ($produits->search($produit) < 3) {
                     ProduitStock::factory()

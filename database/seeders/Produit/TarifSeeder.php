@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Produit;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TarifSeeder extends Seeder
+final class TarifSeeder extends Seeder
 {
     /**
      * Run the database seeds.

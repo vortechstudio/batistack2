@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Produit;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Category extends Model
+final class Category extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
     public $timestamps = false;
+
+    protected $guarded = [];
 
     public function parent(): BelongsTo
     {

@@ -1,17 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Produit;
 
-use App\Enums\Produits\TypeProduit;
 use App\Enums\Produits\UniteMesure;
 use App\Enums\Produits\UnitePoids;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
 use App\Models\Produit\Produit;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ProduitSeeder extends Seeder
+final class ProduitSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -26,11 +26,13 @@ class ProduitSeeder extends Seeder
 
         if ($categories->isEmpty()) {
             $this->command->warn('Aucune catégorie trouvée. Veuillez d\'abord exécuter CategorySeeder.');
+
             return;
         }
 
         if ($entrepots->isEmpty()) {
             $this->command->warn('Aucun entrepôt trouvé. Veuillez d\'abord exécuter EntrepotSeeder.');
+
             return;
         }
 
@@ -164,13 +166,13 @@ class ProduitSeeder extends Seeder
         $produitsDisponiblesVente = Produit::disponibleVente()->count();
         $produitsAvecStock = Produit::where('limit_stock', '>', 0)->count();
 
-        $this->command->info("📊 === STATISTIQUES PRODUITS ===");
+        $this->command->info('📊 === STATISTIQUES PRODUITS ===');
         $this->command->info("📦 Total produits créés : {$totalProduits}");
         $this->command->info("🛒 Disponibles à l'achat : {$produitsDisponiblesAchat}");
         $this->command->info("💰 Disponibles à la vente : {$produitsDisponiblesVente}");
         $this->command->info("📊 Avec gestion de stock : {$produitsAvecStock}");
-        $this->command->info("🏗️ Produits spécifiques : " . count($produitsSpecifiques));
+        $this->command->info('🏗️ Produits spécifiques : '.count($produitsSpecifiques));
         $this->command->info("🎲 Produits générés aléatoirement : {$totalProduitsGeneres}");
-        $this->command->info("✅ Seeding des produits terminé avec succès !");
+        $this->command->info('✅ Seeding des produits terminé avec succès !');
     }
 }

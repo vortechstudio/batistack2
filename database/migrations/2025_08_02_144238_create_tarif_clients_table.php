@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,8 +16,8 @@ return new class extends Migration
         Schema::create('tarif_clients', function (Blueprint $table) {
             $table->id();
 
-            $table->decimal('prix_unitaire')->default(0); //Hors Taxe
-            $table->decimal('taux_tva')->default(0); //En pourcentage
+            $table->decimal('prix_unitaire')->default(0); // Hors Taxe
+            $table->decimal('taux_tva')->default(0); // En pourcentage
 
             $table->foreignId('produit_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('service_id')->nullable()->constrained()->cascadeOnDelete();

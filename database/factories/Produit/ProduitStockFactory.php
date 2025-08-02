@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Produit;
 
 use App\Models\Produit\Entrepot;
@@ -10,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Produit\ProduitStock>
  */
-class ProduitStockFactory extends Factory
+final class ProduitStockFactory extends Factory
 {
     protected $model = ProduitStock::class;
 

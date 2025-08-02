@@ -1,19 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Produit;
 
 use App\Models\Core\PlanComptable;
-use App\Models\Produit\Category;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Service extends Model
+final class Service extends Model
 {
     /** @use HasFactory<\Database\Factories\Produit\ServiceFactory> */
     use HasFactory;
 
     protected $guarded = [];
+
+    /**
+     * Génère une référence unique pour le service
+     */
+    public static function generateReference(): string
+    {
+        $prefix = 'SRV';
+        $number = mb_str_pad(self::count() + 1, 6, '0', STR_PAD_LEFT);
+
+        return $prefix.'-'.$number;
+    }
 
     /**
      * Relation avec la catégorie
@@ -29,17 +41,6 @@ class Service extends Model
     public function codeComptableVente(): BelongsTo
     {
         return $this->belongsTo(PlanComptable::class, 'code_comptable_vente');
-    }
-
-    /**
-     * Génère une référence unique pour le service
-     */
-    public static function generateReference(): string
-    {
-        $prefix = 'SRV';
-        $number = str_pad(static::count() + 1, 6, '0', STR_PAD_LEFT);
-
-        return $prefix . '-' . $number;
     }
 
     /**

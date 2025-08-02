@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Produits;
 
 enum UnitePoids: string
@@ -9,9 +11,19 @@ enum UnitePoids: string
     case KILOGRAMME = 'kg';
     case TONNE = 't';
 
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
+
+    public static function default(): self
+    {
+        return self::KILOGRAMME;
+    }
+
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::MILLIGRAMME => 'Milligramme (mg)',
             self::GRAMME => 'Gramme (g)',
             self::KILOGRAMME => 'Kilogramme (kg)',
@@ -22,15 +34,5 @@ enum UnitePoids: string
     public function symbol(): string
     {
         return $this->value;
-    }
-
-    public static function values(): array
-    {
-        return array_column(self::cases(), 'value');
-    }
-
-    public static function default(): self
-    {
-        return self::KILOGRAMME;
     }
 }

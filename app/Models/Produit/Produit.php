@@ -1,18 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Produit;
 
-use App\Enums\Produits\TypeProduit;
 use App\Enums\Produits\UniteMesure;
 use App\Enums\Produits\UnitePoids;
 use App\Models\Core\PlanComptable;
-use App\Models\Produit\Category;
-use App\Models\Produit\Entrepot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Produit extends Model
+final class Produit extends Model
 {
     /** @use HasFactory<\Database\Factories\Produit\ProduitFactory> */
     use HasFactory;
@@ -31,6 +30,17 @@ class Produit extends Model
         'hauteur' => 'decimal:2',
         'llh_unite' => UniteMesure::class,
     ];
+
+    /**
+     * Génère une référence unique pour le produit
+     */
+    public static function generateReference(): string
+    {
+        $prefix = 'PRD';
+        $number = mb_str_pad(self::count() + 1, 6, '0', STR_PAD_LEFT);
+
+        return $prefix.'-'.$number;
+    }
 
     /**
      * Relation avec la catégorie
@@ -81,17 +91,6 @@ class Produit extends Model
     }
 
     /**
-     * Génère une référence unique pour le produit
-     */
-    public static function generateReference(): string
-    {
-        $prefix = "PRD";
-        $number = str_pad(static::count() + 1, 6, '0', STR_PAD_LEFT);
-
-        return $prefix . '-' . $number;
-    }
-
-    /**
      * Vérifie si le produit est disponible à l'achat
      */
     public function isDisponibleAchat(): bool
@@ -128,7 +127,7 @@ class Produit extends Model
      */
     public function getPoidsFormateAttribute(): string
     {
-        return $this->poids_value . ' ' . $this->poids_unite->symbol();
+        return $this->poids_value.' '.$this->poids_unite->symbol();
     }
 
     /**
@@ -136,7 +135,7 @@ class Produit extends Model
      */
     public function getDimensionsFormateesAttribute(): string
     {
-        if ($this->longueur == 0 && $this->largeur == 0 && $this->hauteur == 0) {
+        if ($this->longueur === 0 && $this->largeur === 0 && $this->hauteur === 0) {
             return 'Non spécifié';
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Produits;
 
 enum TypeMouvementStock: string
@@ -8,11 +10,21 @@ enum TypeMouvementStock: string
     case SORTIE = 'sortie';
 
     /**
+     * Obtenir tous les types avec leurs labels
+     */
+    public static function getOptions(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn ($case) => [$case->value => $case->getLabel()])
+            ->toArray();
+    }
+
+    /**
      * Obtenir le libellé français du type de mouvement
      */
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ENTREE => 'Entrée',
             self::SORTIE => 'Sortie',
         };
@@ -23,7 +35,7 @@ enum TypeMouvementStock: string
      */
     public function getIcon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ENTREE => '📥',
             self::SORTIE => '📤',
         };
@@ -34,7 +46,7 @@ enum TypeMouvementStock: string
      */
     public function getColor(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ENTREE => 'success',
             self::SORTIE => 'warning',
         };
@@ -57,22 +69,12 @@ enum TypeMouvementStock: string
     }
 
     /**
-     * Obtenir tous les types avec leurs labels
-     */
-    public static function getOptions(): array
-    {
-        return collect(self::cases())
-            ->mapWithKeys(fn($case) => [$case->value => $case->getLabel()])
-            ->toArray();
-    }
-
-    /**
      * Obtenir le multiplicateur pour le calcul de stock
      * +1 pour les entrées, -1 pour les sorties
      */
     public function getMultiplier(): int
     {
-        return match($this) {
+        return match ($this) {
             self::ENTREE => 1,
             self::SORTIE => -1,
         };

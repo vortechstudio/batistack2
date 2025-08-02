@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Produit;
 
 use App\Models\Produit\Category;
 use App\Models\Produit\Service;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ServiceSeeder extends Seeder
+final class ServiceSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,6 +22,7 @@ class ServiceSeeder extends Seeder
 
         if ($categories->isEmpty()) {
             $this->command->warn('Aucune catégorie trouvée. Veuillez d\'abord exécuter CategorySeeder.');
+
             return;
         }
 
@@ -89,10 +91,10 @@ class ServiceSeeder extends Seeder
 
         // Statistiques finales
         $totalServices = Service::count();
-        $this->command->info("📊 === STATISTIQUES SERVICES ===");
+        $this->command->info('📊 === STATISTIQUES SERVICES ===');
         $this->command->info("📦 Total services créés : {$totalServices}");
-        $this->command->info("🔧 Services spécifiques : " . count($servicesSpecifiques));
+        $this->command->info('🔧 Services spécifiques : '.count($servicesSpecifiques));
         $this->command->info("🎲 Services générés aléatoirement : {$totalServicesGeneres}");
-        $this->command->info("✅ Seeding des services terminé avec succès !");
+        $this->command->info('✅ Seeding des services terminé avec succès !');
     }
 }

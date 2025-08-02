@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Produit;
 
-use App\Enums\Produits\TypeMouvementStock;
 use App\Models\Produit\ProduitStock;
 use App\Models\Produit\ProduitStockMvm;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ProduitStockMvmSeeder extends Seeder
+final class ProduitStockMvmSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -22,6 +22,7 @@ class ProduitStockMvmSeeder extends Seeder
 
         if ($stocks->isEmpty()) {
             $this->command->warn('Aucun stock trouvé. Veuillez d\'abord exécuter ProduitStockSeeder.');
+
             return;
         }
 
@@ -38,7 +39,7 @@ class ProduitStockMvmSeeder extends Seeder
                 // 60% d'entrées, 40% de sorties
                 $typeMovement = rand(1, 100) <= 60 ? 'entree' : 'sortie';
 
-                $mouvement = match($typeMovement) {
+                $mouvement = match ($typeMovement) {
                     'entree' => ProduitStockMvm::factory()
                         ->entree()
                         ->pourStock($stock)
@@ -74,12 +75,12 @@ class ProduitStockMvmSeeder extends Seeder
         $entreesFinales = ProduitStockMvm::entrees()->count();
         $sortiesFinales = ProduitStockMvm::sorties()->count();
 
-        $this->command->info("📊 Statistiques des mouvements :");
+        $this->command->info('📊 Statistiques des mouvements :');
         $this->command->info("📦 Total mouvements créés : {$totalFinal}");
         $this->command->info("📥 Entrées : {$entreesFinales}");
         $this->command->info("📤 Sorties : {$sortiesFinales}");
-        $this->command->info("📅 Mouvements récents (7 derniers jours) : " . ProduitStockMvm::recents()->count());
-        $this->command->info("✅ Seeding des mouvements terminé avec succès !");
+        $this->command->info('📅 Mouvements récents (7 derniers jours) : '.ProduitStockMvm::recents()->count());
+        $this->command->info('✅ Seeding des mouvements terminé avec succès !');
     }
 
     /**

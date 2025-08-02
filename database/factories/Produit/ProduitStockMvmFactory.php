@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\Produit;
 
 use App\Enums\Produits\TypeMouvementStock;
@@ -10,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Produit\ProduitStockMvm>
  */
-class ProduitStockMvmFactory extends Factory
+final class ProduitStockMvmFactory extends Factory
 {
     protected $model = ProduitStockMvm::class;
 
@@ -111,7 +113,7 @@ class ProduitStockMvmFactory extends Factory
      */
     private function generateReference(): string
     {
-        return 'MVM-' . strtoupper($this->faker->unique()->bothify('??###??'));
+        return 'MVM-'.mb_strtoupper($this->faker->unique()->bothify('??###??'));
     }
 
     /**

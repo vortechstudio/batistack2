@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Portail\Salarie\Frais;
 
 use App\Models\RH\NoteFrais;
@@ -9,7 +11,6 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
@@ -19,14 +20,15 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class FraisShow extends Component implements HasActions, HasSchemas
+final class FraisShow extends Component implements HasActions, HasSchemas
 {
     use InteractsWithActions, InteractsWithSchemas;
+
     public NoteFrais $frais;
 
     public function mount(int $id)
     {
-         $this->frais = NoteFrais::find($id);
+        $this->frais = NoteFrais::find($id);
     }
 
     public function editAction(): EditAction
@@ -59,7 +61,7 @@ class FraisShow extends Component implements HasActions, HasSchemas
                 $this->frais->refresh();
                 Notification::make()
                     ->info()
-                    ->title("Nouvelle soumission de note de frais")
+                    ->title('Nouvelle soumission de note de frais')
                     ->body("La note de frais n°{$this->frais->numero} a été soumise et est en attente de validation.")
                     ->sendToDatabase(User::find(1));
             });

@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Produit;
 
 use App\Models\Produit\Category;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CategorySeeder extends Seeder
+final class CategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -59,7 +60,7 @@ class CategorySeeder extends Seeder
         }
 
         $this->command->info('Categories créées avec succès !');
-        $this->command->info('Total catégories principales : ' . Category::whereNull('category_id')->count());
-        $this->command->info('Total sous-catégories : ' . Category::whereNotNull('category_id')->count());
+        $this->command->info('Total catégories principales : '.Category::whereNull('category_id')->count());
+        $this->command->info('Total sous-catégories : '.Category::whereNotNull('category_id')->count());
     }
 }

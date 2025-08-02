@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Produits;
 
 enum TauxTVA: string
@@ -9,22 +11,6 @@ enum TauxTVA: string
     case REDUIT_5_5 = '5.5';
     case INTERMEDIAIRE = '10.0';
     case NORMAL = '20.0';
-
-    public function label(): string
-    {
-        return match($this) {
-            self::ZERO => 'Exonéré (0%)',
-            self::REDUIT_2_1 => 'Taux réduit (2,1%)',
-            self::REDUIT_5_5 => 'Taux réduit (5,5%)',
-            self::INTERMEDIAIRE => 'Taux intermédiaire (10%)',
-            self::NORMAL => 'Taux normal (20%)',
-        };
-    }
-
-    public function percentage(): string
-    {
-        return $this->value . '%';
-    }
 
     public static function values(): array
     {
@@ -52,12 +38,28 @@ enum TauxTVA: string
         return self::INTERMEDIAIRE;
     }
 
+    public function label(): string
+    {
+        return match ($this) {
+            self::ZERO => 'Exonéré (0%)',
+            self::REDUIT_2_1 => 'Taux réduit (2,1%)',
+            self::REDUIT_5_5 => 'Taux réduit (5,5%)',
+            self::INTERMEDIAIRE => 'Taux intermédiaire (10%)',
+            self::NORMAL => 'Taux normal (20%)',
+        };
+    }
+
+    public function percentage(): string
+    {
+        return $this->value.'%';
+    }
+
     /**
      * Calcule le montant TTC à partir du montant HT
      */
     public function calculerTTC(float $montantHT): float
     {
-        return $montantHT * (1 + (float)$this->value / 100);
+        return $montantHT * (1 + (float) $this->value / 100);
     }
 
     /**
@@ -65,7 +67,7 @@ enum TauxTVA: string
      */
     public function calculerMontantTVA(float $montantHT): float
     {
-        return $montantHT * ((float)$this->value / 100);
+        return $montantHT * ((float) $this->value / 100);
     }
 
     /**
@@ -73,6 +75,6 @@ enum TauxTVA: string
      */
     public function getNumericValue(): float
     {
-        return (float)$this->value;
+        return (float) $this->value;
     }
 }

@@ -373,7 +373,7 @@ final class TableSalaries extends Component implements HasActions, HasSchemas, H
                     }),
 
                 Action::make('impersonate')
-                    ->tooltip("Ce connecte en tant que ce salarié")
+                    ->tooltip('Ce connecte en tant que ce salarié')
                     ->icon(Heroicon::Key)
                     ->iconButton()
                     ->url(fn (?Model $record) => route('impersonate', $record->user->id)),

@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Produit;
 
-use App\Enums\Produits\TauxTVA;
-use App\Models\Produit\Produit;
-use App\Models\Produit\Service;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TarifClient extends Model
+final class TarifClient extends Model
 {
     /** @use HasFactory<\Database\Factories\Produit\TarifClientFactory> */
     use HasFactory;
@@ -114,7 +113,7 @@ class TarifClient extends Model
      */
     public function isProduit(): bool
     {
-        return !is_null($this->produit_id) && is_null($this->service_id);
+        return ! is_null($this->produit_id) && is_null($this->service_id);
     }
 
     /**
@@ -122,7 +121,7 @@ class TarifClient extends Model
      */
     public function isService(): bool
     {
-        return !is_null($this->service_id) && is_null($this->produit_id);
+        return ! is_null($this->service_id) && is_null($this->produit_id);
     }
 
     /**
@@ -147,6 +146,7 @@ class TarifClient extends Model
     public function getNomElementAttribute(): string
     {
         $element = $this->element_tarife;
+
         return $element ? $element->name : 'Élément non défini';
     }
 
@@ -155,7 +155,7 @@ class TarifClient extends Model
      */
     public function getPrixHTFormateAttribute(): string
     {
-        return number_format($this->prix_unitaire, 2, ',', ' ') . ' € HT';
+        return number_format($this->prix_unitaire, 2, ',', ' ').' € HT';
     }
 
     /**
@@ -163,7 +163,7 @@ class TarifClient extends Model
      */
     public function getPrixTTCFormateAttribute(): string
     {
-        return number_format($this->prix_ttc, 2, ',', ' ') . ' € TTC';
+        return number_format($this->prix_ttc, 2, ',', ' ').' € TTC';
     }
 
     /**
@@ -171,6 +171,6 @@ class TarifClient extends Model
      */
     public function getTauxTVAFormateAttribute(): string
     {
-        return $this->taux_tva . '%';
+        return $this->taux_tva.'%';
     }
 }

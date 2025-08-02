@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Produit;
 
 use App\Enums\Produits\TypeMouvementStock;
@@ -7,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ProduitStockMvm extends Model
+final class ProduitStockMvm extends Model
 {
     /** @use HasFactory<\Database\Factories\Produit\ProduitStockMvmFactory> */
     use HasFactory;
@@ -18,6 +20,18 @@ class ProduitStockMvm extends Model
         'quantite' => 'integer',
         'type' => TypeMouvementStock::class,
     ];
+
+    /**
+     * Générer une référence unique
+     */
+    public static function generateReference(): string
+    {
+        do {
+            $reference = 'MVM-'.mb_strtoupper(uniqid());
+        } while (self::where('reference', $reference)->exists());
+
+        return $reference;
+    }
 
     /**
      * Relation avec le stock produit
@@ -129,19 +143,8 @@ class ProduitStockMvm extends Model
     public function getQuantiteFormateeAttribute(): string
     {
         $signe = $this->isEntree() ? '+' : '-';
-        return $signe . number_format($this->quantite, 0, ',', ' ');
-    }
 
-    /**
-     * Générer une référence unique
-     */
-    public static function generateReference(): string
-    {
-        do {
-            $reference = 'MVM-' . strtoupper(uniqid());
-        } while (self::where('reference', $reference)->exists());
-
-        return $reference;
+        return $signe.number_format($this->quantite, 0, ',', ' ');
     }
 
     /**
@@ -151,7 +154,7 @@ class ProduitStockMvm extends Model
     {
         parent::boot();
 
-        static::creating(function ($mouvement) {
+        self::creating(function ($mouvement) {
             if (empty($mouvement->reference)) {
                 $mouvement->reference = self::generateReference();
             }

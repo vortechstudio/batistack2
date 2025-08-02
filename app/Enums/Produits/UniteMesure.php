@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Produits;
 
 enum UniteMesure: string
@@ -10,9 +12,19 @@ enum UniteMesure: string
     case METRE = 'm';
     case MILLILITRE = 'ml';
 
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
+
+    public static function default(): self
+    {
+        return self::MILLIMETRE;
+    }
+
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::MILLIMETRE => 'Millimètre (mm)',
             self::CENTIMETRE => 'Centimètre (cm)',
             self::DECIMETRE => 'Décimètre (dm)',
@@ -24,15 +36,5 @@ enum UniteMesure: string
     public function symbol(): string
     {
         return $this->value;
-    }
-
-    public static function values(): array
-    {
-        return array_column(self::cases(), 'value');
-    }
-
-    public static function default(): self
-    {
-        return self::MILLIMETRE;
     }
 }

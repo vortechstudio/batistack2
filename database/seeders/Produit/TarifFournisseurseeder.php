@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Produit;
 
 use App\Models\Produit\Produit;
 use App\Models\Produit\TarifFournisseur;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TarifFournisseurSeeder extends Seeder
+final class TarifFournisseurSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,6 +22,7 @@ class TarifFournisseurSeeder extends Seeder
 
         if ($produits->isEmpty()) {
             $this->command->warn('Aucun produit trouvé. Veuillez d\'abord exécuter ProduitSeeder.');
+
             return;
         }
 
@@ -106,13 +108,13 @@ class TarifFournisseurSeeder extends Seeder
         $tarifsLivraisonRapide = TarifFournisseur::livraisonRapide(3)->count();
         $tarifsQuantiteFaible = TarifFournisseur::quantiteMinimaleFaible(5)->count();
 
-        $this->command->info("📊 === STATISTIQUES TARIFS FOURNISSEURS ===");
+        $this->command->info('📊 === STATISTIQUES TARIFS FOURNISSEURS ===');
         $this->command->info("💰 Total tarifs créés : {$totalTarifs}");
         $this->command->info("📊 Avec code-barres : {$tarifsAvecCodeBarre}");
         $this->command->info("🚚 Livraison rapide (≤3j) : {$tarifsLivraisonRapide}");
         $this->command->info("📦 Quantité minimale faible (≤5) : {$tarifsQuantiteFaible}");
-        $this->command->info("🔧 Tarifs spécifiques : " . count($tarifsSpecifiques));
+        $this->command->info('🔧 Tarifs spécifiques : '.count($tarifsSpecifiques));
         $this->command->info("🎲 Tarifs générés aléatoirement : {$totalTarifsGeneres}");
-        $this->command->info("✅ Seeding des tarifs fournisseurs terminé avec succès !");
+        $this->command->info('✅ Seeding des tarifs fournisseurs terminé avec succès !');
     }
 }

@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Produit;
 
 use App\Models\Produit\Entrepot;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class EntrepotSeeder extends Seeder
+final class EntrepotSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -75,8 +76,8 @@ class EntrepotSeeder extends Seeder
         Entrepot::factory()->count(3)->create();
 
         $this->command->info('Entrepôts créés avec succès !');
-        $this->command->info('Total entrepôts : ' . Entrepot::count());
-        $this->command->info('Entrepôts actifs : ' . Entrepot::where('status', true)->count());
-        $this->command->info('Entrepôts inactifs : ' . Entrepot::where('status', false)->count());
+        $this->command->info('Total entrepôts : '.Entrepot::count());
+        $this->command->info('Entrepôts actifs : '.Entrepot::where('status', true)->count());
+        $this->command->info('Entrepôts inactifs : '.Entrepot::where('status', false)->count());
     }
 }
