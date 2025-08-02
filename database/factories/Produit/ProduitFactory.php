@@ -223,7 +223,7 @@ final class ProduitFactory extends Factory
         $prefix = $type === 'service' ? 'SRV' : 'PRD';
 
         do {
-            $number = mb_str_pad($this->faker->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
+            $number = mb_str_pad((string) $this->faker->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
             $reference = $prefix.'-'.$number;
         } while (Produit::where('reference', $reference)->exists());
 

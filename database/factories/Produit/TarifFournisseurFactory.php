@@ -141,7 +141,7 @@ final class TarifFournisseurFactory extends Factory
     {
         $prefixes = ['REF', 'ART', 'SKU', 'PROD', 'MAT'];
         $prefix = $this->faker->randomElement($prefixes);
-        $number = mb_str_pad($this->faker->unique()->numberBetween(1, 99999999), 8, '0', STR_PAD_LEFT);
+        $number = mb_str_pad((string) $this->faker->unique()->numberBetween(1, 99999999), 8, '0', STR_PAD_LEFT);
 
         return $prefix.'-'.$number;
     }
