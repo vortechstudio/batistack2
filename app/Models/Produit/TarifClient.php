@@ -16,8 +16,8 @@ final class TarifClient extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'prix_unitaire' => 'decimal:2',
-        'taux_tva' => 'decimal:2',
+        'prix_unitaire' => 'float',
+        'taux_tva' => 'float',
     ];
 
     /**
@@ -73,7 +73,7 @@ final class TarifClient extends Model
      */
     public function getPrixTTCAttribute(): float
     {
-        return $this->prix_unitaire * (1 + $this->taux_tva / 100);
+        return round($this->prix_unitaire * (1 + $this->taux_tva / 100), 2);
     }
 
     /**
@@ -81,7 +81,7 @@ final class TarifClient extends Model
      */
     public function getMontantTVAAttribute(): float
     {
-        return $this->prix_unitaire * ($this->taux_tva / 100);
+        return round($this->prix_unitaire * ($this->taux_tva / 100), 2);
     }
 
     /**
@@ -89,7 +89,7 @@ final class TarifClient extends Model
      */
     public function calculerPrixTotalHT(float $quantite): float
     {
-        return $this->prix_unitaire * $quantite;
+        return round($this->prix_unitaire * $quantite, 2);
     }
 
     /**
@@ -97,7 +97,7 @@ final class TarifClient extends Model
      */
     public function calculerPrixTotalTTC(float $quantite): float
     {
-        return $this->calculerPrixTotalHT($quantite) * (1 + $this->taux_tva / 100);
+        return round($this->calculerPrixTotalHT($quantite) * (1 + $this->taux_tva / 100), 2);
     }
 
     /**
@@ -105,7 +105,7 @@ final class TarifClient extends Model
      */
     public function calculerMontantTotalTVA(float $quantite): float
     {
-        return $this->calculerPrixTotalHT($quantite) * ($this->taux_tva / 100);
+        return round($this->calculerPrixTotalHT($quantite) * ($this->taux_tva / 100), 2);
     }
 
     /**
@@ -155,7 +155,7 @@ final class TarifClient extends Model
      */
     public function getPrixHTFormateAttribute(): string
     {
-        return number_format($this->prix_unitaire, 2, ',', ' ').' € HT';
+        return number_format((float) $this->prix_unitaire, 2, ',', ' ').' € HT';
     }
 
     /**
@@ -171,6 +171,6 @@ final class TarifClient extends Model
      */
     public function getTauxTVAFormateAttribute(): string
     {
-        return $this->taux_tva.'%';
+        return number_format($this->taux_tva, 0).'%';
     }
 }

@@ -7,6 +7,7 @@ namespace App\Models\Produit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class Category extends Model
 {
@@ -18,6 +19,11 @@ final class Category extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo($this::class);
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Category::class, 'category_id');
     }
 }

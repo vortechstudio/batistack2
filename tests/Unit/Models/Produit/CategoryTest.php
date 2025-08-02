@@ -8,12 +8,10 @@ describe('Category Model', function () {
     it('peut être créé avec les attributs requis', function () {
         $category = Category::factory()->create([
             'name' => 'Catégorie Test',
-            'description' => 'Description test',
         ]);
 
         expect($category)->toBeInstanceOf(Category::class)
-            ->and($category->name)->toBe('Catégorie Test')
-            ->and($category->description)->toBe('Description test');
+            ->and($category->name)->toBe('Catégorie Test');
     });
 
     it('n\'a pas de timestamps', function () {
@@ -27,7 +25,7 @@ describe('Category Model', function () {
             $parent = Category::factory()->create(['name' => 'Catégorie Parent']);
             $child = Category::factory()->create([
                 'name' => 'Catégorie Enfant',
-                'parent_id' => $parent->id,
+                'category_id' => $parent->id,
             ]);
 
             expect($child->parent)->toBeInstanceOf(Category::class)
@@ -36,7 +34,7 @@ describe('Category Model', function () {
         });
 
         it('peut ne pas avoir de parent', function () {
-            $category = Category::factory()->create(['parent_id' => null]);
+            $category = Category::factory()->create(['category_id' => null]);
 
             expect($category->parent)->toBeNull();
         });

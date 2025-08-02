@@ -18,6 +18,10 @@ final class ProduitFactory extends Factory
 {
     protected $model = Produit::class;
 
+    private static int $referenceCounter = 0;
+    private static ?int $defaultCategoryId = null;
+    private static ?int $defaultEntrepotId = null;
+
     /**
      * Define the model's default state.
      *
@@ -335,6 +339,67 @@ final class ProduitFactory extends Factory
             'Boulon tête hexagonale M12',
             'Serre-joint 120cm',
             'Cadenas haute sécurité',
+        ]);
+    }
+
+    /**
+     * Réinitialise les compteurs (utile pour les tests)
+     */
+    public static function resetCounters(): void
+    {
+        self::$referenceCounter = 0;
+        self::$defaultCategoryId = null;
+        self::$defaultEntrepotId = null;
+    }
+
+    /**
+     * Génère une référence séquentielle (plus rapide que la vérification d'unicité)
+     */
+    private function generateSequentialReference(string $type): string
+    {
+        $prefix = $type === 'service' ? 'SRV' : 'PRD';
+        self::$referenceCounter++;
+
+        $number = mb_str_pad((string) self::$referenceCounter, 6, '0', STR_PAD_LEFT);
+
+        return $prefix.'-'.$number;
+    }
+
+    /**
+     * Obtient ou crée une catégorie par défaut pour les tests de performance
+     */
+    private function getOrCreateDefaultCategory(): int
+    {
+        if (self::$defaultCategoryId === null) {
+            $category = Category::factory()->create(['name' => 'Catégorie Test Performance']);
+            self::$defaultCategoryId = $category->id;
+        }
+
+        return self::$defaultCategoryId;
+    }
+
+    /**
+     * Obtient ou crée un entrepôt par défaut pour les tests de performance
+     */
+    private function getOrCreateDefaultEntrepot(): int
+    {
+        if (self::$defaultEntrepotId === null) {
+            $entrepot = Entrepot::factory()->create(['name' => 'Entrepôt Test Performance']);
+            self::$defaultEntrepotId = $entrepot->id;
+        }
+
+        return self::$defaultEntrepotId;
+    }
+
+    /**
+     * Mode performance pour les tests de performance (utilise des optimisations)
+     */
+    public function performance(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'reference' => $this->generateSequentialReference('produit'),
+            'category_id' => $this->getOrCreateDefaultCategory(),
+            'entrepot_id' => $this->getOrCreateDefaultEntrepot(),
         ]);
     }
 }
