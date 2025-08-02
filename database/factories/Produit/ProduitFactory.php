@@ -18,6 +18,10 @@ final class ProduitFactory extends Factory
 {
     protected $model = Produit::class;
 
+    private static int $referenceCounter = 0;
+    private static ?int $defaultCategoryId = null;
+    private static ?int $defaultEntrepotId = null;
+
     /**
      * Define the model's default state.
      *
@@ -28,7 +32,7 @@ final class ProduitFactory extends Factory
         $isPhysicalProduct = true; // Par défaut, on considère que c'est un produit physique
 
         return [
-            'reference' => $this->generateUniqueReference('produit'),
+            'reference' => $this->generateSequentialReference('produit'),
             'name' => $this->generateProductName('produit'),
             'achat' => $this->faker->boolean(90), // 90% disponibles à l'achat
             'vente' => $this->faker->boolean(95), // 95% disponibles à la vente
@@ -42,8 +46,8 @@ final class ProduitFactory extends Factory
             'largeur' => $isPhysicalProduct ? $this->faker->randomFloat(2, 10, 3000) : 0,
             'hauteur' => $isPhysicalProduct ? $this->faker->randomFloat(2, 5, 2000) : 0,
             'llh_unite' => $isPhysicalProduct ? $this->faker->randomElement(UniteMesure::values()) : UniteMesure::MILLIMETRE->value,
-            'category_id' => Category::factory(),
-            'entrepot_id' => Entrepot::factory(),
+            'category_id' => $this->getOrCreateDefaultCategory(),
+            'entrepot_id' => $this->getOrCreateDefaultEntrepot(),
         ];
     }
 
@@ -336,5 +340,54 @@ final class ProduitFactory extends Factory
             'Serre-joint 120cm',
             'Cadenas haute sécurité',
         ]);
+    }
+
+    /**
+     * Réinitialise les compteurs (utile pour les tests)
+     */
+    public static function resetCounters(): void
+    {
+        self::$referenceCounter = 0;
+        self::$defaultCategoryId = null;
+        self::$defaultEntrepotId = null;
+    }
+
+    /**
+     * Génère une référence séquentielle (plus rapide que la vérification d'unicité)
+     */
+    private function generateSequentialReference(string $type): string
+    {
+        $prefix = $type === 'service' ? 'SRV' : 'PRD';
+        self::$referenceCounter++;
+
+        $number = mb_str_pad((string) self::$referenceCounter, 6, '0', STR_PAD_LEFT);
+
+        return $prefix.'-'.$number;
+    }
+
+    /**
+     * Obtient ou crée une catégorie par défaut pour les tests de performance
+     */
+    private function getOrCreateDefaultCategory(): int
+    {
+        if (self::$defaultCategoryId === null) {
+            $category = Category::factory()->create(['name' => 'Catégorie Test Performance']);
+            self::$defaultCategoryId = $category->id;
+        }
+
+        return self::$defaultCategoryId;
+    }
+
+    /**
+     * Obtient ou crée un entrepôt par défaut pour les tests de performance
+     */
+    private function getOrCreateDefaultEntrepot(): int
+    {
+        if (self::$defaultEntrepotId === null) {
+            $entrepot = Entrepot::factory()->create(['name' => 'Entrepôt Test Performance']);
+            self::$defaultEntrepotId = $entrepot->id;
+        }
+
+        return self::$defaultEntrepotId;
     }
 }

@@ -16,7 +16,6 @@ beforeEach(function () {
         'vente' => true,
         'limit_stock' => 10.00,
         'optimal_stock' => 50.00,
-        'stock_actuel' => 25,
         'poids_value' => 2.5,
         'poids_unite' => UnitePoids::KILOGRAMME,
         'longueur' => 10.0,
@@ -94,17 +93,6 @@ describe('Produit Model', function () {
             expect($produitsVente)->toHaveCount(1)
                 ->and($produitsVente->first()->vente)->toBeTrue();
         });
-
-        it('filtre les produits avec stock faible', function () {
-            Produit::factory()->create([
-                'stock_actuel' => 5,
-                'limit_stock' => 10,
-            ]);
-
-            $produitsStockFaible = Produit::stockFaible()->get();
-
-            expect($produitsStockFaible)->toHaveCount(1);
-        });
     });
 
     describe('Méthodes métier', function () {
@@ -127,14 +115,6 @@ describe('Produit Model', function () {
 
             expect($this->produit->volume)->toBe($volumeAttendu);
         });
-
-        it('détecte un stock faible', function () {
-            $this->produit->update(['stock_actuel' => 5]);
-            expect($this->produit->isStockFaible())->toBeTrue();
-
-            $this->produit->update(['stock_actuel' => 15]);
-            expect($this->produit->isStockFaible())->toBeFalse();
-        });
     });
 
     describe('Attributs formatés', function () {
@@ -148,9 +128,9 @@ describe('Produit Model', function () {
 
         it('retourne "Non spécifié" pour des dimensions nulles', function () {
             $this->produit->update([
-                'longueur' => 0,
-                'largeur' => 0,
-                'hauteur' => 0,
+                'longueur' => 0.0,
+                'largeur' => 0.0,
+                'hauteur' => 0.0,
             ]);
 
             expect($this->produit->dimensions_formatees)->toBe('Non spécifié');

@@ -21,13 +21,13 @@ final class Produit extends Model
     protected $casts = [
         'achat' => 'boolean',
         'vente' => 'boolean',
-        'limit_stock' => 'decimal:2',
-        'optimal_stock' => 'decimal:2',
-        'poids_value' => 'decimal:2',
+        'limit_stock' => 'float',
+        'optimal_stock' => 'float',
+        'poids_value' => 'float',
         'poids_unite' => UnitePoids::class,
-        'longueur' => 'decimal:2',
-        'largeur' => 'decimal:2',
-        'hauteur' => 'decimal:2',
+        'longueur' => 'float',
+        'largeur' => 'float',
+        'hauteur' => 'float',
         'llh_unite' => UniteMesure::class,
     ];
 
@@ -37,7 +37,7 @@ final class Produit extends Model
     public static function generateReference(): string
     {
         $prefix = 'PRD';
-        $number = mb_str_pad(self::count() + 1, 6, '0', STR_PAD_LEFT);
+        $number = str_pad((string)(self::count() + 1), 6, '0', STR_PAD_LEFT);
 
         return $prefix.'-'.$number;
     }
@@ -83,14 +83,6 @@ final class Produit extends Model
     }
 
     /**
-     * Scope pour les produits avec stock faible
-     */
-    public function scopeStockFaible($query)
-    {
-        return $query->whereColumn('stock_actuel', '<=', 'limit_stock');
-    }
-
-    /**
      * Vérifie si le produit est disponible à l'achat
      */
     public function isDisponibleAchat(): bool
@@ -115,14 +107,6 @@ final class Produit extends Model
     }
 
     /**
-     * Vérifie si le stock est faible
-     */
-    public function isStockFaible(): bool
-    {
-        return $this->stock_actuel <= $this->limit_stock;
-    }
-
-    /**
      * Retourne le poids formaté avec l'unité
      */
     public function getPoidsFormateAttribute(): string
@@ -135,7 +119,7 @@ final class Produit extends Model
      */
     public function getDimensionsFormateesAttribute(): string
     {
-        if ($this->longueur === 0 && $this->largeur === 0 && $this->hauteur === 0) {
+        if ($this->longueur === 0.0 && $this->largeur === 0.0 && $this->hauteur === 0.0) {
             return 'Non spécifié';
         }
 

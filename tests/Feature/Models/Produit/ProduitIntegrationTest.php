@@ -17,6 +17,8 @@ describe('Intégration des modèles Produit', function () {
             'entrepot_id' => $this->entrepot->id,
             'limit_stock' => 10,
             'optimal_stock' => 50,
+            'achat' => true,
+            'vente' => true,
         ]);
     });
 
@@ -40,6 +42,7 @@ describe('Intégration des modèles Produit', function () {
     it('peut créer des tarifs pour un produit', function () {
         $tarif = TarifClient::factory()->create([
             'produit_id' => $this->produit->id,
+            'service_id' => null,
             'prix_unitaire' => 99.99,
             'taux_tva' => 20.0,
         ]);
@@ -55,17 +58,15 @@ describe('Intégration des modèles Produit', function () {
         Produit::factory()->create(['achat' => true, 'vente' => false]);
         Produit::factory()->create([
             'achat' => true,
-            'vente' => true,
-            'stock_actuel' => 5,
-            'limit_stock' => 10,
+            'vente' => false,
+            'limit_stock' => 5,
+            'optimal_stock' => 20,
         ]);
 
         $produitsAchat = Produit::disponibleAchat()->count();
         $produitsVente = Produit::disponibleVente()->count();
-        $produitsStockFaible = Produit::stockFaible()->count();
 
-        expect($produitsAchat)->toBe(2) // Le produit initial + celui avec achat=true
-            ->and($produitsVente)->toBe(2) // Le produit initial + celui avec vente=true
-            ->and($produitsStockFaible)->toBe(1); // Seulement celui avec stock_actuel=5
+        expect($produitsAchat)->toBe(3) // Le produit initial + 2 avec achat=true
+            ->and($produitsVente)->toBe(2); // Le produit initial + celui avec vente=true
     });
 });

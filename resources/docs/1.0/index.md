@@ -3,6 +3,7 @@
     - [Premiers Pas](/{{route}}/{{version}}/getting-started)
     - [Module Tiers](/{{route}}/{{version}}/tiers)
     - [Module Produits & Services](/{{route}}/{{version}}/produits)
+    - [Module Commerce](/{{route}}/{{version}}/commerce)
     - [Module Chantiers](/{{route}}/{{version}}/chantiers)
     - [Module RH](/{{route}}/{{version}}/hr)
     - [Portail Salarié](/{{route}}/{{version}}/portail-salarie)
