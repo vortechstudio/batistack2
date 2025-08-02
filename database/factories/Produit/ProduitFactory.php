@@ -32,7 +32,7 @@ final class ProduitFactory extends Factory
         $isPhysicalProduct = true; // Par défaut, on considère que c'est un produit physique
 
         return [
-            'reference' => $this->generateSequentialReference('produit'),
+            'reference' => $this->generateUniqueReference('produit'),
             'name' => $this->generateProductName('produit'),
             'achat' => $this->faker->boolean(90), // 90% disponibles à l'achat
             'vente' => $this->faker->boolean(95), // 95% disponibles à la vente
@@ -46,8 +46,8 @@ final class ProduitFactory extends Factory
             'largeur' => $isPhysicalProduct ? $this->faker->randomFloat(2, 10, 3000) : 0,
             'hauteur' => $isPhysicalProduct ? $this->faker->randomFloat(2, 5, 2000) : 0,
             'llh_unite' => $isPhysicalProduct ? $this->faker->randomElement(UniteMesure::values()) : UniteMesure::MILLIMETRE->value,
-            'category_id' => $this->getOrCreateDefaultCategory(),
-            'entrepot_id' => $this->getOrCreateDefaultEntrepot(),
+            'category_id' => Category::factory(),
+            'entrepot_id' => Entrepot::factory(),
         ];
     }
 
@@ -389,5 +389,17 @@ final class ProduitFactory extends Factory
         }
 
         return self::$defaultEntrepotId;
+    }
+
+    /**
+     * Mode performance pour les tests de performance (utilise des optimisations)
+     */
+    public function performance(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'reference' => $this->generateSequentialReference('produit'),
+            'category_id' => $this->getOrCreateDefaultCategory(),
+            'entrepot_id' => $this->getOrCreateDefaultEntrepot(),
+        ]);
     }
 }

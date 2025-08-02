@@ -16,6 +16,7 @@ final class ModeReglement extends Model
     {
         return [
             'bridgeable' => 'boolean',
+            'type_paiement' => 'array',
         ];
     }
 }

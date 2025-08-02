@@ -61,7 +61,7 @@ OPTIONS:
     --php-version VERSION   Version PHP à utiliser (défaut: 8.3)
 
 MODULES:
-    chantiers, rh, tiers, commerce, core
+    chantiers, rh, tiers, commerce, core, produit
 
 EXEMPLES:
     $0 --all                    # Tous les modules et toutes les vérifications
@@ -123,7 +123,7 @@ while [[ $# -gt 0 ]]; do
             PHP_VERSION="$2"
             shift 2
             ;;
-        chantiers|rh|tiers|commerce|core)
+        chantiers|rh|tiers|commerce|core|produit)
             MODULES+=("$1")
             shift
             ;;
@@ -209,6 +209,11 @@ detect_changed_modules() {
             if echo "$changed_files" | grep -E "(app/Models/Core/|app/Livewire/Core/|database/migrations/.*core|tests/.*Core)" > /dev/null; then
                 detected_modules+=("core")
                 log_success "Module Core détecté"
+            fi
+
+            if echo "$changed_files" | grep -E "(app/Models/Produit/|app/Livewire/Produit/|database/migrations/.*produit|tests/.*Produit)" > /dev/null; then
+                detected_modules+=("produit")
+                log_success "Module Produit détecté"
             fi
         else
             log_info "Aucun changement détecté"
@@ -641,9 +646,6 @@ main() {
 
     # Installation des dépendances
     install_dependencies
-
-    # Configuration de l'environnement
-    setup_test_environment
 
     # Variables de suivi des résultats
     local overall_success=true

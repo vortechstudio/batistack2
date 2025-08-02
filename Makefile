@@ -184,6 +184,10 @@ module-ci-core:
 	@echo "CI/CD pour le module Core...";
 	@bash scripts/module-ci.sh core
 
+module-ci-produit:
+	@echo "CI/CD pour le module Produit...";
+	@bash scripts/module-ci.sh produit	
+
 # Alias pour compatibilité
 ci-modules: module-ci
 ci-detect: module-ci-detect

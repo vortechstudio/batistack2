@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\RH\TypeContrat;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Livewire\Livewire;
 
 test("Accès à l'interface salariés pour nouveau salarié", function () {
     $this->actingAs($user = User::factory()->create());
