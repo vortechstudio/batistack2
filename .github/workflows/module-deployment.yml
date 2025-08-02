@@ -10,6 +10,7 @@ on:
       - 'app/Models/Tiers/**'
       - 'app/Models/Commerce/**'
       - 'app/Models/Core/**'
+      - 'app/Models/Produit/**'
       # Modules futurs (patterns génériques)
       - 'app/Models/**'
       - 'app/Livewire/**'
