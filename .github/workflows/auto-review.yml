@@ -33,6 +33,7 @@ jobs:
               });
 
               console.log(`Analyzing ${files.length} files in PR #${context.payload.pull_request.number}`);
+              console.log('Files in PR:', files.map(f => f.filename));
 
               // Vérifier si c'est l'auteur de la PR qui exécute le workflow
               const prAuthor = context.payload.pull_request.user.login;
@@ -41,40 +42,98 @@ jobs:
 
               console.log(`PR Author: ${prAuthor}, Workflow Actor: ${workflowActor}, Is Own PR: ${isOwnPR}`);
 
-              // Vérifications automatiques
-              const hasTests = files.some(f =>
-                f.filename.includes('test') ||
-                f.filename.includes('Test') ||
-                f.filename.includes('spec')
-              );
+              // Détection améliorée des tests
+              const hasTests = files.some(f => {
+                const filename = f.filename.toLowerCase();
+                return (
+                  filename.includes('/tests/') ||
+                  filename.includes('\\tests\\') ||
+                  filename.includes('test.php') ||
+                  filename.includes('_test.php') ||
+                  filename.endsWith('test.php') ||
+                  filename.includes('/test/') ||
+                  filename.includes('\\test\\') ||
+                  filename.includes('spec.php') ||
+                  (filename.includes('test') && filename.endsWith('.php'))
+                );
+              });
 
-              const hasMigrations = files.some(f =>
-                f.filename.includes('migration') ||
-                f.filename.includes('Migration')
-              );
+              // Détection améliorée des migrations
+              const hasMigrations = files.some(f => {
+                const filename = f.filename.toLowerCase();
+                return (
+                  filename.includes('/migrations/') ||
+                  filename.includes('\\migrations\\') ||
+                  filename.includes('migration.php') ||
+                  filename.includes('_migration.php') ||
+                  (filename.includes('database/migrations') && filename.endsWith('.php')) ||
+                  /\d{4}_\d{2}_\d{2}_\d{6}_.*\.php$/.test(filename) // Format Laravel migration
+                );
+              });
 
-              const hasSeeder = files.some(f =>
-                f.filename.includes('seeder') ||
-                f.filename.includes('Seeder')
-              );
+              // Détection améliorée des seeders
+              const hasSeeder = files.some(f => {
+                const filename = f.filename.toLowerCase();
+                return (
+                  filename.includes('/seeders/') ||
+                  filename.includes('\\seeders\\') ||
+                  filename.includes('seeder.php') ||
+                  filename.includes('_seeder.php') ||
+                  filename.endsWith('seeder.php') ||
+                  (filename.includes('database/seeders') && filename.endsWith('.php'))
+                );
+              });
+
+              // Détection des factories
+              const hasFactories = files.some(f => {
+                const filename = f.filename.toLowerCase();
+                return (
+                  filename.includes('/factories/') ||
+                  filename.includes('\\factories\\') ||
+                  filename.includes('factory.php') ||
+                  filename.includes('_factory.php') ||
+                  filename.endsWith('factory.php')
+                );
+              });
+
+              // Détection des modèles
+              const hasModels = files.some(f => {
+                const filename = f.filename.toLowerCase();
+                return (
+                  filename.includes('/models/') ||
+                  filename.includes('\\models\\') ||
+                  filename.includes('app/models') ||
+                  filename.includes('app\\models')
+                );
+              });
+
+              // Détection des contrôleurs
+              const hasControllers = files.some(f => {
+                const filename = f.filename.toLowerCase();
+                return (
+                  filename.includes('/controllers/') ||
+                  filename.includes('\\controllers\\') ||
+                  filename.includes('controller.php')
+                );
+              });
 
               const hasPhpFiles = files.some(f => f.filename.endsWith('.php'));
               const hasLargeChanges = files.some(f => f.changes > 100);
 
               // Construire le message de review
               let reviewBody = '';
-              let reviewEvent = 'COMMENT'; // Par défaut, toujours COMMENT
+              let reviewEvent = 'COMMENT';
               let hasIssues = false;
 
-              // Vérification des tests
-              if (!hasTests && files.length > 5 && hasPhpFiles) {
-                reviewBody += '⚠️ **Tests manquants** : Cette PR semble importante mais ne contient pas de tests.\n\n';
+              // Vérification des tests pour les changements importants
+              if (!hasTests && files.length > 3 && (hasModels || hasControllers) && hasPhpFiles) {
+                reviewBody += '⚠️ **Tests manquants** : Cette PR modifie des modèles ou contrôleurs mais ne contient pas de tests correspondants.\n\n';
                 hasIssues = true;
               }
 
               // Vérification des migrations sans seeders
-              if (hasMigrations && !hasSeeder) {
-                reviewBody += '💡 **Suggestion** : Vous avez ajouté des migrations. Pensez à ajouter des seeders si nécessaire.\n\n';
+              if (hasMigrations && !hasSeeder && !hasFactories) {
+                reviewBody += '💡 **Suggestion** : Vous avez ajouté des migrations. Pensez à ajouter des seeders ou factories pour les données de test.\n\n';
               }
 
               // Vérification des gros changements
@@ -82,7 +141,7 @@ jobs:
                 reviewBody += '📏 **Gros changements détectés** : Certains fichiers ont plus de 100 lignes modifiées. Assurez-vous que la PR reste focalisée.\n\n';
               }
 
-              // Statistiques
+              // Statistiques détaillées
               const phpFiles = files.filter(f => f.filename.endsWith('.php')).length;
               const totalAdditions = files.reduce((sum, f) => sum + f.additions, 0);
               const totalDeletions = files.reduce((sum, f) => sum + f.deletions, 0);
@@ -90,9 +149,24 @@ jobs:
               reviewBody += `📊 **Statistiques de la PR** :\n`;
               reviewBody += `- ${files.length} fichier(s) modifié(s)\n`;
               reviewBody += `- ${phpFiles} fichier(s) PHP\n`;
-              reviewBody += `- +${totalAdditions} / -${totalDeletions} lignes\n`;
+              reviewBody += `- +${totalAdditions} / -${totalDeletions} lignes\n\n`;
+
+              reviewBody += `🔍 **Analyse du contenu** :\n`;
               reviewBody += `- Tests inclus : ${hasTests ? '✅' : '❌'}\n`;
-              reviewBody += `- Migrations : ${hasMigrations ? '✅' : '❌'}\n\n`;
+              reviewBody += `- Migrations : ${hasMigrations ? '✅' : '❌'}\n`;
+              reviewBody += `- Seeders : ${hasSeeder ? '✅' : '❌'}\n`;
+              reviewBody += `- Factories : ${hasFactories ? '✅' : '❌'}\n`;
+              reviewBody += `- Modèles : ${hasModels ? '✅' : '❌'}\n`;
+              reviewBody += `- Contrôleurs : ${hasControllers ? '✅' : '❌'}\n\n`;
+
+              // Debug: Lister les fichiers pour diagnostic
+              if (files.length <= 10) {
+                reviewBody += `📁 **Fichiers modifiés** :\n`;
+                files.forEach(f => {
+                  reviewBody += `- \`${f.filename}\` (+${f.additions}/-${f.deletions})\n`;
+                });
+                reviewBody += '\n';
+              }
 
               // Conseils généraux
               reviewBody += `💡 **Conseils** :\n`;
@@ -102,12 +176,10 @@ jobs:
 
               // Déterminer le type de review et le message
               if (hasIssues && !isOwnPR && files.length > 10) {
-                // Seulement REQUEST_CHANGES si ce n'est pas sa propre PR et qu'il y a de vrais problèmes
                 reviewEvent = 'REQUEST_CHANGES';
                 reviewBody = '🔍 **Review automatique - Action requise**\n\n' + reviewBody;
                 reviewBody += '\n❌ **Des améliorations sont nécessaires avant la fusion.**';
               } else if (hasIssues) {
-                // Sinon, juste un commentaire avec suggestions
                 reviewEvent = 'COMMENT';
                 reviewBody = '🤖 **Review automatique - Suggestions**\n\n' + reviewBody;
                 if (isOwnPR) {
@@ -143,7 +215,7 @@ jobs:
               // Ajouter des labels automatiques basés sur l'analyse
               const labelsToAdd = [];
 
-              if (!hasTests && hasPhpFiles) {
+              if (!hasTests && hasPhpFiles && (hasModels || hasControllers)) {
                 labelsToAdd.push('needs-tests');
               }
 
@@ -153,6 +225,14 @@ jobs:
 
               if (hasMigrations) {
                 labelsToAdd.push('database-changes');
+              }
+
+              if (hasModels) {
+                labelsToAdd.push('models');
+              }
+
+              if (hasControllers) {
+                labelsToAdd.push('controllers');
               }
 
               if (labelsToAdd.length > 0) {
