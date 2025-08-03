@@ -15,7 +15,12 @@ class DashboardTableProduit extends TableWidget
     {
         return $table
             ->heading('Liste des produits')
-            ->query(fn (): Builder => Produit::query()->with(['tarifClient', 'stockPrincipal'])->limit(5))
+            ->query(fn (): Builder => Produit::query()->with([
+                'tarifClient',
+                'stockPrincipal' => function ($query) {
+                    $query->with('produit'); // Charger la relation produit pour éviter les requêtes N+1 dans getStatutStock()
+                }
+            ])->limit(5))
             ->paginated(false)
             ->columns([
                 TextColumn::make('reference')
@@ -39,26 +44,42 @@ class DashboardTableProduit extends TableWidget
                         if (!$stock) {
                             return 'Aucun stock';
                         }
-                        return match($stock->getStatutStock()) {
-                            'rupture' => 'Rupture',
-                            'critique' => 'Critique',
-                            'faible' => 'Faible',
-                            'normal' => 'Normal',
-                            default => 'Inconnu'
-                        };
+
+                        // Utiliser les valeurs du produit directement pour éviter les requêtes N+1
+                        if ($stock->quantite <= 0) {
+                            return 'Rupture';
+                        }
+
+                        if ($record->limit_stock && $stock->quantite <= $record->limit_stock) {
+                            return 'Critique';
+                        }
+
+                        if ($record->optimal_stock && $stock->quantite <= $record->optimal_stock) {
+                            return 'Faible';
+                        }
+
+                        return 'Normal';
                     })
                     ->color(function (Produit $record): string {
                         $stock = $record->stockPrincipal;
                         if (!$stock) {
                             return 'gray';
                         }
-                        return match($stock->getStatutStock()) {
-                            'rupture' => 'danger',
-                            'critique' => 'warning',
-                            'faible' => 'info',
-                            'normal' => 'success',
-                            default => 'gray'
-                        };
+
+                        // Utiliser les valeurs du produit directement pour éviter les requêtes N+1
+                        if ($stock->quantite <= 0) {
+                            return 'danger';
+                        }
+
+                        if ($record->limit_stock && $stock->quantite <= $record->limit_stock) {
+                            return 'warning';
+                        }
+
+                        if ($record->optimal_stock && $stock->quantite <= $record->optimal_stock) {
+                            return 'info';
+                        }
+
+                        return 'success';
                     }),
             ])
             ->filters([

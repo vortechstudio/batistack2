@@ -78,11 +78,33 @@ final class Produit extends Model
         return $this->belongsTo(PlanComptable::class, 'code_comptable_vente');
     }
 
+    /**
+     * Relation avec les tarifs clients (plusieurs tarifs possibles)
+     */
+    public function tarifsClient(): HasMany
+    {
+        return $this->hasMany(TarifClient::class);
+    }
+
+    /**
+     * Relation avec le tarif client principal (premier tarif)
+     */
     public function tarifClient(): HasOne
     {
         return $this->hasOne(TarifClient::class);
     }
 
+    /**
+     * Relation avec les tarifs fournisseurs (plusieurs tarifs possibles)
+     */
+    public function tarifsFournisseur(): HasMany
+    {
+        return $this->hasMany(TarifFournisseur::class);
+    }
+
+    /**
+     * Relation avec le tarif fournisseur principal (premier tarif)
+     */
     public function tarifFournisseur(): HasOne
     {
         return $this->hasOne(TarifFournisseur::class);

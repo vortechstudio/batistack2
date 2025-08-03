@@ -35,17 +35,14 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
-use Spatie\LaravelPdf\Enums\Format;
-use Spatie\LaravelPdf\Enums\Orientation;
-use Spatie\LaravelPdf\Enums\Unit;
-use Spatie\LaravelPdf\Facades\Pdf;
-use Storage;
 
 class TableProduit extends Component implements HasActions, HasSchemas, HasTable
 {
@@ -54,7 +51,14 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Produit::query()->with(['category', 'entrepot', 'tarifClient', 'stockPrincipal']))
+            ->query(Produit::query()->with([
+                'category',
+                'entrepot',
+                'tarifClient',
+                'stockPrincipal' => function ($query) {
+                    $query->with('produit'); // Charger la relation produit pour éviter les requêtes N+1 dans getStatutStock()
+                }
+            ]))
             ->heading('Liste des produits')
             ->recordClasses(function (?Model $record) {
                 $stock = $record->stockPrincipal;
@@ -96,32 +100,61 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                         if (!$stock) {
                             return 'Aucun stock';
                         }
-                        return match($stock->getStatutStock()) {
-                            'rupture' => 'Rupture',
-                            'critique' => 'Critique',
-                            'faible' => 'Faible',
-                            'normal' => 'Normal',
-                            default => 'Inconnu'
-                        };
+
+                        // Utiliser les valeurs du produit directement pour éviter les requêtes N+1
+                        if ($stock->quantite <= 0) {
+                            return 'Rupture';
+                        }
+
+                        if ($record->limit_stock && $stock->quantite <= $record->limit_stock) {
+                            return 'Critique';
+                        }
+
+                        if ($record->optimal_stock && $stock->quantite <= $record->optimal_stock) {
+                            return 'Faible';
+                        }
+
+                        return 'Normal';
                     })
                     ->color(function (Produit $record): string {
                         $stock = $record->stockPrincipal;
                         if (!$stock) {
                             return 'gray';
                         }
-                        return match($stock->getStatutStock()) {
-                            'rupture' => 'danger',
-                            'critique' => 'warning',
-                            'faible' => 'info',
-                            'normal' => 'success',
-                            default => 'gray'
-                        };
+
+                        // Utiliser les valeurs du produit directement pour éviter les requêtes N+1
+                        if ($stock->quantite <= 0) {
+                            return 'danger';
+                        }
+
+                        if ($record->limit_stock && $stock->quantite <= $record->limit_stock) {
+                            return 'warning';
+                        }
+
+                        if ($record->optimal_stock && $stock->quantite <= $record->optimal_stock) {
+                            return 'info';
+                        }
+
+                        return 'success';
                     }),
             ])
             ->filters([
                 SelectFilter::make('category_id')
                     ->label('Catégorie')
                     ->options(Category::query()->pluck('name', 'id')),
+
+                Filter::make('reference')
+                    ->form([
+                        TextInput::make('reference')
+                            ->label('Référence')
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['reference'],
+                                fn (Builder $query, $reference): Builder => $query->where('reference', 'like', "%{$reference}%"),
+                            );
+                    }),
             ])
             ->headerActions([
                 CreateAction::make('create')
@@ -279,22 +312,7 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                         ])
                     ])
                     ->using(function (array $data) {
-                        try {
-                            app(NewProduct::class)->handle($data);
-
-                            Notification::make()
-                                ->title('Succès')
-                                ->body('Produit créé avec succès')
-                                ->success()
-                                ->send();
-                        } catch(Exception $ex) {
-                            Log::emergency($ex->getMessage());
-                            Notification::make()
-                                ->title('Erreur')
-                                ->body($ex->getMessage())
-                                ->danger()
-                                ->send();
-                        }
+                        return app(NewProduct::class)->handle($data);
                     }),
             ])
             ->toolbarActions([
