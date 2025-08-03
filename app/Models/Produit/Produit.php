@@ -10,6 +10,8 @@ use App\Models\Core\PlanComptable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 final class Produit extends Model
 {
@@ -66,6 +68,11 @@ final class Produit extends Model
         return $this->belongsTo(PlanComptable::class, 'code_comptable_vente');
     }
 
+    public function tarifClient(): HasOne
+    {
+        return $this->hasOne(TarifClient::class);
+    }
+
     /**
      * Scope pour les produits disponibles à l'achat
      */
@@ -112,6 +119,11 @@ final class Produit extends Model
     public function getPoidsFormateAttribute(): string
     {
         return $this->poids_value.' '.$this->poids_unite->symbol();
+    }
+
+    public function getPrixUnitaireTarifAttribute()
+    {
+        return $this->tarifClient->prix_unitaire ?? 0.0;
     }
 
     /**
