@@ -101,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    include("produit.php");
+    include 'produit.php';
 
     Route::prefix('portail')->group(function () {
         Route::prefix('salarie')->group(function () {

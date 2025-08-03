@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Produit\Components\Widgets;
 
 use App\Models\Produit\Produit;
 use Filament\Widgets\ChartWidget;
 
-class StatistiqueChart extends ChartWidget
+final class StatistiqueChart extends ChartWidget
 {
     protected ?string $heading = 'Statistiques des Produits';
 

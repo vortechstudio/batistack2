@@ -23,7 +23,7 @@ describe('NoteFraisPaiement Model', function () {
 
     test('peut créer un paiement', function () {
         // Créer un mode de règlement pour le test
-        $modeReglement = \App\Models\Core\ModeReglement::create([
+        $modeReglement = App\Models\Core\ModeReglement::create([
             'code' => 'VIR',
             'name' => 'Virement bancaire',
             'type_paiement' => json_encode(['client', 'fournisseur']),
@@ -31,7 +31,7 @@ describe('NoteFraisPaiement Model', function () {
         ]);
 
         // Créer un paiement pour la note de frais
-        $paiement = \App\Models\RH\NoteFraisPaiement::create([
+        $paiement = NoteFraisPaiement::create([
             'note_frais_id' => $this->noteFrais->id,
             'mode_reglement_id' => $modeReglement->id,
             'montant' => 150.75,
@@ -39,13 +39,13 @@ describe('NoteFraisPaiement Model', function () {
         ]);
 
         // Vérifications
-        expect($paiement)->toBeInstanceOf(\App\Models\RH\NoteFraisPaiement::class)
+        expect($paiement)->toBeInstanceOf(NoteFraisPaiement::class)
             ->and($paiement->note_frais_id)->toBe($this->noteFrais->id)
             ->and($paiement->mode_reglement_id)->toBe($modeReglement->id)
             ->and($paiement->montant)->toBe(150.75)
             ->and($paiement->numero_paiement)->toStartWith('PNF-'.date('Y').'-') // Vérifie le format auto-généré
-            ->and($paiement->noteFrais)->toBeInstanceOf(\App\Models\RH\NoteFrais::class)
-            ->and($paiement->modeReglement)->toBeInstanceOf(\App\Models\Core\ModeReglement::class)
+            ->and($paiement->noteFrais)->toBeInstanceOf(NoteFrais::class)
+            ->and($paiement->modeReglement)->toBeInstanceOf(App\Models\Core\ModeReglement::class)
             ->and($paiement->typePaiement)->toBe('Virement bancaire'); // Accessor
     });
 });

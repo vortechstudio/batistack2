@@ -45,8 +45,8 @@ describe('Performance des modèles Produit', function () {
         $produitsData = [];
         for ($i = 1; $i <= 1000; $i++) {
             $produitsData[] = [
-                'reference' => 'PRD-' . str_pad((string) $i, 6, '0', STR_PAD_LEFT),
-                'name' => 'Produit Test ' . $i,
+                'reference' => 'PRD-'.mb_str_pad((string) $i, 6, '0', STR_PAD_LEFT),
+                'name' => 'Produit Test '.$i,
                 'achat' => true,
                 'vente' => true,
                 'category_id' => $category->id,

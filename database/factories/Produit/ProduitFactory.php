@@ -19,8 +19,20 @@ final class ProduitFactory extends Factory
     protected $model = Produit::class;
 
     private static int $referenceCounter = 0;
+
     private static ?int $defaultCategoryId = null;
+
     private static ?int $defaultEntrepotId = null;
+
+    /**
+     * Réinitialise les compteurs (utile pour les tests)
+     */
+    public static function resetCounters(): void
+    {
+        self::$referenceCounter = 0;
+        self::$defaultCategoryId = null;
+        self::$defaultEntrepotId = null;
+    }
 
     /**
      * Define the model's default state.
@@ -220,6 +232,18 @@ final class ProduitFactory extends Factory
     }
 
     /**
+     * Mode performance pour les tests de performance (utilise des optimisations)
+     */
+    public function performance(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'reference' => $this->generateSequentialReference('produit'),
+            'category_id' => $this->getOrCreateDefaultCategory(),
+            'entrepot_id' => $this->getOrCreateDefaultEntrepot(),
+        ]);
+    }
+
+    /**
      * Génère une référence unique en vérifiant la base de données
      */
     private function generateUniqueReference(string $type): string
@@ -343,16 +367,6 @@ final class ProduitFactory extends Factory
     }
 
     /**
-     * Réinitialise les compteurs (utile pour les tests)
-     */
-    public static function resetCounters(): void
-    {
-        self::$referenceCounter = 0;
-        self::$defaultCategoryId = null;
-        self::$defaultEntrepotId = null;
-    }
-
-    /**
      * Génère une référence séquentielle (plus rapide que la vérification d'unicité)
      */
     private function generateSequentialReference(string $type): string
@@ -389,17 +403,5 @@ final class ProduitFactory extends Factory
         }
 
         return self::$defaultEntrepotId;
-    }
-
-    /**
-     * Mode performance pour les tests de performance (utilise des optimisations)
-     */
-    public function performance(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'reference' => $this->generateSequentialReference('produit'),
-            'category_id' => $this->getOrCreateDefaultCategory(),
-            'entrepot_id' => $this->getOrCreateDefaultEntrepot(),
-        ]);
     }
 }

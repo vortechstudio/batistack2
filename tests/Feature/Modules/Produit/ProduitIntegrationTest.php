@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use App\Livewire\Produit\Components\Table\TableProduit;
-use App\Models\Produit\Produit;
+use App\Models\Core\PlanComptable;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
+use App\Models\Produit\Produit;
+use App\Models\Produit\ProduitStock;
 use App\Models\Produit\TarifClient;
 use App\Models\Produit\TarifFournisseur;
-use App\Models\Produit\ProduitStock;
-use App\Models\Core\PlanComptable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -23,7 +23,7 @@ describe('Intégration complète du module Produits', function () {
             'type' => 'Revenus',
             'code' => '701',
             'account' => 'Ventes de marchandises',
-            'lettrage' => false
+            'lettrage' => false,
         ]);
     });
 
@@ -55,8 +55,8 @@ describe('Intégration complète du module Produits', function () {
             'tarifClient' => [
                 [
                     'prix_unitaire' => 99.99,
-                    'taux_tva' => 20.0
-                ]
+                    'taux_tva' => 20.0,
+                ],
             ],
             'tarifFournisseur' => [
                 [
@@ -64,19 +64,19 @@ describe('Intégration complète du module Produits', function () {
                     'qte_minimal' => 1,
                     'prix_unitaire' => 75.00,
                     'delai_livraison' => 7,
-                    'barrecode' => '1234567890123'
-                ]
+                    'barrecode' => '1234567890123',
+                ],
             ],
             'stockInitial' => [
                 [
                     'entrepot_id' => $this->entrepot->id,
-                    'quantite' => 100
-                ]
-            ]
+                    'quantite' => 100,
+                ],
+            ],
         ];
 
         // Appeler directement l'action NewProduct
-        $produit = app(\App\Actions\Produit\NewProduct::class)->handle($data);
+        $produit = app(App\Actions\Produit\NewProduct::class)->handle($data);
 
         // Vérifier la création du produit
         expect($produit)->not->toBeNull()
@@ -106,18 +106,18 @@ describe('Intégration complète du module Produits', function () {
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'limit_stock' => 10,    // Seuil limite
-            'optimal_stock' => 30   // Seuil optimal
+            'optimal_stock' => 30,   // Seuil optimal
         ]);
 
         TarifClient::factory()->create([
             'produit_id' => $produit->id,
-            'prix_unitaire' => 99.99
+            'prix_unitaire' => 99.99,
         ]);
 
         ProduitStock::factory()->create([
             'produit_id' => $produit->id,
             'entrepot_id' => $this->entrepot->id,
-            'quantite' => 50  // Supérieur à optimal_stock (30) = "Normal"
+            'quantite' => 50,  // Supérieur à optimal_stock (30) = "Normal"
         ]);
 
         // Vérifier l'affichage dans le widget tableau

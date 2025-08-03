@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use App\Livewire\Produit\Dashboard;
-use App\Models\Produit\Produit;
-use App\Models\Produit\Service;
-use App\Models\Produit\ProduitStock;
-use App\Models\Produit\TarifClient;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
+use App\Models\Produit\Produit;
+use App\Models\Produit\ProduitStock;
+use App\Models\Produit\Service;
+use App\Models\Produit\TarifClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -37,13 +37,13 @@ describe('Dashboard Produits', function () {
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'achat' => true,
-            'vente' => false
+            'vente' => false,
         ]);
         Produit::factory(3)->create([
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'achat' => false,
-            'vente' => true
+            'vente' => true,
         ]);
 
         Livewire::test('produit.components.widgets.dashboard-stat-overview')
@@ -61,19 +61,19 @@ describe('Dashboard Produits', function () {
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'achat' => true,
-            'vente' => false
+            'vente' => false,
         ]);
         Produit::factory(3)->create([
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'achat' => false,
-            'vente' => true
+            'vente' => true,
         ]);
         Produit::factory(1)->create([
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'achat' => true,
-            'vente' => true
+            'vente' => true,
         ]);
 
         // Test que le composant se charge correctement
@@ -98,7 +98,7 @@ describe('Dashboard Produits', function () {
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'limit_stock' => 10,
-            'optimal_stock' => 50
+            'optimal_stock' => 50,
         ]);
 
         // Créer un tarif client pour le produit
@@ -106,14 +106,14 @@ describe('Dashboard Produits', function () {
             'produit_id' => $produit->id,
             'service_id' => null,
             'prix_unitaire' => 99.99,
-            'taux_tva' => 20.0
+            'taux_tva' => 20.0,
         ]);
 
         // Créer un stock avec une quantité normale (supérieure au seuil optimal)
         ProduitStock::factory()->create([
             'produit_id' => $produit->id,
             'entrepot_id' => $this->entrepot->id,
-            'quantite' => 60 // Supérieur au stock optimal (50)
+            'quantite' => 60, // Supérieur au stock optimal (50)
         ]);
 
         Livewire::test('produit.components.widgets.dashboard-table-produit')

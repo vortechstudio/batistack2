@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Produit\Components\Table;
 
 use App\Actions\Produit\NewProduct;
@@ -11,7 +13,6 @@ use App\Models\Core\PlanComptable;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
 use App\Models\Produit\Produit;
-use Exception;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -24,7 +25,6 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard;
@@ -41,10 +41,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
-class TableProduit extends Component implements HasActions, HasSchemas, HasTable
+final class TableProduit extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
 
@@ -57,15 +56,16 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                 'tarifClient',
                 'stockPrincipal' => function ($query) {
                     $query->with('produit'); // Charger la relation produit pour éviter les requêtes N+1 dans getStatutStock()
-                }
+                },
             ]))
             ->heading('Liste des produits')
             ->recordClasses(function (?Model $record) {
                 $stock = $record->stockPrincipal;
-                if (!$stock) {
+                if (! $stock) {
                     return 'bg-gray-200';
                 }
-                return match($stock->getStatutStock()) {
+
+                return match ($stock->getStatutStock()) {
                     'rupture' => 'bg-red-200',
                     'critique' => 'bg-amber-200',
                     'faible' => 'bg-blue-200',
@@ -97,7 +97,7 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                     ->label('')
                     ->getStateUsing(function (Produit $record): string {
                         $stock = $record->stockPrincipal;
-                        if (!$stock) {
+                        if (! $stock) {
                             return 'Aucun stock';
                         }
 
@@ -118,7 +118,7 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                     })
                     ->color(function (Produit $record): string {
                         $stock = $record->stockPrincipal;
-                        if (!$stock) {
+                        if (! $stock) {
                             return 'gray';
                         }
 
@@ -146,7 +146,7 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                 Filter::make('reference')
                     ->form([
                         TextInput::make('reference')
-                            ->label('Référence')
+                            ->label('Référence'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -177,7 +177,7 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                                                 ->label("Disponible à l'achat"),
 
                                             Checkbox::make('vente')
-                                                ->label("Disponible à la vente"),
+                                                ->label('Disponible à la vente'),
                                         ]),
 
                                     Grid::make(3)
@@ -199,7 +199,7 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                                                         ->where('type', 'Revenus')
                                                         ->get()
                                                         ->mapWithKeys(function ($planComptable) {
-                                                            return [$planComptable->id => $planComptable->code . ' - ' . $planComptable->account];
+                                                            return [$planComptable->id => $planComptable->code.' - '.$planComptable->account];
                                                         })
                                                         ->toArray()
                                                 )
@@ -240,7 +240,7 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                                                         ->options(UniteMesure::getSelectOptions()),
                                                 ]),
                                         ]),
-                            ]),
+                                ]),
 
                             Step::make('Tarification')
                                 ->schema([
@@ -259,28 +259,28 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                                         ->columns(2),
 
                                     Repeater::make('tarifFournisseur')
-                                            ->label('Tarifs Fournisseur')
-                                            ->schema([
-                                                TextInput::make('ref_fournisseur')
-                                                    ->label('Référence')
-                                                    ->required(),
+                                        ->label('Tarifs Fournisseur')
+                                        ->schema([
+                                            TextInput::make('ref_fournisseur')
+                                                ->label('Référence')
+                                                ->required(),
 
-                                                TextInput::make('qte_minimal')
-                                                    ->label('Quantité minimal')
-                                                    ->default(1),
+                                            TextInput::make('qte_minimal')
+                                                ->label('Quantité minimal')
+                                                ->default(1),
 
-                                                TextInput::make('prix_unitaire')
-                                                    ->label('Prix unitaire'),
+                                            TextInput::make('prix_unitaire')
+                                                ->label('Prix unitaire'),
 
-                                                TextInput::make('delai_livraison')
-                                                    ->label('Delai de livraison')
-                                                    ->default(1)
-                                                    ->suffix('Jours'),
+                                            TextInput::make('delai_livraison')
+                                                ->label('Delai de livraison')
+                                                ->default(1)
+                                                ->suffix('Jours'),
 
-                                                TextInput::make('barrecode')
-                                                    ->label('Code barre'),
-                                            ])
-                                            ->columns(5)
+                                            TextInput::make('barrecode')
+                                                ->label('Code barre'),
+                                        ])
+                                        ->columns(5),
                                 ]),
 
                             Step::make('Stock')
@@ -309,7 +309,7 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                                         ])
                                         ->columns(2),
                                 ]),
-                        ])
+                        ]),
                     ])
                     ->using(function (array $data) {
                         return app(NewProduct::class)->handle($data);
@@ -329,7 +329,7 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                         ->icon(Heroicon::TableCells)
                         ->requiresConfirmation()
                         ->formats([
-                            ExportFormat::Xlsx
+                            ExportFormat::Xlsx,
                         ])
                         ->exporter(ProduitExporter::class),
                 ]),

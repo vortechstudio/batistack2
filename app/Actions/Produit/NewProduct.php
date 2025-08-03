@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Produit;
 
 use App\Models\Produit\Produit;
 use Illuminate\Support\Facades\DB;
 
-class NewProduct
+final class NewProduct
 {
     public function handle(array $data)
     {

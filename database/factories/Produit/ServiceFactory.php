@@ -107,7 +107,7 @@ final class ServiceFactory extends Factory
      */
     private function generateReference(): string
     {
-        $number = mb_str_pad((string)$this->faker->unique()->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
+        $number = mb_str_pad((string) $this->faker->unique()->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT);
 
         return 'SRV-'.$number;
     }

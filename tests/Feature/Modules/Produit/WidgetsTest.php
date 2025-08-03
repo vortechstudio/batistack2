@@ -5,11 +5,11 @@ declare(strict_types=1);
 use App\Livewire\Produit\Components\Widgets\DashboardStatOverview;
 use App\Livewire\Produit\Components\Widgets\DashboardTableProduit;
 use App\Livewire\Produit\Components\Widgets\StatistiqueChart;
-use App\Models\Produit\Produit;
-use App\Models\Produit\Service;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
+use App\Models\Produit\Produit;
 use App\Models\Produit\ProduitStock;
+use App\Models\Produit\Service;
 use App\Models\Produit\TarifClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -29,14 +29,14 @@ describe('Widgets du Dashboard Produits', function () {
                 'category_id' => $this->category->id,
                 'entrepot_id' => $this->entrepot->id,
                 'achat' => true,
-                'vente' => true
+                'vente' => true,
             ]);
 
             Produit::factory(2)->create([
                 'category_id' => $this->category->id,
                 'entrepot_id' => $this->entrepot->id,
                 'achat' => true,
-                'vente' => false
+                'vente' => false,
             ]);
 
             Service::factory(3)->create();
@@ -59,20 +59,20 @@ describe('Widgets du Dashboard Produits', function () {
         test('affiche les 5 derniers produits avec état de stock', function () {
             $produits = Produit::factory(10)->create([
                 'category_id' => $this->category->id,
-                'entrepot_id' => $this->entrepot->id
+                'entrepot_id' => $this->entrepot->id,
             ]);
 
             // Créer des tarifs clients
             foreach ($produits as $produit) {
                 TarifClient::factory()->create([
                     'produit_id' => $produit->id,
-                    'prix_unitaire' => 99.99
+                    'prix_unitaire' => 99.99,
                 ]);
 
                 ProduitStock::factory()->create([
                     'produit_id' => $produit->id,
                     'entrepot_id' => $this->entrepot->id,
-                    'quantite' => 50
+                    'quantite' => 50,
                 ]);
             }
 
@@ -88,19 +88,19 @@ describe('Widgets du Dashboard Produits', function () {
                 'category_id' => $this->category->id,
                 'entrepot_id' => $this->entrepot->id,
                 'limit_stock' => 10,
-                'optimal_stock' => 50
+                'optimal_stock' => 50,
             ]);
 
             TarifClient::factory()->create([
                 'produit_id' => $produit->id,
-                'prix_unitaire' => 99.99
+                'prix_unitaire' => 99.99,
             ]);
 
             // Stock en rupture
             ProduitStock::factory()->create([
                 'produit_id' => $produit->id,
                 'entrepot_id' => $this->entrepot->id,
-                'quantite' => 0
+                'quantite' => 0,
             ]);
 
             Livewire::test(DashboardTableProduit::class)
@@ -110,7 +110,7 @@ describe('Widgets du Dashboard Produits', function () {
         test('n\'affiche pas de pagination', function () {
             Produit::factory(10)->create([
                 'category_id' => $this->category->id,
-                'entrepot_id' => $this->entrepot->id
+                'entrepot_id' => $this->entrepot->id,
             ]);
 
             $component = Livewire::test(DashboardTableProduit::class);
@@ -128,35 +128,35 @@ describe('Widgets du Dashboard Produits', function () {
                 'category_id' => $this->category->id,
                 'entrepot_id' => $this->entrepot->id,
                 'achat' => true,
-                'vente' => false
+                'vente' => false,
             ]);
 
             Produit::factory(3)->create([
                 'category_id' => $this->category->id,
                 'entrepot_id' => $this->entrepot->id,
                 'achat' => false,
-                'vente' => true
+                'vente' => true,
             ]);
 
             Produit::factory(1)->create([
                 'category_id' => $this->category->id,
                 'entrepot_id' => $this->entrepot->id,
                 'achat' => true,
-                'vente' => true
+                'vente' => true,
             ]);
 
             Produit::factory(1)->create([
                 'category_id' => $this->category->id,
                 'entrepot_id' => $this->entrepot->id,
                 'achat' => false,
-                'vente' => false
+                'vente' => false,
             ]);
 
             $component = Livewire::test(StatistiqueChart::class);
 
             // Vérifier que le graphique s'affiche correctement
             $component->assertSee('Statistiques des Produits');
-  
+
             // Vérifier les données directement via les modèles
             $disponiblesAchat = Produit::where('achat', true)->where('vente', false)->count();
             $disponiblesVente = Produit::where('vente', true)->where('achat', false)->count();
