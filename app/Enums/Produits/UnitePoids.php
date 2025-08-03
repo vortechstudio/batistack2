@@ -11,6 +11,13 @@ enum UnitePoids: string
     case KILOGRAMME = 'kg';
     case TONNE = 't';
 
+    public static function getSelectOptions(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn ($mode) => [$mode->value => $mode->label()])
+            ->toArray();
+    }
+
     public static function values(): array
     {
         return array_column(self::cases(), 'value');

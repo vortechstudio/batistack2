@@ -10,7 +10,15 @@ enum UniteMesure: string
     case CENTIMETRE = 'cm';
     case DECIMETRE = 'dm';
     case METRE = 'm';
-    case MILLILITRE = 'ml';
+    case METRELINEAIRE = 'ml';
+    case METRECARRE = 'm²';
+
+    public static function getSelectOptions(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn ($mode) => [$mode->value => $mode->label()])
+            ->toArray();
+    }
 
     public static function values(): array
     {
@@ -29,7 +37,8 @@ enum UniteMesure: string
             self::CENTIMETRE => 'Centimètre (cm)',
             self::DECIMETRE => 'Décimètre (dm)',
             self::METRE => 'Mètre (m)',
-            self::MILLILITRE => 'Millilitre (ml)',
+            self::METRELINEAIRE => 'Mètre linéaire (ml)',
+            self::METRECARRE => 'Mètre Carré (m²)',
         };
     }
 

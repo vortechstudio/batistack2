@@ -33,6 +33,16 @@ final class Produit extends Model
         'llh_unite' => UniteMesure::class,
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        self::creating(function ($produit) {
+            if(empty($produit->reference)) {
+                $produit->reference = self::generateReference();
+            }
+        });
+    }
+
     /**
      * Génère une référence unique pour le produit
      */
@@ -71,6 +81,11 @@ final class Produit extends Model
     public function tarifClient(): HasOne
     {
         return $this->hasOne(TarifClient::class);
+    }
+
+    public function tarifFournisseur(): HasOne
+    {
+        return $this->hasOne(TarifFournisseur::class);
     }
 
     /**

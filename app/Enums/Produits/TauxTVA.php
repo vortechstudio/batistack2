@@ -12,6 +12,13 @@ enum TauxTVA: string
     case INTERMEDIAIRE = '10.0';
     case NORMAL = '20.0';
 
+    public static function getSelectOptions(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn ($mode) => [$mode->value => $mode->label()])
+            ->toArray();
+    }
+
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
