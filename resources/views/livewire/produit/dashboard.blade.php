@@ -11,5 +11,8 @@
         <div class="w-1/2">
             @livewire('produit.components.widgets.dashboard-table-produit')
         </div>
+        <div class="w-1/2">
+            @livewire('produit.components.widgets.dashboard-table-service')
+        </div>
     </div>
 </div>

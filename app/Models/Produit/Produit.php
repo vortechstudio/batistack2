@@ -74,6 +74,22 @@ final class Produit extends Model
     }
 
     /**
+     * Relation avec les stocks
+     */
+    public function stocks(): HasMany
+    {
+        return $this->hasMany(ProduitStock::class);
+    }
+
+    /**
+     * Obtenir le stock principal (premier stock trouvé)
+     */
+    public function stockPrincipal(): HasOne
+    {
+        return $this->hasOne(ProduitStock::class);
+    }
+
+    /**
      * Scope pour les produits disponibles à l'achat
      */
     public function scopeDisponibleAchat($query)
