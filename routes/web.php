@@ -100,6 +100,8 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+    include("produit.php");
+
     Route::prefix('portail')->group(function () {
         Route::prefix('salarie')->group(function () {
             Route::get('/', SalarieDashboard::class)->name('portail.salarie.dashboard');
