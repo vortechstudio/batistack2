@@ -15,6 +15,9 @@
                 <flux:navlist.group :heading="__('Produits/Services')" class="grid">
                     <flux:navlist.item icon="arrow-left" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Retour') }}</flux:navlist.item>
                     <flux:navlist.item icon="circle-gauge" :href="route('produit.dashboard')" :current="request()->routeIs('produit.dashboard')" wire:navigate>{{ __('Tableau de Bord') }}</flux:navlist.item>
+                    <flux:navlist.item icon="shopping-cart" :href="route('produit.produit.index')" :current="request()->routeIs('produit.produit.*')" wire:navigate>{{ __('Produits') }}</flux:navlist.item>
+                    <flux:navlist.item icon="shopping-cart" :href="route('produit.service.index')" :current="request()->routeIs('produit.service.*')" wire:navigate>{{ __('Services') }}</flux:navlist.item>
+                    <flux:navlist.item icon="chart-bar" :href="route('produit.stock.index')" :current="request()->routeIs('produit.stock.*')" wire:navigate>{{ __('Stocks') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
