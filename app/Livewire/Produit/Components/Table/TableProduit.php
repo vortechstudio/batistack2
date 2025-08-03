@@ -41,6 +41,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Spatie\LaravelPdf\Enums\Format;
+use Spatie\LaravelPdf\Enums\Orientation;
+use Spatie\LaravelPdf\Enums\Unit;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Storage;
 
 class TableProduit extends Component implements HasActions, HasSchemas, HasTable
 {
@@ -309,10 +314,6 @@ class TableProduit extends Component implements HasActions, HasSchemas, HasTable
                             ExportFormat::Xlsx
                         ])
                         ->exporter(ProduitExporter::class),
-
-                    BulkAction::make('print')
-                        ->label('Imprimer')
-                        ->icon(Heroicon::Printer),
                 ]),
             ]);
     }

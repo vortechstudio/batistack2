@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\PdfController;
 use App\Livewire\Core\Analyse\PhpStan;
 use App\Livewire\Humans\Config\Index as ConfigIndex;
 use App\Livewire\Humans\Conges\Index as CongesIndex;
@@ -124,5 +125,6 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/api/bank/connect', [App\Http\Controllers\BankController::class, 'connectAccount'])->name('api.bank.connectAccount');
 Route::post('/csp-report', [App\Http\Controllers\CspReportController::class, 'report'])->name('csp.report');
 Route::get('/analyse/phpstan', PhpStan::class)->name('analyse.phpstan');
+Route::get('/pdf/{records}', PdfController::class)->name('pdf');
 Route::impersonate();
 require __DIR__.'/auth.php';
