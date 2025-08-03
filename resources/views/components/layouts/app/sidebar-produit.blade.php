@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
+    <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
@@ -12,13 +12,12 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Espaces')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Tableau de Bord') }}</flux:navlist.item>
-                    <flux:navlist.item icon="users" :href="route('tiers.dashboard')" :current="request()->routeIs('tiers.dashboard')" wire:navigate>{{ __('Tiers') }}</flux:navlist.item>
-                    <flux:navlist.item icon="hard-hat" :href="route('chantiers.dashboard')" :current="request()->routeIs('chantiers.dashboard')" wire:navigate>{{ __('Chantiers') }}</flux:navlist.item>
-                    <flux:navlist.item icon="briefcase" :href="route('humans.dashboard')" :current="request()->routeIs('humans.dashboard')" wire:navigate>{{ __('Resources Humaines') }}</flux:navlist.item>
-                    <flux:navlist.item icon="shopping-bag" :href="route('produit.dashboard')" :current="request()->routeIs('produit.dashboard')" wire:navigate>{{ __('Produits/Services') }}</flux:navlist.item>
-                    <flux:navlist.item icon="cog" :href="route('settings.company')" :current="request()->routeIs('settings.company')" wire:navigate>{{ __('Paramètres') }}</flux:navlist.item>
+                <flux:navlist.group :heading="__('Produits/Services')" class="grid">
+                    <flux:navlist.item icon="arrow-left" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Retour') }}</flux:navlist.item>
+                    <flux:navlist.item icon="circle-gauge" :href="route('produit.dashboard')" :current="request()->routeIs('produit.dashboard')" wire:navigate>{{ __('Tableau de Bord') }}</flux:navlist.item>
+                    <flux:navlist.item icon="shopping-cart" :href="route('produit.produit.index')" :current="request()->routeIs('produit.produit.*')" wire:navigate>{{ __('Produits') }}</flux:navlist.item>
+                    <flux:navlist.item icon="shopping-cart" :href="route('produit.service.index')" :current="request()->routeIs('produit.service.*')" wire:navigate>{{ __('Services') }}</flux:navlist.item>
+                    <flux:navlist.item icon="chart-bar" :href="route('produit.stock.index')" :current="request()->routeIs('produit.stock.*')" wire:navigate>{{ __('Stocks') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
@@ -79,7 +78,10 @@
         </flux:header>
 
         {{ $slot }}
+
+        @filamentScripts
         @livewire('notifications')
+        @vite('resources/js/app.js')
         @fluxScripts
     </body>
 </html>

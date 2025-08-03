@@ -8,6 +8,7 @@ use App\Models\Core\PlanComptable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 final class Service extends Model
 {
@@ -42,6 +43,11 @@ final class Service extends Model
     public function codeComptableVente(): BelongsTo
     {
         return $this->belongsTo(PlanComptable::class, 'code_comptable_vente');
+    }
+
+    public function tarifClient(): HasOne
+    {
+        return $this->hasOne(TarifClient::class);
     }
 
     /**

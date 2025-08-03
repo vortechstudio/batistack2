@@ -10,6 +10,8 @@ use App\Models\Core\PlanComptable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 final class Produit extends Model
 {
@@ -30,6 +32,16 @@ final class Produit extends Model
         'hauteur' => 'float',
         'llh_unite' => UniteMesure::class,
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        self::creating(function ($produit) {
+            if(empty($produit->reference)) {
+                $produit->reference = self::generateReference();
+            }
+        });
+    }
 
     /**
      * Génère une référence unique pour le produit
@@ -64,6 +76,54 @@ final class Produit extends Model
     public function codeComptableVente(): BelongsTo
     {
         return $this->belongsTo(PlanComptable::class, 'code_comptable_vente');
+    }
+
+    /**
+     * Relation avec les tarifs clients (plusieurs tarifs possibles)
+     */
+    public function tarifsClient(): HasMany
+    {
+        return $this->hasMany(TarifClient::class);
+    }
+
+    /**
+     * Relation avec le tarif client principal (premier tarif)
+     */
+    public function tarifClient(): HasOne
+    {
+        return $this->hasOne(TarifClient::class);
+    }
+
+    /**
+     * Relation avec les tarifs fournisseurs (plusieurs tarifs possibles)
+     */
+    public function tarifsFournisseur(): HasMany
+    {
+        return $this->hasMany(TarifFournisseur::class);
+    }
+
+    /**
+     * Relation avec le tarif fournisseur principal (premier tarif)
+     */
+    public function tarifFournisseur(): HasOne
+    {
+        return $this->hasOne(TarifFournisseur::class);
+    }
+
+    /**
+     * Relation avec les stocks
+     */
+    public function stocks(): HasMany
+    {
+        return $this->hasMany(ProduitStock::class);
+    }
+
+    /**
+     * Obtenir le stock principal (premier stock trouvé)
+     */
+    public function stockPrincipal(): HasOne
+    {
+        return $this->hasOne(ProduitStock::class);
     }
 
     /**
@@ -112,6 +172,11 @@ final class Produit extends Model
     public function getPoidsFormateAttribute(): string
     {
         return $this->poids_value.' '.$this->poids_unite->symbol();
+    }
+
+    public function getPrixUnitaireTarifAttribute()
+    {
+        return $this->tarifClient->prix_unitaire ?? 0.0;
     }
 
     /**
