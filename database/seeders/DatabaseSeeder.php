@@ -24,6 +24,11 @@ use App\Models\Core\ModeReglement;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
 use App\Models\Produit\Produit;
+use App\Models\Produit\ProduitStock;
+use App\Models\Produit\ProduitStockMvm;
+use App\Models\Produit\Service;
+use App\Models\Produit\TarifClient;
+use App\Models\Produit\TarifFournisseur;
 use App\Models\RH\Employe;
 use App\Models\RH\EmployeBank;
 use App\Models\RH\EmployeContrat;
@@ -531,6 +536,9 @@ final class DatabaseSeeder extends Seeder
     /**
      * Création des produits
      */
+    /**
+     * Création des produits, services, stocks, mouvements et tarifs
+     */
     private function seedProduits(): void
     {
         if (Produit::count() > 0) {
@@ -538,7 +546,7 @@ final class DatabaseSeeder extends Seeder
             return;
         }
 
-        $this->command->info('📦 Création des produits...');
+        $this->command->info('📦 Création des produits, services, stocks, mouvements et tarifs...');
 
         // Créer d'abord les catégories et entrepôts si nécessaires
         $this->ensureCategoriesAndEntrepots();
@@ -552,14 +560,27 @@ final class DatabaseSeeder extends Seeder
             return;
         }
 
-        // Créer des produits spécifiques avec la factory en mode performance
+        // 1. Créer les produits
         $this->createSpecificProducts($categories, $entrepots);
-
-        // Créer des produits aléatoires par catégorie
         $this->createRandomProducts($categories, $entrepots);
 
-        // Afficher les statistiques
-        $this->displayProductStats();
+        // 2. Créer les services
+        $this->createServices($categories);
+
+        // 3. Créer les stocks pour les produits
+        $this->createProductStocks();
+
+        // 4. Créer les mouvements de stock
+        $this->createStockMovements();
+
+        // 5. Créer les tarifs client pour produits et services
+        $this->createClientPricing();
+
+        // 6. Créer les tarifs fournisseur pour les produits
+        $this->createSupplierPricing();
+
+        // Afficher les statistiques finales
+        $this->displayCompleteStats();
     }
 
     /**
@@ -676,11 +697,550 @@ final class DatabaseSeeder extends Seeder
     }
 
     /**
-     * Afficher les statistiques des produits
+     * Créer les services
      */
-    private function displayProductStats(): void
+    private function createServices($categories): void
+    {
+        if (Service::count() > 0) {
+            $this->command->warn('⚠️  Les services existent déjà, passage...');
+            return;
+        }
+
+        $this->command->info('🔧 Création des services...');
+
+        // Services spécifiques avec données fixes
+        $servicesSpecifiques = [
+            [
+                'reference' => 'SRV-000001',
+                'name' => 'Installation plomberie salle de bain complète',
+                'description' => 'Service d\'installation complète de plomberie pour salle de bain : pose sanitaires, raccordements eau chaude/froide, évacuations, robinetterie. Main d\'œuvre qualifiée avec garantie 2 ans.',
+                'category_id' => $categories->where('name', 'like', '%Plomberie%')->first()?->id ?? $categories->random()->id,
+            ],
+            [
+                'reference' => 'SRV-000002',
+                'name' => 'Installation électrique résidentielle',
+                'description' => 'Installation électrique complète pour logement : tableau électrique, circuits prises et éclairage, mise à la terre. Conforme NF C 15-100.',
+                'category_id' => $categories->where('name', 'like', '%Électricité%')->first()?->id ?? $categories->random()->id,
+            ],
+            [
+                'reference' => 'SRV-000003',
+                'name' => 'Maçonnerie générale',
+                'description' => 'Travaux de maçonnerie générale : montage murs, cloisons, enduits, petites réparations. Matériaux et outillage inclus.',
+                'category_id' => $categories->where('name', 'like', '%Gros%')->first()?->id ?? $categories->random()->id,
+            ],
+            [
+                'reference' => 'SRV-000004',
+                'name' => 'Diagnostic technique bâtiment',
+                'description' => 'Diagnostic complet de l\'état du bâtiment : structure, étanchéité, isolation, installations. Rapport détaillé avec recommandations.',
+                'category_id' => $categories->random()->id,
+            ],
+        ];
+
+        foreach ($servicesSpecifiques as $serviceData) {
+            Service::create($serviceData);
+            $this->command->info("✅ Service créé : {$serviceData['name']}");
+        }
+
+        // Générer 1-2 services par catégorie principale
+        $totalServicesGeneres = 0;
+        $categoriesPrincipales = $categories->whereNull('category_id');
+
+        foreach ($categoriesPrincipales as $category) {
+            $nombreServices = rand(1, 2);
+
+            Service::factory()
+                ->count($nombreServices)
+                ->pourCategorie($category->id)
+                ->create();
+
+            $totalServicesGeneres += $nombreServices;
+            $this->command->info("📦 {$nombreServices} services créés pour la catégorie : {$category->name}");
+        }
+
+        // Créer quelques services spécialisés
+        $servicesSpecialises = [
+            Service::factory()->count(2)->construction()->create(),
+            Service::factory()->count(2)->renovation()->create(),
+        ];
+
+        $totalSpecialises = 4; // 2 + 2
+        $totalServicesGeneres += $totalSpecialises;
+
+        $this->command->info("🎯 {$totalSpecialises} services spécialisés créés");
+        $this->command->info("✅ Total services créés : " . Service::count());
+    }
+
+    /**
+     * Créer les stocks pour les produits
+     */
+    private function createProductStocks(): void
+    {
+        if (ProduitStock::count() > 0) {
+            $this->command->warn('⚠️  Les stocks existent déjà, passage...');
+            return;
+        }
+
+        $this->command->info('📦 Création des stocks de produits...');
+
+        // Récupérer un échantillon de produits et entrepôts
+        $produits = Produit::take(20)->get();
+        $entrepots = Entrepot::take(5)->get();
+
+        if ($produits->isEmpty() || $entrepots->isEmpty()) {
+            $this->command->warn('⚠️  Produits ou entrepôts manquants pour créer les stocks');
+            return;
+        }
+
+        $totalStocks = 0;
+        $stocksEnRupture = 0;
+        $stocksCritiques = 0;
+        $stocksNormaux = 0;
+
+        // Créer des stocks pour chaque produit dans 1 à 3 entrepôts
+        foreach ($produits as $produit) {
+            $entrepotsSelectionnes = $entrepots->random(rand(1, min(3, $entrepots->count())));
+
+            foreach ($entrepotsSelectionnes as $entrepot) {
+                $typeStock = $this->determinerTypeStock();
+
+                $stock = match ($typeStock) {
+                    'rupture' => ProduitStock::factory()
+                        ->enRupture()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                    'critique' => ProduitStock::factory()
+                        ->stockCritique()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                    'faible' => ProduitStock::factory()
+                        ->stockFaible()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                    'normal' => ProduitStock::factory()
+                        ->stockNormal()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                    'eleve' => ProduitStock::factory()
+                        ->stockEleve()
+                        ->pourProduit($produit)
+                        ->pourEntrepot($entrepot)
+                        ->create(),
+                };
+
+                $totalStocks++;
+
+                match ($typeStock) {
+                    'rupture' => $stocksEnRupture++,
+                    'critique' => $stocksCritiques++,
+                    default => $stocksNormaux++,
+                };
+            }
+        }
+
+        $this->command->info("✅ {$totalStocks} stocks créés");
+        $this->command->info("🔴 Stocks en rupture : {$stocksEnRupture}");
+        $this->command->info("🟡 Stocks critiques : {$stocksCritiques}");
+        $this->command->info("🟢 Stocks normaux/élevés : {$stocksNormaux}");
+    }
+
+    /**
+     * Créer les mouvements de stock
+     */
+    private function createStockMovements(): void
+    {
+        if (ProduitStockMvm::count() > 0) {
+            $this->command->warn('⚠️  Les mouvements de stock existent déjà, passage...');
+            return;
+        }
+
+        $this->command->info('📊 Création des mouvements de stock...');
+
+        $stocks = ProduitStock::all();
+
+        if ($stocks->isEmpty()) {
+            $this->command->warn('⚠️  Aucun stock trouvé pour créer les mouvements');
+            return;
+        }
+
+        $totalMouvements = 0;
+        $entrees = 0;
+        $sorties = 0;
+
+        // Créer 2-5 mouvements par stock
+        foreach ($stocks as $stock) {
+            $nombreMouvements = rand(2, 5);
+
+            for ($i = 0; $i < $nombreMouvements; $i++) {
+                // 60% d'entrées, 40% de sorties
+                $typeMovement = rand(1, 100) <= 60 ? 'entree' : 'sortie';
+
+                $mouvement = match ($typeMovement) {
+                    'entree' => ProduitStockMvm::factory()
+                        ->entree()
+                        ->pourStock($stock)
+                        ->create(),
+                    'sortie' => ProduitStockMvm::factory()
+                        ->sortie()
+                        ->pourStock($stock)
+                        ->create(),
+                };
+
+                $totalMouvements++;
+
+                if ($typeMovement === 'entree') {
+                    $entrees++;
+                } else {
+                    $sorties++;
+                }
+            }
+        }
+
+        // Créer quelques mouvements spécifiques
+        $this->createSpecificMovements();
+
+        $this->command->info("✅ {$totalMouvements} mouvements de base créés");
+        $this->command->info("📥 Entrées : {$entrees}");
+        $this->command->info("📤 Sorties : {$sorties}");
+    }
+
+    /**
+     * Créer des mouvements spécifiques
+     */
+    private function createSpecificMovements(): void
+    {
+        $stocks = ProduitStock::take(3)->get();
+
+        foreach ($stocks as $stock) {
+            // Mouvement d'entrée important
+            ProduitStockMvm::factory()
+                ->entree()
+                ->quantiteImportante()
+                ->pourStock($stock)
+                ->create([
+                    'libelle' => 'Réception commande importante - Test',
+                ]);
+
+            // Mouvement de sortie important
+            ProduitStockMvm::factory()
+                ->sortie()
+                ->quantiteImportante()
+                ->pourStock($stock)
+                ->create([
+                    'libelle' => 'Livraison client importante - Test',
+                ]);
+        }
+
+        $this->command->info("🎯 Mouvements spécifiques créés");
+    }
+
+    /**
+     * Déterminer le type de stock selon une répartition
+     */
+    private function determinerTypeStock(): string
+    {
+        $rand = rand(1, 100);
+
+        return match (true) {
+            $rand <= 5 => 'rupture',      // 5%
+            $rand <= 15 => 'critique',    // 10%
+            $rand <= 30 => 'faible',      // 15%
+            $rand <= 80 => 'normal',      // 50%
+            default => 'eleve',           // 20%
+        };
+    }
+
+    /**
+     * Créer les tarifs client pour produits et services
+     */
+    private function createClientPricing(): void
+    {
+        if (TarifClient::count() > 0) {
+            $this->command->warn('⚠️  Les tarifs client existent déjà, passage...');
+            return;
+        }
+
+        $this->command->info('💰 Création des tarifs client...');
+
+        $produits = Produit::all();
+        $services = Service::all();
+
+        $totalTarifsClient = 0;
+
+        // Créer des tarifs spécifiques pour les premiers produits
+        $this->createSpecificClientPricing($produits);
+
+        // Créer des tarifs pour 80% des produits
+        if (!$produits->isEmpty()) {
+            $produitsAvecTarifs = $produits->take(ceil($produits->count() * 0.8));
+
+            foreach ($produitsAvecTarifs as $produit) {
+                // Créer 1-2 tarifs par produit (différentes gammes)
+                $nombreTarifs = rand(1, 2);
+
+                for ($i = 0; $i < $nombreTarifs; $i++) {
+                    TarifClient::factory()
+                        ->pourProduit($produit->id)
+                        ->create();
+
+                    $totalTarifsClient++;
+                }
+            }
+
+            $this->command->info("📦 Tarifs client créés pour {$produitsAvecTarifs->count()} produits");
+        }
+
+        // Créer des tarifs pour 90% des services
+        if (!$services->isEmpty()) {
+            $servicesAvecTarifs = $services->take(ceil($services->count() * 0.9));
+
+            foreach ($servicesAvecTarifs as $service) {
+                TarifClient::factory()
+                    ->pourService($service->id)
+                    ->create();
+
+                $totalTarifsClient++;
+            }
+
+            $this->command->info("🔧 Tarifs client créés pour {$servicesAvecTarifs->count()} services");
+        }
+
+        // Créer quelques tarifs spécialisés
+        $this->createSpecializedClientPricing();
+
+        $this->command->info("✅ Total tarifs client créés : " . TarifClient::count());
+    }
+
+    /**
+     * Créer des tarifs client spécifiques
+     */
+    private function createSpecificClientPricing($produits): void
+    {
+        if ($produits->isEmpty()) {
+            return;
+        }
+
+        // Tarifs spécifiques pour les 4 premiers produits
+        $produitsSpecifiques = $produits->take(4);
+
+        $tarifsSpecifiques = [
+            [
+                'prix_unitaire' => 15.50,
+                'taux_tva' => 20.0,
+                'produit_id' => $produitsSpecifiques->get(0)?->id,
+                'service_id' => null,
+            ],
+            [
+                'prix_unitaire' => 8.75,
+                'taux_tva' => 20.0,
+                'produit_id' => $produitsSpecifiques->get(1)?->id,
+                'service_id' => null,
+            ],
+            [
+                'prix_unitaire' => 2.30,
+                'taux_tva' => 20.0,
+                'produit_id' => $produitsSpecifiques->get(2)?->id,
+                'service_id' => null,
+            ],
+            [
+                'prix_unitaire' => 189.99,
+                'taux_tva' => 20.0,
+                'produit_id' => $produitsSpecifiques->get(3)?->id,
+                'service_id' => null,
+            ],
+        ];
+
+        foreach ($tarifsSpecifiques as $tarifData) {
+            if ($tarifData['produit_id']) {
+                TarifClient::create($tarifData);
+                $this->command->info("✅ Tarif client spécifique créé : {$tarifData['prix_unitaire']}€");
+            }
+        }
+    }
+
+    /**
+     * Créer des tarifs client spécialisés
+     */
+    private function createSpecializedClientPricing(): void
+    {
+        $produits = Produit::take(5)->get();
+        $services = Service::take(3)->get();
+
+        // Tarifs premium pour certains produits
+        foreach ($produits as $produit) {
+            TarifClient::factory()
+                ->pourProduit($produit->id)
+                ->premium()
+                ->create();
+        }
+
+        // Tarifs économiques pour certains services
+        foreach ($services as $service) {
+            TarifClient::factory()
+                ->pourService($service->id)
+                ->economique()
+                ->create();
+        }
+
+        $this->command->info("🎯 Tarifs client spécialisés créés");
+    }
+
+    /**
+     * Créer les tarifs fournisseur pour les produits
+     */
+    private function createSupplierPricing(): void
+    {
+        if (TarifFournisseur::count() > 0) {
+            $this->command->warn('⚠️  Les tarifs fournisseur existent déjà, passage...');
+            return;
+        }
+
+        $this->command->info('🏭 Création des tarifs fournisseur...');
+
+        $produits = Produit::all();
+
+        if ($produits->isEmpty()) {
+            $this->command->warn('⚠️  Aucun produit trouvé pour créer les tarifs fournisseur');
+            return;
+        }
+
+        $totalTarifsFournisseur = 0;
+
+        // Créer des tarifs spécifiques pour les premiers produits
+        $this->createSpecificSupplierPricing($produits);
+
+        // Créer des tarifs pour 70% des produits (pas tous les produits ont un fournisseur)
+        $produitsAvecTarifs = $produits->take(ceil($produits->count() * 0.7));
+
+        foreach ($produitsAvecTarifs as $produit) {
+            // 60% de chance d'avoir un tarif fournisseur
+            if (rand(1, 100) <= 60) {
+                TarifFournisseur::factory()
+                    ->pourProduit($produit->id)
+                    ->create();
+
+                $totalTarifsFournisseur++;
+            }
+        }
+
+        // Créer quelques tarifs spécialisés
+        $this->createSpecializedSupplierPricing();
+
+        $this->command->info("✅ {$totalTarifsFournisseur} tarifs fournisseur créés");
+        $this->command->info("✅ Total tarifs fournisseur : " . TarifFournisseur::count());
+    }
+
+    /**
+     * Créer des tarifs fournisseur spécifiques
+     */
+    private function createSpecificSupplierPricing($produits): void
+    {
+        if ($produits->isEmpty()) {
+            return;
+        }
+
+        // Tarifs spécifiques pour les 4 premiers produits
+        $produitsSpecifiques = $produits->take(4);
+
+        $tarifsSpecifiques = [
+            [
+                'ref_fournisseur' => 'FOUR-CIM-001',
+                'qte_minimal' => 10.0,
+                'prix_unitaire' => 12.50,
+                'delai_livraison' => 3,
+                'barrecode' => '3760123456789',
+                'produit_id' => $produitsSpecifiques->get(0)?->id,
+            ],
+            [
+                'ref_fournisseur' => 'FOUR-PVC-002',
+                'qte_minimal' => 5.0,
+                'prix_unitaire' => 6.80,
+                'delai_livraison' => 5,
+                'barrecode' => '3760123456796',
+                'produit_id' => $produitsSpecifiques->get(1)?->id,
+            ],
+            [
+                'ref_fournisseur' => 'FOUR-CAB-003',
+                'qte_minimal' => 1.0,
+                'prix_unitaire' => 1.85,
+                'delai_livraison' => 7,
+                'barrecode' => '3760123456803',
+                'produit_id' => $produitsSpecifiques->get(2)?->id,
+            ],
+            [
+                'ref_fournisseur' => 'FOUR-OUT-004',
+                'qte_minimal' => 1.0,
+                'prix_unitaire' => 145.00,
+                'delai_livraison' => 10,
+                'barrecode' => '3760123456810',
+                'produit_id' => $produitsSpecifiques->get(3)?->id,
+            ],
+        ];
+
+        foreach ($tarifsSpecifiques as $tarifData) {
+            if ($tarifData['produit_id']) {
+                TarifFournisseur::create($tarifData);
+                $this->command->info("✅ Tarif fournisseur spécifique créé : {$tarifData['ref_fournisseur']}");
+            }
+        }
+    }
+
+    /**
+     * Créer des tarifs fournisseur spécialisés
+     */
+    private function createSpecializedSupplierPricing(): void
+    {
+        $produits = Produit::take(5)->get();
+
+        // Tarifs avec livraison rapide
+        foreach ($produits->take(3) as $produit) {
+            TarifFournisseur::factory()
+                ->pourProduit($produit->id)
+                ->livraisonRapide()
+                ->create();
+        }
+
+        // Tarifs économiques (au lieu de quantité minimale faible)
+        foreach ($produits->skip(3)->take(2) as $produit) {
+            TarifFournisseur::factory()
+                ->pourProduit($produit->id)
+                ->economique()
+                ->create();
+        }
+
+        $this->command->info("🎯 Tarifs fournisseur spécialisés créés");
+    }
+
+    /**
+     * Afficher les statistiques complètes
+     */
+    private function displayCompleteStats(): void
     {
         $totalProduits = Produit::count();
-        $this->command->info("✓ {$totalProduits} produits créés au total");
+        $totalServices = Service::count();
+        $totalStocks = ProduitStock::count();
+        $totalMouvements = ProduitStockMvm::count();
+        $totalTarifsClient = TarifClient::count();
+        $totalTarifsFournisseur = TarifFournisseur::count();
+        $entreesFinales = ProduitStockMvm::entrees()->count();
+        $sortiesFinales = ProduitStockMvm::sorties()->count();
+        $tarifsClientProduits = TarifClient::pourProduits()->count();
+        $tarifsClientServices = TarifClient::pourServices()->count();
+
+        $this->command->info('📊 === STATISTIQUES COMPLÈTES ===');
+        $this->command->info("📦 Produits créés : {$totalProduits}");
+        $this->command->info("🔧 Services créés : {$totalServices}");
+        $this->command->info("📦 Stocks créés : {$totalStocks}");
+        $this->command->info("📊 Mouvements créés : {$totalMouvements}");
+        $this->command->info("📥 - Entrées : {$entreesFinales}");
+        $this->command->info("📤 - Sorties : {$sortiesFinales}");
+        $this->command->info("💰 Tarifs client créés : {$totalTarifsClient}");
+        $this->command->info("📦 - Pour produits : {$tarifsClientProduits}");
+        $this->command->info("🔧 - Pour services : {$tarifsClientServices}");
+        $this->command->info("🏭 Tarifs fournisseur créés : {$totalTarifsFournisseur}");
+        $this->command->info('✅ Seeding complet terminé !');
     }
 }
