@@ -24,6 +24,12 @@ on:
 env:
   PHP_VERSION: '8.3'
 
+permissions:
+  issues: write
+  pull-requests: write
+  contents: write
+
+
 jobs:
   quality-gate:
     name: 🚦 Quality Gate - Métriques & Seuils
