@@ -543,6 +543,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Produit::count() > 0) {
             $this->command->warn('⚠️  Les produits existent déjà, passage...');
+
             return;
         }
 
@@ -557,6 +558,7 @@ final class DatabaseSeeder extends Seeder
 
         if ($categories->isEmpty() || $entrepots->isEmpty()) {
             $this->command->warn('⚠️  Catégories ou entrepôts manquants, impossible de créer des produits');
+
             return;
         }
 
@@ -703,6 +705,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (Service::count() > 0) {
             $this->command->warn('⚠️  Les services existent déjà, passage...');
+
             return;
         }
 
@@ -767,7 +770,7 @@ final class DatabaseSeeder extends Seeder
         $totalServicesGeneres += $totalSpecialises;
 
         $this->command->info("🎯 {$totalSpecialises} services spécialisés créés");
-        $this->command->info("✅ Total services créés : " . Service::count());
+        $this->command->info('✅ Total services créés : '.Service::count());
     }
 
     /**
@@ -777,6 +780,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (ProduitStock::count() > 0) {
             $this->command->warn('⚠️  Les stocks existent déjà, passage...');
+
             return;
         }
 
@@ -788,6 +792,7 @@ final class DatabaseSeeder extends Seeder
 
         if ($produits->isEmpty() || $entrepots->isEmpty()) {
             $this->command->warn('⚠️  Produits ou entrepôts manquants pour créer les stocks');
+
             return;
         }
 
@@ -854,6 +859,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (ProduitStockMvm::count() > 0) {
             $this->command->warn('⚠️  Les mouvements de stock existent déjà, passage...');
+
             return;
         }
 
@@ -863,6 +869,7 @@ final class DatabaseSeeder extends Seeder
 
         if ($stocks->isEmpty()) {
             $this->command->warn('⚠️  Aucun stock trouvé pour créer les mouvements');
+
             return;
         }
 
@@ -934,7 +941,7 @@ final class DatabaseSeeder extends Seeder
                 ]);
         }
 
-        $this->command->info("🎯 Mouvements spécifiques créés");
+        $this->command->info('🎯 Mouvements spécifiques créés');
     }
 
     /**
@@ -960,6 +967,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (TarifClient::count() > 0) {
             $this->command->warn('⚠️  Les tarifs client existent déjà, passage...');
+
             return;
         }
 
@@ -974,7 +982,7 @@ final class DatabaseSeeder extends Seeder
         $this->createSpecificClientPricing($produits);
 
         // Créer des tarifs pour 80% des produits
-        if (!$produits->isEmpty()) {
+        if (! $produits->isEmpty()) {
             $produitsAvecTarifs = $produits->take(ceil($produits->count() * 0.8));
 
             foreach ($produitsAvecTarifs as $produit) {
@@ -994,7 +1002,7 @@ final class DatabaseSeeder extends Seeder
         }
 
         // Créer des tarifs pour 90% des services
-        if (!$services->isEmpty()) {
+        if (! $services->isEmpty()) {
             $servicesAvecTarifs = $services->take(ceil($services->count() * 0.9));
 
             foreach ($servicesAvecTarifs as $service) {
@@ -1011,7 +1019,7 @@ final class DatabaseSeeder extends Seeder
         // Créer quelques tarifs spécialisés
         $this->createSpecializedClientPricing();
 
-        $this->command->info("✅ Total tarifs client créés : " . TarifClient::count());
+        $this->command->info('✅ Total tarifs client créés : '.TarifClient::count());
     }
 
     /**
@@ -1085,7 +1093,7 @@ final class DatabaseSeeder extends Seeder
                 ->create();
         }
 
-        $this->command->info("🎯 Tarifs client spécialisés créés");
+        $this->command->info('🎯 Tarifs client spécialisés créés');
     }
 
     /**
@@ -1095,6 +1103,7 @@ final class DatabaseSeeder extends Seeder
     {
         if (TarifFournisseur::count() > 0) {
             $this->command->warn('⚠️  Les tarifs fournisseur existent déjà, passage...');
+
             return;
         }
 
@@ -1104,6 +1113,7 @@ final class DatabaseSeeder extends Seeder
 
         if ($produits->isEmpty()) {
             $this->command->warn('⚠️  Aucun produit trouvé pour créer les tarifs fournisseur');
+
             return;
         }
 
@@ -1130,7 +1140,7 @@ final class DatabaseSeeder extends Seeder
         $this->createSpecializedSupplierPricing();
 
         $this->command->info("✅ {$totalTarifsFournisseur} tarifs fournisseur créés");
-        $this->command->info("✅ Total tarifs fournisseur : " . TarifFournisseur::count());
+        $this->command->info('✅ Total tarifs fournisseur : '.TarifFournisseur::count());
     }
 
     /**
@@ -1211,7 +1221,7 @@ final class DatabaseSeeder extends Seeder
                 ->create();
         }
 
-        $this->command->info("🎯 Tarifs fournisseur spécialisés créés");
+        $this->command->info('🎯 Tarifs fournisseur spécialisés créés');
     }
 
     /**

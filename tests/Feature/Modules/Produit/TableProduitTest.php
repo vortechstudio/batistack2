@@ -3,11 +3,10 @@
 declare(strict_types=1);
 
 use App\Livewire\Produit\Components\Table\TableProduit;
-use App\Models\Produit\Produit;
+use App\Models\Core\PlanComptable;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
-use App\Models\Produit\TarifClient;
-use App\Models\Core\PlanComptable;
+use App\Models\Produit\Produit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -20,21 +19,21 @@ describe('Table Produits', function () {
         $this->planComptable = PlanComptable::factory()->create([
             'type' => 'Revenus',
             'code' => '701',
-            'account' => 'Ventes de marchandises'
+            'account' => 'Ventes de marchandises',
         ]);
     });
 
     test('affiche la liste des produits', function () {
         $produits = Produit::factory(3)->create([
             'category_id' => $this->category->id,
-            'entrepot_id' => $this->entrepot->id
+            'entrepot_id' => $this->entrepot->id,
         ]);
 
         $component = Livewire::test(TableProduit::class);
 
         foreach ($produits as $produit) {
             $component->assertSee($produit->reference)
-                     ->assertSee($produit->name);
+                ->assertSee($produit->name);
         }
     });
 
@@ -42,13 +41,13 @@ describe('Table Produits', function () {
         $produit1 = Produit::factory()->create([
             'reference' => 'PRD-001',
             'category_id' => $this->category->id,
-            'entrepot_id' => $this->entrepot->id
+            'entrepot_id' => $this->entrepot->id,
         ]);
 
         $produit2 = Produit::factory()->create([
             'reference' => 'PRD-002',
             'category_id' => $this->category->id,
-            'entrepot_id' => $this->entrepot->id
+            'entrepot_id' => $this->entrepot->id,
         ]);
 
         Livewire::test(TableProduit::class)
@@ -66,7 +65,7 @@ describe('Table Produits', function () {
     test('peut supprimer des produits en masse', function () {
         $produits = Produit::factory(3)->create([
             'category_id' => $this->category->id,
-            'entrepot_id' => $this->entrepot->id
+            'entrepot_id' => $this->entrepot->id,
         ]);
 
         Livewire::test(TableProduit::class)
@@ -79,12 +78,12 @@ describe('Table Produits', function () {
 
     test('peut exporter les produits', function () {
         // Créer et authentifier un utilisateur
-        $user = \App\Models\User::factory()->create();
+        $user = App\Models\User::factory()->create();
         $this->actingAs($user);
 
         Produit::factory(5)->create([
             'category_id' => $this->category->id,
-            'entrepot_id' => $this->entrepot->id
+            'entrepot_id' => $this->entrepot->id,
         ]);
 
         $component = Livewire::test(TableProduit::class);

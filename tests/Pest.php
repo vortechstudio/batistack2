@@ -49,9 +49,9 @@ function measureMemoryUsage(callable $callback): int
 // Helper functions pour les tests Produit
 function createProduitWithStock(int $quantite = 100): array
 {
-    $produit = \App\Models\Produit\Produit::factory()->create();
-    $entrepot = \App\Models\Produit\Entrepot::factory()->create();
-    $stock = \App\Models\Produit\ProduitStock::factory()->create([
+    $produit = App\Models\Produit\Produit::factory()->create();
+    $entrepot = App\Models\Produit\Entrepot::factory()->create();
+    $stock = App\Models\Produit\ProduitStock::factory()->create([
         'produit_id' => $produit->id,
         'entrepot_id' => $entrepot->id,
         'quantite' => $quantite,
@@ -62,8 +62,8 @@ function createProduitWithStock(int $quantite = 100): array
 
 function createTarifWithProduit(float $prix = 100.00, string $tva = '20.0'): array
 {
-    $produit = \App\Models\Produit\Produit::factory()->create();
-    $tarif = \App\Models\Produit\TarifClient::factory()->create([
+    $produit = App\Models\Produit\Produit::factory()->create();
+    $tarif = App\Models\Produit\TarifClient::factory()->create([
         'produit_id' => $produit->id,
         'prix_unitaire' => $prix,
         'taux_tva' => $tva,

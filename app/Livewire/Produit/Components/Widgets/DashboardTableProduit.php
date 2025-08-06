@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Produit\Components\Widgets;
 
 use App\Models\Produit\Produit;
@@ -9,7 +11,7 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 
-class DashboardTableProduit extends TableWidget
+final class DashboardTableProduit extends TableWidget
 {
     public function table(Table $table): Table
     {
@@ -19,7 +21,7 @@ class DashboardTableProduit extends TableWidget
                 'tarifClient',
                 'stockPrincipal' => function ($query) {
                     $query->with('produit'); // Charger la relation produit pour éviter les requêtes N+1 dans getStatutStock()
-                }
+                },
             ])->limit(5))
             ->paginated(false)
             ->columns([
@@ -41,7 +43,7 @@ class DashboardTableProduit extends TableWidget
                     ->label('')
                     ->getStateUsing(function (Produit $record): string {
                         $stock = $record->stockPrincipal;
-                        if (!$stock) {
+                        if (! $stock) {
                             return 'Aucun stock';
                         }
 
@@ -62,7 +64,7 @@ class DashboardTableProduit extends TableWidget
                     })
                     ->color(function (Produit $record): string {
                         $stock = $record->stockPrincipal;
-                        if (!$stock) {
+                        if (! $stock) {
                             return 'gray';
                         }
 

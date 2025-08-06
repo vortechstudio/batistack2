@@ -1,0 +1,325 @@
+name: 🔒 Security Deep Scan
+
+on:
+  push:
+    branches: [ develop, master, production ]
+  pull_request:
+    branches: [ master, production ]
+    types: [ opened, synchronize, reopened ]
+  schedule:
+    - cron: '0 3 * * *' # Scan quotidien à 3h
+  workflow_dispatch:
+    inputs:
+      scan_type:
+        description: 'Type de scan de sécurité'
+        required: false
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - secrets-only
+          - dependencies-only
+          - vulnerabilities-only
+      create_issue:
+        description: 'Créer une issue en cas de vulnérabilité critique'
+        required: false
+        default: 'true'
+        type: boolean
+
+env:
+  PHP_VERSION: '8.3'
+
+jobs:
+  security-deep-scan:
+    name: 🔒 Analyse de sécurité approfondie
+    runs-on: ubuntu-latest
+    outputs:
+      critical-vulnerabilities: ${{ steps.vulnerability-check.outputs.critical-count }}
+      secrets-found: ${{ steps.secrets-scan.outputs.secrets-count }}
+      security-status: ${{ steps.security-summary.outputs.status }}
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Historique complet pour l'analyse des secrets
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+
+      - name: 📦 Install dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: 📁 Create security reports directory
+        run: mkdir -p reports/security
+
+      - name: 🛡️ Advanced secrets detection
+        id: secrets-scan
+        if: github.event.inputs.scan_type == 'full' || github.event.inputs.scan_type == 'secrets-only' || github.event.inputs.scan_type == ''
+        run: |
+          echo "🔍 Recherche avancée de secrets..."
+          
+          # Scan avec TruffleHog (plus approfondi que module-ci.yml)
+          docker run --rm -v "$PWD:/pwd" trufflesecurity/trufflehog:latest filesystem /pwd \
+            --json --no-update > reports/security/trufflehog-detailed.json || true
+          
+          # Analyse personnalisée pour les patterns Laravel spécifiques
+          echo "🔍 Recherche de patterns Laravel sensibles..."
+          
+          # Recherche de clés API, tokens, mots de passe en dur
+          grep -r -n -E "(api_key|secret_key|password|token|private_key)" \
+            --include="*.php" --include="*.env*" --include="*.json" \
+            app/ config/ database/ routes/ > reports/security/sensitive-patterns.txt || true
+          
+          # Vérification des fichiers .env
+          find . -name ".env*" -not -name ".env.example" -not -name ".env.github" \
+            -exec echo "⚠️ Fichier .env détecté: {}" \; > reports/security/env-files.txt || true
+          
+          # Compter les secrets trouvés
+          SECRETS_COUNT=$(wc -l < reports/security/sensitive-patterns.txt || echo "0")
+          echo "secrets-count=$SECRETS_COUNT" >> $GITHUB_OUTPUT
+          
+          if [ "$SECRETS_COUNT" -gt 0 ]; then
+            echo "⚠️ $SECRETS_COUNT patterns sensibles détectés"
+          else
+            echo "✅ Aucun pattern sensible détecté"
+          fi
+
+      - name: 🔍 Vulnerability assessment
+        id: vulnerability-check
+        if: github.event.inputs.scan_type == 'full' || github.event.inputs.scan_type == 'vulnerabilities-only' || github.event.inputs.scan_type == ''
+        run: |
+          echo "🔍 Évaluation des vulnérabilités..."
+          
+          # Audit Composer avec détails
+          composer audit --format=json > reports/security/composer-audit.json || true
+          
+          # Analyse des permissions de fichiers sensibles
+          echo "🔒 Vérification des permissions de fichiers..."
+          find storage/ -type f -name "*.log" -exec ls -la {} \; > reports/security/file-permissions.txt || true
+          find . -name "*.env*" -exec ls -la {} \; >> reports/security/file-permissions.txt || true
+          
+          # Vérification de la configuration de sécurité Laravel
+          echo "🛡️ Vérification de la configuration de sécurité Laravel..."
+          php artisan config:show app.debug > reports/security/laravel-config.txt || echo "Debug mode check failed"
+          
+          # Compter les vulnérabilités critiques
+          CRITICAL_COUNT=$(jq '[.[] | select(.severity == "high" or .severity == "critical")] | length' reports/security/composer-audit.json 2>/dev/null || echo "0")
+          echo "critical-count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+          
+          echo "🔍 Vulnérabilités critiques trouvées: $CRITICAL_COUNT"
+
+      - name: 🔒 Advanced SARIF security analysis
+        if: github.event.inputs.scan_type == 'full' || github.event.inputs.scan_type == 'vulnerabilities-only' || github.event.inputs.scan_type == ''
+        run: |
+          echo "🔒 Analyse SARIF avancée..."
+          
+          # Installation de outils de sécurité supplémentaires
+          composer require --dev psalm/psalm || true
+          
+          # Analyse Psalm pour la sécurité
+          ./vendor/bin/psalm --output-format=json > reports/security/psalm-security.json || true
+          
+          # Vérification des en-têtes de sécurité dans les réponses
+          echo "🛡️ Vérification de la configuration de sécurité web..."
+          grep -r "X-Frame-Options\|Content-Security-Policy\|X-XSS-Protection" config/ > reports/security/security-headers.txt || true
+
+      - name: 📊 Security summary
+        id: security-summary
+        run: |
+          echo "📊 Génération du résumé de sécurité..."
+          
+          CRITICAL_VULNS="${{ steps.vulnerability-check.outputs.critical-count || '0' }}"
+          SECRETS_FOUND="${{ steps.secrets-scan.outputs.secrets-count || '0' }}"
+          
+          # Déterminer le statut global
+          if [ "$CRITICAL_VULNS" -gt 0 ] || [ "$SECRETS_FOUND" -gt 0 ]; then
+            SECURITY_STATUS="failed"
+            echo "❌ Problèmes de sécurité détectés"
+          else
+            SECURITY_STATUS="success"
+            echo "✅ Aucun problème de sécurité critique détecté"
+          fi
+          
+          echo "status=$SECURITY_STATUS" >> $GITHUB_OUTPUT
+          
+          # Créer un rapport de sécurité détaillé
+          cat > reports/security/security-summary.md << EOF
+          # 🔒 Rapport de Sécurité - $(date)
+          
+          ## 🎯 Statut Global: $([ "$SECURITY_STATUS" = "success" ] && echo "✅ SÉCURISÉ" || echo "❌ VULNÉRABILITÉS DÉTECTÉES")
+          
+          ## 📊 Résumé des Analyses
+          - **Vulnérabilités critiques**: $CRITICAL_VULNS
+          - **Secrets détectés**: $SECRETS_FOUND
+          - **Branche analysée**: ${{ github.ref_name }}
+          - **Type de scan**: ${{ github.event.inputs.scan_type || 'full' }}
+          
+          ## 🔍 Détails des Analyses
+          ### 🛡️ Détection de Secrets
+          - Scan TruffleHog approfondi avec historique complet
+          - Recherche de patterns Laravel spécifiques
+          - Vérification des fichiers .env
+          
+          ### 🔍 Évaluation des Vulnérabilités
+          - Audit Composer avec classification par sévérité
+          - Vérification des permissions de fichiers
+          - Analyse de la configuration Laravel
+          
+          ### 🔒 Analyse SARIF
+          - Scan Psalm pour la sécurité du code
+          - Vérification des en-têtes de sécurité web
+          EOF
+          
+          # Échec si des problèmes critiques sont détectés
+          if [ "$SECURITY_STATUS" = "failed" ]; then
+            echo "🚫 Scan de sécurité échoué - Vulnérabilités critiques détectées"
+            exit 1
+          fi
+
+      - name: 📤 Upload security reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-deep-scan-${{ github.sha }}
+          path: reports/security/
+          retention-days: 90 # Conserver plus longtemps pour la sécurité
+
+  dependency-check:
+    name: 🔍 Analyse OWASP des dépendances
+    runs-on: ubuntu-latest
+    if: github.event.inputs.scan_type == 'full' || github.event.inputs.scan_type == 'dependencies-only' || github.event.inputs.scan_type == ''
+    outputs:
+      dependency-vulnerabilities: ${{ steps.dependency-analysis.outputs.vuln-count }}
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📁 Create dependency reports directory
+        run: mkdir -p reports/dependencies
+
+      - name: 🔍 OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'Batistack'
+          path: '.'
+          format: 'ALL'
+          args: >
+            --enableRetired
+            --enableExperimental
+            --out reports/dependencies/
+            --suppression dependency-check-suppressions.xml
+
+      - name: 📊 Analyze dependency results
+        id: dependency-analysis
+        run: |
+          echo "📊 Analyse des résultats de dépendances..."
+          
+          # Compter les vulnérabilités dans le rapport JSON
+          if [ -f "reports/dependencies/dependency-check-report.json" ]; then
+            VULN_COUNT=$(jq '[.dependencies[].vulnerabilities[]?] | length' reports/dependencies/dependency-check-report.json || echo "0")
+          else
+            VULN_COUNT=0
+          fi
+          
+          echo "vuln-count=$VULN_COUNT" >> $GITHUB_OUTPUT
+          echo "🔍 Vulnérabilités de dépendances trouvées: $VULN_COUNT"
+          
+          # Créer un résumé des dépendances
+          cat > reports/dependencies/dependency-summary.md << EOF
+          # 🔍 Rapport d'Analyse des Dépendances - $(date)
+          
+          ## 📊 Résumé OWASP Dependency Check
+          - **Vulnérabilités trouvées**: $VULN_COUNT
+          - **Projet**: Batistack
+          - **Branche**: ${{ github.ref_name }}
+          
+          ## 🔗 Rapports Générés
+          - Rapport HTML détaillé
+          - Rapport JSON pour intégration
+          - Rapport XML pour outils tiers
+          EOF
+
+      - name: 📤 Upload dependency reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-${{ github.sha }}
+          path: reports/dependencies/
+          retention-days: 60
+
+  security-notifications:
+    name: 🚨 Notifications de Sécurité
+    runs-on: ubuntu-latest
+    needs: [security-deep-scan, dependency-check]
+    if: always() && (needs.security-deep-scan.outputs.security-status == 'failed' || needs.dependency-check.outputs.dependency-vulnerabilities > 0)
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🚨 Create critical security issue
+        if: (needs.security-deep-scan.outputs.critical-vulnerabilities > 0 || needs.dependency-check.outputs.dependency-vulnerabilities > 0) && (github.event.inputs.create_issue == 'true' || github.event.inputs.create_issue == '')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const criticalVulns = '${{ needs.security-deep-scan.outputs.critical-vulnerabilities }}';
+            const dependencyVulns = '${{ needs.dependency-check.outputs.dependency-vulnerabilities }}';
+            const secretsFound = '${{ needs.security-deep-scan.outputs.secrets-found }}';
+            
+            const title = `🚨 ALERTE SÉCURITÉ CRITIQUE - ${new Date().toISOString().split('T')[0]}`;
+            const body = `## 🚨 Vulnérabilités Critiques Détectées
+            
+            Le scan de sécurité approfondi a détecté des vulnérabilités critiques sur la branche \`${{ github.ref_name }}\`.
+            
+            ### 📊 Résumé des Menaces
+            - **🔴 Vulnérabilités critiques**: ${criticalVulns}
+            - **📦 Vulnérabilités de dépendances**: ${dependencyVulns}
+            - **🔑 Secrets détectés**: ${secretsFound}
+            
+            ### 🚨 ACTIONS URGENTES REQUISES
+            - [ ] **PRIORITÉ 1**: Corriger les vulnérabilités critiques
+            - [ ] **PRIORITÉ 2**: Mettre à jour les dépendances vulnérables
+            - [ ] **PRIORITÉ 3**: Supprimer/sécuriser les secrets détectés
+            - [ ] **PRIORITÉ 4**: Relancer le scan après corrections
+            
+            ### 🔗 Ressources
+            - [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            - [Commit](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            - [Rapports de sécurité](artifacts)
+            
+            ### ⚠️ ATTENTION
+            **Cette issue contient des informations sensibles de sécurité.**
+            **Ne pas partager publiquement les détails des vulnérabilités.**
+            
+            ---
+            *Issue créée automatiquement par le Security Deep Scan*`;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['security', 'critical', 'vulnerability', 'urgent']
+            });
+
+  summary:
+    name: 📋 Résumé Sécurité
+    runs-on: ubuntu-latest
+    needs: [security-deep-scan, dependency-check, security-notifications]
+    if: always()
+    steps:
+      - name: 📋 Generate security summary
+        run: |
+          echo "## 🔒 Résumé Security Deep Scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Statut: ${{ needs.security-deep-scan.outputs.security-status == 'success' && '✅ SÉCURISÉ' || '❌ VULNÉRABILITÉS' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Détections:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vulnérabilités critiques**: ${{ needs.security-deep-scan.outputs.critical-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Secrets détectés**: ${{ needs.security-deep-scan.outputs.secrets-found || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vulnérabilités dépendances**: ${{ needs.dependency-check.outputs.dependency-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔍 Type de scan: ${{ github.event.inputs.scan_type || 'full' }}" >> $GITHUB_STEP_SUMMARY
+          echo "### 📅 Exécuté le: $(date)" >> $GITHUB_STEP_SUMMARY

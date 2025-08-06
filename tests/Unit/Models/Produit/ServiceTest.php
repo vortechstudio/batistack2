@@ -25,13 +25,13 @@ describe('Service Model', function () {
             $reference = Service::generateReference();
 
             expect($reference)->toStartWith('SRV-')
-                ->and(strlen($reference))->toBe(10); // SRV- + 6 chiffres
+                ->and(mb_strlen($reference))->toBe(10); // SRV- + 6 chiffres
         });
 
         it('génère des références séquentielles', function () {
             $count = Service::count();
             $reference = Service::generateReference();
-            $expectedNumber = str_pad((string)($count + 1), 6, '0', STR_PAD_LEFT);
+            $expectedNumber = mb_str_pad((string) ($count + 1), 6, '0', STR_PAD_LEFT);
 
             expect($reference)->toBe("SRV-{$expectedNumber}");
         });

@@ -45,13 +45,13 @@ describe('Produit Model', function () {
             $reference = Produit::generateReference();
 
             expect($reference)->toStartWith('PRD-')
-                ->and(strlen($reference))->toBe(10); // PRD- + 6 chiffres
+                ->and(mb_strlen($reference))->toBe(10); // PRD- + 6 chiffres
         });
 
         it('génère des références séquentielles', function () {
             $count = Produit::count();
             $reference = Produit::generateReference();
-            $expectedNumber = str_pad((string)($count + 1), 6, '0', STR_PAD_LEFT);
+            $expectedNumber = mb_str_pad((string) ($count + 1), 6, '0', STR_PAD_LEFT);
 
             expect($reference)->toBe("PRD-{$expectedNumber}");
         });

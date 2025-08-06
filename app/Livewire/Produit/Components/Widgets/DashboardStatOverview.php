@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Produit\Components\Widgets;
 
 use App\Models\Produit\Produit;
@@ -7,7 +9,7 @@ use App\Models\Produit\Service;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class DashboardStatOverview extends StatsOverviewWidget
+final class DashboardStatOverview extends StatsOverviewWidget
 {
     protected function getStats(): array
     {

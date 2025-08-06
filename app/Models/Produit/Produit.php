@@ -33,23 +33,13 @@ final class Produit extends Model
         'llh_unite' => UniteMesure::class,
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-        self::creating(function ($produit) {
-            if(empty($produit->reference)) {
-                $produit->reference = self::generateReference();
-            }
-        });
-    }
-
     /**
      * Génère une référence unique pour le produit
      */
     public static function generateReference(): string
     {
         $prefix = 'PRD';
-        $number = str_pad((string)(self::count() + 1), 6, '0', STR_PAD_LEFT);
+        $number = mb_str_pad((string) (self::count() + 1), 6, '0', STR_PAD_LEFT);
 
         return $prefix.'-'.$number;
     }
@@ -195,5 +185,15 @@ final class Produit extends Model
             $this->hauteur,
             $this->llh_unite->symbol()
         );
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        self::creating(function ($produit) {
+            if (empty($produit->reference)) {
+                $produit->reference = self::generateReference();
+            }
+        });
     }
 }

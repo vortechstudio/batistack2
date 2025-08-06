@@ -23,8 +23,8 @@ final class Service extends Model
     public static function generateReference(): string
     {
         $prefix = 'SRV';
-        $count = self::count()+1;
-        $number = mb_str_pad((string)$count, 6, '0', STR_PAD_LEFT);
+        $count = self::count() + 1;
+        $number = mb_str_pad((string) $count, 6, '0', STR_PAD_LEFT);
 
         return $prefix.'-'.$number;
     }

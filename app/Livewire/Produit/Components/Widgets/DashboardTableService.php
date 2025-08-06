@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Produit\Components\Widgets;
 
 use App\Models\Produit\Service;
@@ -9,7 +11,7 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 
-class DashboardTableService extends TableWidget
+final class DashboardTableService extends TableWidget
 {
     public function table(Table $table): Table
     {

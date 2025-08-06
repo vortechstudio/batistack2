@@ -1,293 +1,293 @@
-name: 🏗️ Développement de Module
-description: Template pour le développement d'un nouveau module ou fonctionnalité
+name: 🏗️ Module Development
+description: Planifier le développement d'un nouveau module ou l'évolution d'un module existant
 title: "[MODULE] "
-labels: ["module", "enhancement"]
+labels: ["module", "development", "epic"]
 assignees: []
-
 body:
-  - type: dropdown
-    id: module
+  - type: markdown
     attributes:
-      label: Module concerné
-      description: Sélectionnez le module principal concerné par cette issue
+      value: |
+        Ce template est destiné à planifier le développement de modules dans Batistack.
+
+        **Types de modules supportés :**
+        - 🏗️ Chantiers, 👥 RH, 🏢 Tiers, 💰 Commerce, 📦 Produits, ⚙️ Core
+
+        **Architecture modulaire :**
+        - Chaque module suit la structure Laravel/Livewire
+        - Tests automatisés par module (CI/CD)
+        - Documentation intégrée
+
+  - type: dropdown
+    id: module_type
+    attributes:
+      label: 🎯 Type de développement
+      description: S'agit-il d'un nouveau module ou de l'évolution d'un existant ?
       options:
-        # Modules existants
+        - "🆕 Nouveau module"
+        - "🔄 Évolution module existant"
+        - "🔧 Refactoring module"
+        - "🐛 Correction module"
+        - "⚡ Optimisation performance"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target_module
+    attributes:
+      label: 🏗️ Module cible
+      description: Quel module est concerné ?
+      options:
         - "🏗️ Chantiers"
         - "👥 RH (Ressources Humaines)"
-        - "🏢 Tiers"
-        - "💼 Commerce"
-        - "⚙️ Core (Système)"
-        # Modules en développement/planifiés
-        - "📦 Produits/Services"
-        - "🏭 GPAO (Gestion Production)"
-        - "💰 Facturation Avancée"
-        - "📊 Comptabilité"
-        - "🏢 Immobilisations"
-        - "📁 GED (Gestion Documentaire)"
-        - "🚗 Véhicules"
-        - "📋 Contrats/Abonnements"
-        - "📱 Portail Client"
-        - "🔧 Settings (Paramètres)"
-        - "🎯 Actions (Workflows)"
-        # Modules transversaux
-        - "⚙️ Infrastructure & DevOps"
-        - "🎨 UX/UI & Design System"
-        - "🔒 Sécurité & Authentification"
-        - "📊 Analytics & Reporting"
-        - "🔗 Intégrations & API"
-        - "📧 Notifications & Communications"
-        # Autre
-        - "🆕 Nouveau module"
-        - "🔧 Autre"
+        - "🏢 Tiers (Clients/Fournisseurs)"
+        - "💰 Commerce (Devis/Factures)"
+        - "📦 Produits & Services"
+        - "⚙️ Core (Infrastructure)"
+        - "🆕 Nouveau module à créer"
     validations:
       required: true
 
   - type: input
-    id: custom_module
+    id: module_name
     attributes:
-      label: Nom du module personnalisé
-      description: Si vous avez sélectionné "Nouveau module" ou "Autre", précisez le nom
-      placeholder: "Ex: Gestion des Stocks, Module Qualité, etc."
-    validations:
-      required: false
+      label: 📛 Nom du module (si nouveau)
+      description: Nom du nouveau module (ex: "Véhicules", "GPAO", "Comptabilité")
+      placeholder: "Nom du module"
 
   - type: dropdown
     id: priority
     attributes:
-      label: Priorité
-      description: Niveau de priorité de cette fonctionnalité
+      label: 📊 Priorité roadmap
+      description: Quelle est la priorité de ce développement ?
       options:
-        - "🔴 Critique (P0)"
-        - "🟠 Haute (P1)"
-        - "🟡 Moyenne (P2)"
-        - "🟢 Basse (P3)"
-        - "🔵 Nice-to-have (P4)"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: type
-    attributes:
-      label: Type de développement
-      description: Type de travail à effectuer
-      options:
-        - "✨ Nouvelle fonctionnalité"
-        - "🔧 Amélioration existante"
-        - "🐛 Correction de bug"
-        - "📚 Documentation"
-        - "🧪 Tests"
-        - "♻️ Refactoring"
-        - "🎨 Interface utilisateur"
-        - "⚡ Performance"
-        - "🔒 Sécurité"
-        - "🔗 Intégration"
-        - "📱 Mobile/Responsive"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: complexity
-    attributes:
-      label: Complexité technique
-      description: Évaluation de la complexité technique
-      options:
-        - "🟢 Simple (configuration, UI basique)"
-        - "🟡 Modérée (logique métier, API)"
-        - "🟠 Complexe (architecture, intégrations)"
-        - "🔴 Très complexe (refactoring majeur, nouveau système)"
-    validations:
-      required: false
-
-  - type: textarea
-    id: description
-    attributes:
-      label: Description détaillée
-      description: Décrivez en détail la fonctionnalité à développer ou le problème à résoudre
-      placeholder: |
-        Exemple :
-        - **Contexte métier** : Pourquoi cette fonctionnalité est nécessaire
-        - **Problème actuel** : Quelle limitation ou problème résoudre
-        - **Solution proposée** : Comment cette fonctionnalité va résoudre le problème
-        - **Impact attendu** : Bénéfices pour les utilisateurs et l'entreprise
-        - **Utilisateurs concernés** : Qui va utiliser cette fonctionnalité
+        - "🔴 P0 - Critique (release bloquante)"
+        - "🟠 P1 - Haute (prochaine release)"
+        - "🟡 P2 - Moyenne (release future)"
+        - "🔵 P3 - Basse (backlog)"
     validations:
       required: true
 
   - type: textarea
-    id: acceptance_criteria
+    id: business_context
     attributes:
-      label: Critères d'acceptation
-      description: Listez les critères qui définissent quand cette fonctionnalité sera considérée comme terminée
+      label: 💼 Contexte métier
+      description: Pourquoi ce module/évolution est-il nécessaire ?
       placeholder: |
-        **Fonctionnalités :**
-        - [ ] Critère fonctionnel 1
-        - [ ] Critère fonctionnel 2
-        - [ ] Critère fonctionnel 3
+        Exemple : Le secteur BTP nécessite une gestion spécialisée des véhicules et engins de chantier avec :
+        - Suivi des contrôles techniques
+        - Gestion des carnets d'entretien
+        - Planification des révisions
+        - Suivi consommation carburant
+    validations:
+      required: true
 
-        **Qualité :**
-        - [ ] Tests unitaires écrits et passants
-        - [ ] Tests d'intégration si nécessaire
-        - [ ] Documentation technique mise à jour
-        - [ ] Documentation utilisateur créée/mise à jour
+  - type: textarea
+    id: functional_specs
+    attributes:
+      label: 📋 Spécifications fonctionnelles
+      description: Quelles sont les fonctionnalités attendues ?
+      placeholder: |
+        ## Fonctionnalités principales
+        - [ ] Gestion du parc véhicules
+        - [ ] Suivi des contrôles techniques
+        - [ ] Planification maintenance
+        - [ ] Tableau de bord coûts
 
-        **Performance :**
-        - [ ] Temps de réponse < X secondes
-        - [ ] Compatible mobile/responsive
-
-        **Sécurité :**
-        - [ ] Validation des données d'entrée
-        - [ ] Gestion des permissions appropriée
+        ## Intégrations
+        - [ ] Module Chantiers (affectation véhicules)
+        - [ ] Module RH (conducteurs autorisés)
+        - [ ] Module Commerce (facturation kilométrage)
     validations:
       required: true
 
   - type: textarea
     id: technical_specs
     attributes:
-      label: Spécifications techniques
-      description: Détails techniques, architecture, dépendances, etc.
+      label: ⚙️ Spécifications techniques
+      description: Architecture technique et contraintes
       placeholder: |
-        **Base de données :**
-        - Modèles à créer/modifier :
-        - Migrations nécessaires :
-        - Relations entre modèles :
+        ## Modèles Eloquent
+        - Vehicule (id, immatriculation, type, marque, modèle...)
+        - VehiculeEntretien (id, vehicule_id, type, date, cout...)
+        - VehiculeAffectation (id, vehicule_id, chantier_id, employe_id...)
 
-        **Backend :**
-        - Contrôleurs/Actions :
-        - Services/Jobs :
-        - API endpoints :
-        - Validations/Rules :
+        ## Composants Livewire
+        - VehiculeTable (liste des véhicules)
+        - VehiculeForm (création/édition)
+        - VehiculeEntretienTable (historique maintenance)
 
-        **Frontend :**
-        - Composants Livewire :
-        - Vues Blade :
-        - JavaScript/Alpine :
+        ## Migrations
+        - create_vehicules_table
+        - create_vehicule_entretiens_table
+        - create_vehicule_affectations_table
 
-        **Dépendances :**
-        - Packages Composer :
-        - Packages NPM :
-        - Services externes :
-
-        **Configuration :**
-        - Variables d'environnement :
-        - Fichiers de config :
+        ## Tests
+        - VehiculeTest (CRUD)
+        - VehiculeEntretienTest (logique métier)
+        - VehiculePerformanceTest (requêtes N+1)
     validations:
-      required: false
+      required: true
 
   - type: textarea
-    id: mockups
+    id: database_schema
     attributes:
-      label: Maquettes/Wireframes
-      description: Liens vers les maquettes, captures d'écran ou descriptions de l'interface
+      label: 🗄️ Schéma base de données
+      description: Structure des tables et relations
+      render: sql
       placeholder: |
-        **Design :**
-        - Lien vers Figma/Sketch :
-        - Captures d'écran existantes :
+        -- Table principale
+        CREATE TABLE vehicules (
+            id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            immatriculation VARCHAR(20) UNIQUE NOT NULL,
+            type ENUM('voiture', 'camion', 'engin') NOT NULL,
+            marque VARCHAR(100) NOT NULL,
+            modele VARCHAR(100) NOT NULL,
+            annee YEAR NOT NULL,
+            created_at TIMESTAMP NULL,
+            updated_at TIMESTAMP NULL
+        );
 
-        **UX/UI :**
-        - Description du parcours utilisateur :
-        - Interactions spécifiques :
-        - États d'erreur/succès :
+        -- Relations
+        ALTER TABLE vehicule_affectations
+        ADD FOREIGN KEY (vehicule_id) REFERENCES vehicules(id);
 
-        **Responsive :**
-        - Comportement mobile :
-        - Adaptations tablette :
-    validations:
-      required: false
+  - type: textarea
+    id: ui_mockups
+    attributes:
+      label: 🎨 Maquettes UI/UX
+      description: Captures d'écran, wireframes ou liens vers les maquettes
+      placeholder: |
+        Ajoutez ici :
+        - Captures d'écran des interfaces
+        - Liens Figma/Sketch
+        - Wireframes papier scannés
+        - Références d'autres applications
 
-  - type: dropdown
+  - type: textarea
+    id: testing_strategy
+    attributes:
+      label: 🧪 Stratégie de tests
+      description: Plan de tests pour ce module
+      placeholder: |
+        ## Tests unitaires
+        - [ ] Modèles Eloquent (relations, scopes, mutators)
+        - [ ] Services métier (calculs, validations)
+        - [ ] Helpers et utilitaires
+
+        ## Tests d'intégration
+        - [ ] Composants Livewire (rendu, interactions)
+        - [ ] Workflows complets (création → modification → suppression)
+        - [ ] Intégrations inter-modules
+
+        ## Tests de performance
+        - [ ] Requêtes N+1 (eager loading)
+        - [ ] Temps de réponse des pages
+        - [ ] Charge mémoire
+
+        ## Tests fonctionnels
+        - [ ] Parcours utilisateur complets
+        - [ ] Gestion des erreurs
+        - [ ] Validation des formulaires
+
+  - type: textarea
+    id: migration_plan
+    attributes:
+      label: 🔄 Plan de migration (si applicable)
+      description: Comment migrer les données existantes ?
+      placeholder: |
+        Si ce module remplace ou étend des fonctionnalités existantes :
+        - Migration des données existantes
+        - Compatibilité ascendante
+        - Plan de rollback
+        - Communication aux utilisateurs
+
+  - type: input
     id: estimated_effort
     attributes:
-      label: Estimation d'effort
-      description: Estimation approximative du temps de développement
-      options:
-        - "🕐 1-2 heures (hotfix, config simple)"
-        - "🕑 Demi-journée (petite fonctionnalité)"
-        - "🕒 1 jour (fonctionnalité simple)"
-        - "🕓 2-3 jours (fonctionnalité moyenne)"
-        - "🕔 1 semaine (fonctionnalité complexe)"
-        - "🕕 2 semaines (module complet)"
-        - "🕖 1 mois (gros module)"
-        - "🕗 Plus d'1 mois (refactoring majeur)"
-    validations:
-      required: false
+      label: ⏱️ Effort estimé
+      description: Estimation en jours/homme
+      placeholder: "Ex: 15 jours/homme"
 
-  - type: checkboxes
+  - type: textarea
     id: dependencies
     attributes:
-      label: Dépendances et blocages
-      description: Cette fonctionnalité dépend-elle d'autres développements ?
-      options:
-        - label: "🚫 Cette issue bloque d'autres développements"
-        - label: "⏳ Cette issue dépend d'autres issues en cours"
-        - label: "✅ Nécessite une validation métier avant développement"
-        - label: "👥 Nécessite des tests utilisateurs"
-        - label: "🔒 Nécessite une validation sécurité"
-        - label: "📊 Nécessite une analyse de performance"
-        - label: "🎨 Nécessite une validation UX/UI"
-        - label: "📱 Doit être compatible mobile"
+      label: 🔗 Dépendances
+      description: Quelles sont les dépendances de ce développement ?
+      placeholder: |
+        ## Dépendances techniques
+        - [ ] Nouveau package Composer : xyz/package
+        - [ ] Mise à jour Laravel vers version X
+        - [ ] Configuration serveur spécifique
+
+        ## Dépendances fonctionnelles
+        - [ ] Module Chantiers doit être finalisé
+        - [ ] API externe à intégrer
+        - [ ] Formation équipe nécessaire
 
   - type: textarea
-    id: linked_issues
+    id: acceptance_criteria
     attributes:
-      label: Issues liées
-      description: Références vers d'autres issues en relation
+      label: ✅ Critères d'acceptation
+      description: Comment savoir que le développement est terminé ?
       placeholder: |
-        **Dépendances :**
-        - Bloque : #123, #456
-        - Dépend de : #789, #012
+        ## Critères fonctionnels
+        - [ ] Toutes les user stories sont implémentées
+        - [ ] Interface utilisateur validée par l'équipe métier
+        - [ ] Intégrations avec modules existants fonctionnelles
 
-        **Liées :**
-        - Voir aussi : #345, #678
-        - Epic parent : #999
-    validations:
-      required: false
+        ## Critères techniques
+        - [ ] Couverture de tests > 80%
+        - [ ] Aucune régression détectée
+        - [ ] Performance conforme aux standards
+        - [ ] Documentation technique à jour
 
-  - type: textarea
-    id: additional_context
-    attributes:
-      label: Contexte supplémentaire
-      description: Toute information supplémentaire utile
-      placeholder: |
-        **Documentation :**
-        - Liens vers la documentation existante
-        - Spécifications métier
-        - Standards techniques à respecter
+        ## Critères qualité
+        - [ ] Code review validé
+        - [ ] Standards de codage respectés
+        - [ ] Sécurité validée (pas de vulnérabilités)
 
-        **Références :**
-        - Issues GitHub liées
-        - Pull requests en relation
-        - Discussions Slack/Teams
-
-        **Contraintes :**
-        - Limitations techniques
-        - Contraintes de temps
-        - Compatibilité requise
-
-        **Notes :**
-        - Informations importantes
-        - Décisions prises
-        - Points d'attention
-    validations:
-      required: false
-
-  # Ajouter section pour les tests de performance
   - type: checkboxes
-    id: performance_requirements
+    id: ci_cd_integration
     attributes:
-      label: Exigences de performance
+      label: 🔄 Intégration CI/CD
+      description: Ce module sera-t-il intégré dans les workflows automatisés ?
       options:
-        - label: "⚡ Tests de performance requis"
-        - label: "🔍 Vérification requêtes N+1"
-        - label: "💾 Optimisation mémoire"
-        - label: "📊 Métriques de monitoring"
+        - label: Tests automatisés dans le pipeline CI/CD
+          required: true
+        - label: Détection automatique des changements du module
+          required: true
+        - label: Déploiement automatique en staging
+          required: false
+        - label: Métriques de performance surveillées
+          required: false
 
-  # Ajouter section pour la sécurité
   - type: checkboxes
-    id: security_requirements
+    id: documentation
     attributes:
-      label: Exigences de sécurité
+      label: 📚 Documentation
+      description: Quelle documentation sera produite ?
       options:
-        - label: "🔒 Validation des entrées"
-        - label: "🛡️ Protection CSRF"
-        - label: "👤 Gestion des permissions"
-        - label: "🔐 Chiffrement des données sensibles"
+        - label: Documentation utilisateur (guide d'utilisation)
+          required: true
+        - label: Documentation technique (architecture, API)
+          required: true
+        - label: Guide de migration (si applicable)
+          required: false
+        - label: Tutoriels vidéo
+          required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ Checklist développement
+      options:
+        - label: Les spécifications sont complètes et validées
+          required: true
+        - label: L'architecture respecte les standards du projet
+          required: true
+        - label: Les impacts sur les modules existants sont identifiés
+          required: true
+        - label: La stratégie de tests est définie
+          required: true
+        - label: Les critères d'acceptation sont mesurables
+          required: true

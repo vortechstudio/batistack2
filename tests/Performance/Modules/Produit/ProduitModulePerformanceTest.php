@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use App\Livewire\Produit\Components\Table\TableProduit;
 use App\Livewire\Produit\Components\Widgets\DashboardTableProduit;
-use App\Models\Produit\Produit;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
-use App\Models\Produit\TarifClient;
+use App\Models\Produit\Produit;
 use App\Models\Produit\ProduitStock;
+use App\Models\Produit\TarifClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
@@ -25,14 +25,14 @@ describe('Performance du module Produits', function () {
         // Créer des produits avec relations
         $produits = Produit::factory(50)->create([
             'category_id' => $this->category->id,
-            'entrepot_id' => $this->entrepot->id
+            'entrepot_id' => $this->entrepot->id,
         ]);
 
         foreach ($produits as $produit) {
             TarifClient::factory()->create(['produit_id' => $produit->id]);
             ProduitStock::factory()->create([
                 'produit_id' => $produit->id,
-                'entrepot_id' => $this->entrepot->id
+                'entrepot_id' => $this->entrepot->id,
             ]);
         }
 
@@ -51,14 +51,14 @@ describe('Performance du module Produits', function () {
         // Créer des produits avec relations
         $produits = Produit::factory(20)->create([
             'category_id' => $this->category->id,
-            'entrepot_id' => $this->entrepot->id
+            'entrepot_id' => $this->entrepot->id,
         ]);
 
         foreach ($produits as $produit) {
             TarifClient::factory()->create(['produit_id' => $produit->id]);
             ProduitStock::factory()->create([
                 'produit_id' => $produit->id,
-                'entrepot_id' => $this->entrepot->id
+                'entrepot_id' => $this->entrepot->id,
             ]);
         }
 
