@@ -13,6 +13,9 @@
     <div class="bg-gray-100 rounded-md p-4">
         <div x-show="tabs === 'produit'">
             @livewire('produit.components.card.product-card', ['produit' => $produit])
+            <div class="flex flex-row justify-end gap-2 mb-10">
+                {{ $this->editAction }}
+            </div>
             <div class="flex flex-row justify-between gap-5">
                 <div class="flex flex-col w-1/2">
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
@@ -53,4 +56,5 @@
             </div>
         </div>
     </div>
+    <x-filament-actions::modals />
 </div>
