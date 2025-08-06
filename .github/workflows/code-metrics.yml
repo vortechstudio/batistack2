@@ -77,10 +77,18 @@ jobs:
           ./vendor/bin/phpstan analyse --no-progress --error-format=json > reports/metrics/phpstan.json || true
           ./vendor/bin/phpstan analyse --no-progress --error-format=table > reports/metrics/phpstan.txt || true
 
-      - name: 🧪 Run tests with coverage
+      - name: Configure Laravel
         run: |
           cp .env.github .env
           php artisan key:generate
+
+      - name: Write secrets to .env
+        run: |
+          echo "BRIDGE_CLIENT_ID=${{ secrets.BRIDGE_CLIENT_ID }}" >> .env
+          echo "BRIDGE_CLIENT_SECRET=${{ secrets.BRIDGE_CLIENT_SECRET }}" >> .env
+
+      - name: 🧪 Run tests with coverage
+        run: |
           php artisan migrate --force
           ./vendor/bin/pest --coverage --coverage-clover=reports/metrics/coverage.xml --coverage-html=reports/metrics/coverage
 
