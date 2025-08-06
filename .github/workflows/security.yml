@@ -441,7 +441,9 @@ jobs:
           # Utiliser d'abord le résumé structuré s'il existe
           if [ -f "./security-reports/secrets-summary.md" ]; then
             echo "✅ Utilisation du résumé structuré des secrets"
-            SECRETS_DETAILS=$(cat "./security-reports/secrets-summary.md")
+            
+            # Copier d'abord le résumé structuré
+            cp "./security-reports/secrets-summary.md" ./extracted-details/secrets.md
             
             # Ajouter les détails si des secrets ont été trouvés
             if [ -f "./security-reports/sensitive-patterns.txt" ] && [ -s "./security-reports/sensitive-patterns.txt" ]; then
@@ -468,13 +470,6 @@ jobs:
                 echo "> ⚠️ **Note**: Seules les 15 premières détections sont affichées. Total: $total_secrets détections." >> ./extracted-details/secrets.md
                 echo "> Consultez les rapports complets dans les artifacts pour voir toutes les détections." >> ./extracted-details/secrets.md
               fi
-              
-              # Ajouter le résumé structuré au début
-              cat "./security-reports/secrets-summary.md" > ./extracted-details/secrets.md
-              echo "" >> ./extracted-details/secrets.md
-              cat ./extracted-details/secrets.md >> ./extracted-details/secrets.md
-            else
-              cat "./security-reports/secrets-summary.md" > ./extracted-details/secrets.md
             fi
             
             SECRETS_DETAILS=$(cat ./extracted-details/secrets.md)
