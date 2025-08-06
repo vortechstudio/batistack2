@@ -332,7 +332,7 @@ jobs:
           key: vendor-${{ github.sha }}-${{ needs.detect-environment.outputs.environment }}
 
       - name: 📋 Copy environment file
-        run: cp .env.github .env
+        run: echo '${{ secrets.GH_ENV }}' > .env
 
       - name: 🔑 Generate application key
         run: php artisan key:generate
