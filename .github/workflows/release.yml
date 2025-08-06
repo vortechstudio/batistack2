@@ -2,53 +2,84 @@ name: 📦 Release
 
 on:
   push:
-    tags: [ 'v*' ]
+    branches: [ production ]
   workflow_dispatch:
 
 jobs:
   release:
-    name: 📦 Create Release
+    name: 📦 Semantic Release
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/production'
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 📋 Generate changelog
-        id: changelog
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Analyze changed modules
+        id: modules
         run: |
-          # Générer le changelog depuis le dernier tag
-          LAST_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+          # Analyser les modules modifiés depuis le dernier tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -n "$LAST_TAG" ]; then
-            CHANGELOG=$(git log $LAST_TAG..HEAD --pretty=format:"- %s" --no-merges)
+            CHANGED_FILES=$(git diff --name-only $LAST_TAG..HEAD)
           else
-            CHANGELOG=$(git log --pretty=format:"- %s" --no-merges)
+            CHANGED_FILES=$(git ls-files)
           fi
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # Détecter les modules modifiés
+          MODULES=""
+          if echo "$CHANGED_FILES" | grep -q "app/.*Chantiers\|app/Models/Chantiers"; then
+            MODULES="$MODULES🏢 Chantiers "
+          fi
+          if echo "$CHANGED_FILES" | grep -q "app/.*RH\|app/Models/RH"; then
+            MODULES="$MODULES👥 RH "
+          fi
+          if echo "$CHANGED_FILES" | grep -q "app/.*Tiers\|app/Models/Tiers"; then
+            MODULES="$MODULES🤝 Tiers "
+          fi
+          if echo "$CHANGED_FILES" | grep -q "app/.*Commerce\|app/Models/Commerce"; then
+            MODULES="$MODULES💼 Commerce "
+          fi
+          if echo "$CHANGED_FILES" | grep -q "app/.*Produit\|app/Models/Produit"; then
+            MODULES="$MODULES📦 Produits "
+          fi
+          if echo "$CHANGED_FILES" | grep -q "app/.*Core\|app/Models/Core"; then
+            MODULES="$MODULES⚙️ Core "
+          fi
+          
+          echo "modules=$MODULES" >> $GITHUB_OUTPUT
 
-      - name: 📦 Create Release
-        uses: actions/create-release@v1
+      - name: 🚀 Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            ## 🎉 Nouvelle version de Batistack
+          MODULES_CHANGED: ${{ steps.modules.outputs.modules }}
+        run: npx semantic-release
 
-            ### 📋 Changements
-            ${{ steps.changelog.outputs.changelog }}
-
-            ### 🏗️ Modules mis à jour
-            Cette version inclut des améliorations sur les modules suivants :
-            - 🏢 Chantiers
-            - 👥 RH
-            - 🤝 Tiers
-            - 💼 Commerce
-            - 📦 Produits & Services
-
-          draft: false
-          prerelease: false
+      - name: 📊 Release Summary
+        if: success()
+        run: |
+          echo "## 🎉 Release créée avec succès !" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🏗️ Modules modifiés dans cette release :" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ steps.modules.outputs.modules }}" ]; then
+            echo "${{ steps.modules.outputs.modules }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Aucun module spécifique détecté" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Détails :" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Version détectée automatiquement par semantic-release" >> $GITHUB_STEP_SUMMARY
+          echo "- 📝 Changelog généré automatiquement" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏷️ Tag Git créé automatiquement" >> $GITHUB_STEP_SUMMARY
+          echo "- 📦 Release GitHub créée automatiquement" >> $GITHUB_STEP_SUMMARY
