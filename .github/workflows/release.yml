@@ -10,6 +10,7 @@ permissions:
   pull-requests: write
   contents: write
 
+
 jobs:
   release:
     name: 📦 Semantic Release
@@ -68,7 +69,7 @@ jobs:
       - name: 🚀 Semantic Release
         id: semantic_release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           MODULES_CHANGED: ${{ steps.modules.outputs.modules }}
         run: |
           npx semantic-release
