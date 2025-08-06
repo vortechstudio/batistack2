@@ -87,10 +87,43 @@ jobs:
           SECRETS_COUNT=$(wc -l < reports/security/sensitive-patterns.txt || echo "0")
           echo "secrets-count=$SECRETS_COUNT" >> $GITHUB_OUTPUT
 
+          # Créer un résumé structuré des secrets pour l'issue
           if [ "$SECRETS_COUNT" -gt 0 ]; then
             echo "⚠️ $SECRETS_COUNT patterns sensibles détectés"
+            
+            # Créer un résumé des types de secrets détectés
+            echo "### 🔑 Résumé des Secrets Détectés" > reports/security/secrets-summary.md
+            echo "" >> reports/security/secrets-summary.md
+            echo "**Total détections**: $SECRETS_COUNT" >> reports/security/secrets-summary.md
+            echo "" >> reports/security/secrets-summary.md
+            
+            # Analyser les types de patterns
+            if grep -q "api_key" reports/security/sensitive-patterns.txt; then
+              API_KEYS=$(grep -c "api_key" reports/security/sensitive-patterns.txt || echo "0")
+              echo "- 🔑 **Clés API**: $API_KEYS détections" >> reports/security/secrets-summary.md
+            fi
+            
+            if grep -q "password" reports/security/sensitive-patterns.txt; then
+              PASSWORDS=$(grep -c "password" reports/security/sensitive-patterns.txt || echo "0")
+              echo "- 🔒 **Mots de passe**: $PASSWORDS détections" >> reports/security/secrets-summary.md
+            fi
+            
+            if grep -q "token" reports/security/sensitive-patterns.txt; then
+              TOKENS=$(grep -c "token" reports/security/sensitive-patterns.txt || echo "0")
+              echo "- 🎫 **Tokens**: $TOKENS détections" >> reports/security/secrets-summary.md
+            fi
+            
+            if grep -q "secret" reports/security/sensitive-patterns.txt; then
+              SECRETS=$(grep -c "secret" reports/security/sensitive-patterns.txt || echo "0")
+              echo "- 🤫 **Secrets**: $SECRETS détections" >> reports/security/secrets-summary.md
+            fi
+            
+            echo "" >> reports/security/secrets-summary.md
+            echo "> ⚠️ **Action immédiate requise**: Tous ces éléments doivent être supprimés du code source." >> reports/security/secrets-summary.md
           else
             echo "✅ Aucun pattern sensible détecté"
+            echo "### 🔑 Secrets et Patterns Sensibles" > reports/security/secrets-summary.md
+            echo "✅ **Aucun secret détecté** - Le code source est propre." >> reports/security/secrets-summary.md
           fi
 
       - name: 🔍 Vulnerability assessment
@@ -380,6 +413,294 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
+      - name: 📥 Download security reports
+        if: always()
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-${{ github.sha }}'
+          path: ./security-reports/
+          merge-multiple: true
+
+      - name: 🔍 Extract vulnerability details
+        id: extract-details
+        if: always()
+        run: |
+          echo "🔍 Extraction des détails des vulnérabilités..."
+          
+          # Créer les répertoires nécessaires
+          mkdir -p ./extracted-details
+          
+          # Initialiser les variables
+          SECRETS_DETAILS=""
+          DEPENDENCY_DETAILS=""
+          CODE_VULNS_DETAILS=""
+          
+          # === EXTRACTION DES SECRETS ===
+          echo "🔑 Extraction des secrets détectés..."
+          
+          # Utiliser d'abord le résumé structuré s'il existe
+          if [ -f "./security-reports/secrets-summary.md" ]; then
+            echo "✅ Utilisation du résumé structuré des secrets"
+            SECRETS_DETAILS=$(cat "./security-reports/secrets-summary.md")
+            
+            # Ajouter les détails si des secrets ont été trouvés
+            if [ -f "./security-reports/sensitive-patterns.txt" ] && [ -s "./security-reports/sensitive-patterns.txt" ]; then
+              echo "" >> ./extracted-details/secrets.md
+              echo "#### 📋 Détails des Détections" >> ./extracted-details/secrets.md
+              echo "" >> ./extracted-details/secrets.md
+              echo "| Fichier | Ligne | Pattern Détecté |" >> ./extracted-details/secrets.md
+              echo "|---------|-------|-----------------|" >> ./extracted-details/secrets.md
+              
+              # Traiter les patterns sensibles (limiter à 15 pour éviter les issues trop longues)
+              head -15 "./security-reports/sensitive-patterns.txt" | while IFS=':' read -r file line content; do
+                if [ -n "$file" ] && [ -n "$line" ] && [ -n "$content" ]; then
+                  # Nettoyer le contenu pour éviter les caractères problématiques
+                  clean_content=$(echo "$content" | sed 's/|/\\|/g' | sed 's/`/\\`/g' | cut -c1-80)
+                  clean_file=$(echo "$file" | sed 's/|/\\|/g')
+                  echo "| \`$clean_file\` | $line | \`$clean_content...\` |" >> ./extracted-details/secrets.md
+                fi
+              done
+              
+              # Ajouter un avertissement si plus de 15 détections
+              total_secrets=$(wc -l < "./security-reports/sensitive-patterns.txt" 2>/dev/null || echo "0")
+              if [ "$total_secrets" -gt 15 ]; then
+                echo "" >> ./extracted-details/secrets.md
+                echo "> ⚠️ **Note**: Seules les 15 premières détections sont affichées. Total: $total_secrets détections." >> ./extracted-details/secrets.md
+                echo "> Consultez les rapports complets dans les artifacts pour voir toutes les détections." >> ./extracted-details/secrets.md
+              fi
+              
+              # Ajouter le résumé structuré au début
+              cat "./security-reports/secrets-summary.md" > ./extracted-details/secrets.md
+              echo "" >> ./extracted-details/secrets.md
+              cat ./extracted-details/secrets.md >> ./extracted-details/secrets.md
+            else
+              cat "./security-reports/secrets-summary.md" > ./extracted-details/secrets.md
+            fi
+            
+            SECRETS_DETAILS=$(cat ./extracted-details/secrets.md)
+          elif [ -f "./security-reports/sensitive-patterns.txt" ] && [ -s "./security-reports/sensitive-patterns.txt" ]; then
+            echo "⚠️ Utilisation du fallback pour les secrets"
+            echo "### 🔑 Secrets et Patterns Sensibles Détectés" > ./extracted-details/secrets.md
+            echo "" >> ./extracted-details/secrets.md
+            echo "| Fichier | Ligne | Pattern Détecté |" >> ./extracted-details/secrets.md
+            echo "|---------|-------|-----------------|" >> ./extracted-details/secrets.md
+            
+            # Traiter les patterns sensibles (limiter à 15 pour éviter les issues trop longues)
+            head -15 "./security-reports/sensitive-patterns.txt" | while IFS=':' read -r file line content; do
+              if [ -n "$file" ] && [ -n "$line" ] && [ -n "$content" ]; then
+                # Nettoyer le contenu pour éviter les caractères problématiques
+                clean_content=$(echo "$content" | sed 's/|/\\|/g' | sed 's/`/\\`/g' | cut -c1-80)
+                clean_file=$(echo "$file" | sed 's/|/\\|/g')
+                echo "| \`$clean_file\` | $line | \`$clean_content...\` |" >> ./extracted-details/secrets.md
+              fi
+            done
+            
+            total_secrets=$(wc -l < "./security-reports/sensitive-patterns.txt" 2>/dev/null || echo "0")
+            if [ "$total_secrets" -gt 15 ]; then
+              echo "" >> ./extracted-details/secrets.md
+              echo "> ⚠️ **Note**: Seules les 15 premières détections sont affichées. Total: $total_secrets détections." >> ./extracted-details/secrets.md
+            fi
+            
+            SECRETS_DETAILS=$(cat ./extracted-details/secrets.md)
+          else
+            echo "✅ Aucun secret détecté"
+            SECRETS_DETAILS="### 🔑 Secrets et Patterns Sensibles\n✅ Aucun secret ou pattern sensible détecté."
+          fi
+          
+          # === EXTRACTION DES VULNÉRABILITÉS DE DÉPENDANCES ===
+          echo "📦 Extraction des vulnérabilités de dépendances..."
+          
+          # Utiliser d'abord le résumé structuré s'il existe
+          if [ -f "./security-reports/dependency-summary.md" ]; then
+            echo "✅ Utilisation du résumé structuré des dépendances"
+            DEPENDENCIES_DETAILS=$(cat "./security-reports/dependency-summary.md")
+             
+             # Ajouter les détails si des vulnérabilités ont été trouvées
+             if [ -f "./security-reports/dependency-check-report.json" ]; then
+               # Vérifier s'il y a des vulnérabilités critiques ou élevées
+               critical_count=$(jq -r '[.dependencies[]?.vulnerabilities[]? | select(.severity == "CRITICAL")] | length' "./security-reports/dependency-check-report.json" 2>/dev/null || echo "0")
+               high_count=$(jq -r '[.dependencies[]?.vulnerabilities[]? | select(.severity == "HIGH")] | length' "./security-reports/dependency-check-report.json" 2>/dev/null || echo "0")
+               
+               if [ "$critical_count" -gt 0 ] || [ "$high_count" -gt 0 ]; then
+                 echo "" >> ./extracted-details/dependencies.md
+                 echo "#### 📋 Détails des Vulnérabilités" >> ./extracted-details/dependencies.md
+                 echo "" >> ./extracted-details/dependencies.md
+                 
+                 # Extraire les vulnérabilités critiques (limiter à 8)
+                 if [ "$critical_count" -gt 0 ]; then
+                   echo "##### 🔴 Vulnérabilités Critiques ($critical_count)" >> ./extracted-details/dependencies.md
+                   echo "" >> ./extracted-details/dependencies.md
+                   jq -r '.dependencies[]? | select(.vulnerabilities[]?.severity == "CRITICAL") | .fileName as $file | .vulnerabilities[] | select(.severity == "CRITICAL") | "- **" + .name + "** dans `" + $file + "`\n  - CVE: " + (.references[]?.name // "N/A") + "\n  - Score: " + (.cvssv3?.baseScore // .cvssv2?.score // "N/A" | tostring) + "\n"' "./security-reports/dependency-check-report.json" 2>/dev/null | head -24 >> ./extracted-details/dependencies.md
+                 fi
+                 
+                 # Extraire les vulnérabilités élevées (limiter à 5)
+                 if [ "$high_count" -gt 0 ]; then
+                   echo "##### 🟠 Vulnérabilités Élevées ($high_count)" >> ./extracted-details/dependencies.md
+                   echo "" >> ./extracted-details/dependencies.md
+                   jq -r '.dependencies[]? | select(.vulnerabilities[]?.severity == "HIGH") | .fileName as $file | .vulnerabilities[] | select(.severity == "HIGH") | "- **" + .name + "** dans `" + $file + "`\n  - CVE: " + (.references[]?.name // "N/A") + "\n  - Score: " + (.cvssv3?.baseScore // .cvssv2?.score // "N/A" | tostring) + "\n"' "./security-reports/dependency-check-report.json" 2>/dev/null | head -15 >> ./extracted-details/dependencies.md
+                 fi
+                 
+                 # Ajouter le résumé structuré au début
+                 cat "./security-reports/dependency-summary.md" > ./extracted-details/dependencies.md
+                 echo "" >> ./extracted-details/dependencies.md
+                 cat ./extracted-details/dependencies.md >> ./extracted-details/dependencies.md
+               else
+                 cat "./security-reports/dependency-summary.md" > ./extracted-details/dependencies.md
+               fi
+             else
+               cat "./security-reports/dependency-summary.md" > ./extracted-details/dependencies.md
+             fi
+             
+             DEPENDENCIES_DETAILS=$(cat ./extracted-details/dependencies.md)
+          elif [ -f "./security-reports/dependency-check-report.json" ]; then
+            echo "⚠️ Utilisation du fallback pour les dépendances"
+            echo "### 📦 Vulnérabilités de Dépendances" > ./extracted-details/dependencies.md
+            echo "" >> ./extracted-details/dependencies.md
+            
+            # Extraire les vulnérabilités critiques et élevées
+            jq -r '
+              .dependencies[]? | 
+              select(.vulnerabilities != null and (.vulnerabilities | length > 0)) |
+              .vulnerabilities[] |
+              select(.severity == "CRITICAL" or .severity == "HIGH") |
+              "| \(.severity) | \(.name // "N/A") | \(.description // "N/A" | .[0:100]) | \(.references[0].url // "N/A") |"
+            ' "./security-reports/dependency-check-report.json" 2>/dev/null > ./extracted-details/dep_vulns.tmp || echo "" > ./extracted-details/dep_vulns.tmp
+            
+            if [ -s "./extracted-details/dep_vulns.tmp" ]; then
+              echo "| Sévérité | CVE/Vulnérabilité | Description | Référence |" >> ./extracted-details/dependencies.md
+              echo "|----------|-------------------|-------------|-----------|" >> ./extracted-details/dependencies.md
+              head -15 ./extracted-details/dep_vulns.tmp >> ./extracted-details/dependencies.md
+              
+              # Compter le total
+              total_dep_vulns=$(wc -l < ./extracted-details/dep_vulns.tmp)
+              if [ "$total_dep_vulns" -gt 15 ]; then
+                echo "" >> ./extracted-details/dependencies.md
+                echo "> ⚠️ **Note**: Seules les 15 vulnérabilités les plus critiques sont affichées. Total: $total_dep_vulns vulnérabilités." >> ./extracted-details/dependencies.md
+              fi
+            else
+              echo "✅ Aucune vulnérabilité critique ou élevée détectée dans les dépendances." >> ./extracted-details/dependencies.md
+            fi
+            
+            DEPENDENCIES_DETAILS=$(cat ./extracted-details/dependencies.md)
+          else
+            echo "✅ Aucune vulnérabilité de dépendance détectée"
+            DEPENDENCIES_DETAILS="### 📦 Vulnérabilités de Dépendances\n✅ Aucune vulnérabilité détectée dans les dépendances."
+          fi
+          
+          # === EXTRACTION DES VULNÉRABILITÉS DE CODE ===
+          echo "🔍 Extraction des vulnérabilités de code..."
+          if [ -f "./security-reports/composer-audit.json" ]; then
+            echo "### 🔍 Vulnérabilités de Code (Composer Audit)" > ./extracted-details/code-vulns.md
+            echo "" >> ./extracted-details/code-vulns.md
+            
+            # Extraire les vulnérabilités du composer audit
+            jq -r '
+              .[] |
+              select(.severity == "high" or .severity == "critical") |
+              "| \(.severity | ascii_upcase) | \(.package) | \(.title // "N/A" | .[0:80]) | \(.link // "N/A") |"
+            ' "./security-reports/composer-audit.json" 2>/dev/null > ./extracted-details/code_vulns.tmp || echo "" > ./extracted-details/code_vulns.tmp
+            
+            if [ -s "./extracted-details/code_vulns.tmp" ]; then
+              echo "| Sévérité | Package | Titre | Lien |" >> ./extracted-details/code-vulns.md
+              echo "|----------|---------|-------|------|" >> ./extracted-details/code-vulns.md
+              head -10 ./extracted-details/code_vulns.tmp >> ./extracted-details/code-vulns.md
+            else
+              echo "✅ Aucune vulnérabilité critique détectée dans le code." >> ./extracted-details/code-vulns.md
+            fi
+            
+            CODE_VULNS_DETAILS=$(cat ./extracted-details/code-vulns.md)
+          else
+            CODE_VULNS_DETAILS="### 🔍 Vulnérabilités de Code\n⚠️ Rapport d'audit de code non disponible."
+          fi
+          
+          # === EXTRACTION DES FICHIERS .ENV ===
+          echo "📁 Extraction des fichiers .env détectés..."
+          ENV_FILES_DETAILS=""
+          if [ -f "./security-reports/env-files.txt" ] && [ -s "./security-reports/env-files.txt" ]; then
+            echo "### 📁 Fichiers .env Détectés" > ./extracted-details/env-files.md
+            echo "" >> ./extracted-details/env-files.md
+            echo "⚠️ **ATTENTION**: Les fichiers .env suivants ont été détectés :" >> ./extracted-details/env-files.md
+            echo "" >> ./extracted-details/env-files.md
+            while read -r line; do
+              echo "- \`$line\`" >> ./extracted-details/env-files.md
+            done < "./security-reports/env-files.txt"
+            echo "" >> ./extracted-details/env-files.md
+            echo "> 🚨 **Action requise**: Vérifiez que ces fichiers ne sont pas commités dans le repository." >> ./extracted-details/env-files.md
+            
+            ENV_FILES_DETAILS=$(cat ./extracted-details/env-files.md)
+          else
+            ENV_FILES_DETAILS="### 📁 Fichiers .env\n✅ Aucun fichier .env problématique détecté."
+          fi
+          
+          # === CRÉATION DU RÉSUMÉ GLOBAL ===
+          echo "📊 Création du résumé global des détections..."
+          
+          # Compter le total des détections
+          total_secrets=$(wc -l < "./security-reports/sensitive-patterns.txt" 2>/dev/null || echo "0")
+          total_critical_deps=$(jq -r '[.dependencies[]?.vulnerabilities[]? | select(.severity == "CRITICAL")] | length' "./security-reports/dependency-check-report.json" 2>/dev/null || echo "0")
+          total_high_deps=$(jq -r '[.dependencies[]?.vulnerabilities[]? | select(.severity == "HIGH")] | length' "./security-reports/dependency-check-report.json" 2>/dev/null || echo "0")
+          total_env_files=$(find . -name "*.env*" -type f 2>/dev/null | wc -l || echo "0")
+          
+          # Créer un résumé exécutif
+          echo "## 📊 Résumé Exécutif des Détections" > ./extracted-details/executive-summary.md
+          echo "" >> ./extracted-details/executive-summary.md
+          echo "| Type de Détection | Nombre | Priorité |" >> ./extracted-details/executive-summary.md
+          echo "|-------------------|--------|----------|" >> ./extracted-details/executive-summary.md
+          echo "| 🔑 Secrets détectés | $total_secrets | 🔴 Critique |" >> ./extracted-details/executive-summary.md
+          echo "| 📦 Vulnérabilités critiques (deps) | $total_critical_deps | 🔴 Critique |" >> ./extracted-details/executive-summary.md
+          echo "| 📦 Vulnérabilités élevées (deps) | $total_high_deps | 🟠 Élevée |" >> ./extracted-details/executive-summary.md
+          echo "| 📄 Fichiers .env détectés | $total_env_files | 🟡 Modérée |" >> ./extracted-details/executive-summary.md
+          echo "" >> ./extracted-details/executive-summary.md
+          
+          # Ajouter des recommandations prioritaires
+          echo "### 🎯 Actions Prioritaires" >> ./extracted-details/executive-summary.md
+          echo "" >> ./extracted-details/executive-summary.md
+          
+          if [ "$total_secrets" -gt 0 ]; then
+            echo "1. **🔴 URGENT**: Révocation et rotation des secrets exposés" >> ./extracted-details/executive-summary.md
+          fi
+          
+          if [ "$total_critical_deps" -gt 0 ]; then
+            echo "2. **🔴 CRITIQUE**: Mise à jour des dépendances avec vulnérabilités critiques" >> ./extracted-details/executive-summary.md
+          fi
+          
+          if [ "$total_high_deps" -gt 0 ]; then
+            echo "3. **🟠 IMPORTANT**: Planifier la mise à jour des dépendances à risque élevé" >> ./extracted-details/executive-summary.md
+          fi
+          
+          if [ "$total_env_files" -gt 0 ]; then
+            echo "4. **🟡 RECOMMANDÉ**: Sécuriser les fichiers de configuration" >> ./extracted-details/executive-summary.md
+          fi
+          
+          if [ "$total_secrets" -eq 0 ] && [ "$total_critical_deps" -eq 0 ] && [ "$total_high_deps" -eq 0 ]; then
+            echo "✅ **Aucune action critique requise** - Le projet présente un bon niveau de sécurité" >> ./extracted-details/executive-summary.md
+          fi
+          
+          EXECUTIVE_SUMMARY=$(cat ./extracted-details/executive-summary.md)
+          
+          # === EXPORT DES VARIABLES ===
+          echo "EXECUTIVE_SUMMARY<<EOF" >> $GITHUB_ENV
+          echo "$EXECUTIVE_SUMMARY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          
+          echo "SECRETS_DETAILS<<EOF" >> $GITHUB_ENV
+          echo "$SECRETS_DETAILS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          
+          echo "DEPENDENCY_DETAILS<<EOF" >> $GITHUB_ENV
+          echo "$DEPENDENCY_DETAILS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          
+          echo "CODE_VULNS_DETAILS<<EOF" >> $GITHUB_ENV
+          echo "$CODE_VULNS_DETAILS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          
+          echo "ENV_FILES_DETAILS<<EOF" >> $GITHUB_ENV
+          echo "$ENV_FILES_DETAILS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          
+          echo "✅ Extraction des détails terminée"
+
       - name: 🚨 Create critical security issue
         if: (needs.security-deep-scan.outputs.critical-vulnerabilities > 0 || needs.dependency-check.outputs.critical-vuln-count > 0 || needs.security-deep-scan.outputs.secrets-found > 0) && (github.event.inputs.create_issue == 'true' || github.event.inputs.create_issue == '')
         uses: actions/github-script@v7
@@ -403,6 +724,8 @@ jobs:
 
             Le scan de sécurité approfondi a détecté des vulnérabilités sur la branche \`${{ github.ref_name }}\`.
 
+            ${{ env.EXECUTIVE_SUMMARY }}
+
             ### 📊 Résumé Détaillé des Menaces
             - **🔴 Vulnérabilités critiques (code)**: ${criticalVulns}
             - **🔴 Vulnérabilités critiques (dépendances)**: ${criticalDepVulns}
@@ -423,10 +746,43 @@ jobs:
             - [ ] Surveiller les nouvelles vulnérabilités
             `}
 
+            ## 🔍 DÉTAILS DES DÉTECTIONS
+
+            ${{ env.SECRETS_DETAILS }}
+
+            ${{ env.DEPENDENCIES_DETAILS }}
+
+            ${{ env.CODE_VULNERABILITIES_DETAILS }}
+
+            ${{ env.ENV_FILES_DETAILS }}
+
+            ## 📋 GUIDE DE RÉSOLUTION
+
+            ### 🔧 Étapes de Correction Recommandées
+
+            #### Pour les Secrets Détectés:
+            1. **Identification**: Vérifiez chaque secret listé ci-dessus
+            2. **Suppression**: Retirez les secrets du code source
+            3. **Rotation**: Changez immédiatement les clés/tokens compromis
+            4. **Sécurisation**: Utilisez des variables d'environnement ou des services de gestion de secrets
+            5. **Historique**: Nettoyez l'historique Git si nécessaire
+
+            #### Pour les Vulnérabilités de Dépendances:
+            1. **Mise à jour**: \`composer update\` pour les packages PHP
+            2. **Vérification**: \`npm audit fix\` pour les packages Node.js
+            3. **Alternatives**: Recherchez des alternatives sécurisées si les mises à jour ne sont pas disponibles
+            4. **Suppression**: Utilisez le fichier \`dependency-check-suppressions.xml\` pour les faux positifs
+
+            #### Pour les Vulnérabilités de Code:
+            1. **Analyse**: Examinez chaque vulnérabilité listée
+            2. **Correction**: Appliquez les correctifs recommandés
+            3. **Test**: Vérifiez que les corrections n'introduisent pas de régressions
+            4. **Documentation**: Documentez les changements effectués
+
             ### 🔗 Ressources et Rapports
             - [🔗 Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             - [📝 Commit](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
-            - [📊 Rapports de sécurité détaillés](artifacts)
+            - [📊 Rapports de sécurité détaillés](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             - [📋 Branche analysée](${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }})
 
             ### 📋 Détails Techniques
@@ -434,15 +790,24 @@ jobs:
             - **Déclencheur**: ${{ github.event_name }}
             - **Environnement**: ${{ github.ref_name }}
             - **SHA**: \`${{ github.sha }}\`
+            - **Date du scan**: ${new Date().toISOString()}
 
             ### ⚠️ CONFIDENTIALITÉ
             **Cette issue contient des informations sensibles de sécurité.**
             - Ne pas partager publiquement les détails des vulnérabilités
             - Limiter l'accès aux personnes autorisées
             - Traiter avec la plus haute confidentialité
+            - Supprimer cette issue après résolution des problèmes
+
+            ### ✅ Validation Post-Correction
+            Après avoir corrigé les vulnérabilités:
+            1. Relancez le workflow de sécurité: \`workflow_dispatch\`
+            2. Vérifiez que tous les scans passent au vert
+            3. Fermez cette issue en documentant les actions prises
+            4. Considérez un audit de sécurité supplémentaire si nécessaire
 
             ---
-            *Issue créée automatiquement par le Security Deep Scan v2.0*
+            *Issue créée automatiquement par le Security Deep Scan v3.0*
             *Dernière mise à jour: ${new Date().toISOString()}*`;
 
             const labels = ['security', 'vulnerability'];
