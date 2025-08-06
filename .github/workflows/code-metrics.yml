@@ -121,7 +121,47 @@ jobs:
 
           # Analyser la couverture de code
           if [ -f "reports/metrics/coverage.xml" ]; then
-            COVERAGE_SCORE=$(grep -o 'percent="[0-9.]*"' reports/metrics/coverage.xml | head -1 | grep -o '[0-9.]*' || echo "0")
+            echo "🔍 Analyse du fichier de couverture..."
+            echo "📄 Aperçu du fichier coverage.xml (premières lignes):"
+            head -20 reports/metrics/coverage.xml
+            
+            # Méthode 1: Format Clover XML (utilisé par Pest)
+            COVERAGE_SCORE=$(grep -E '<metrics.*statements=' reports/metrics/coverage.xml | head -1 | sed -n 's/.*coveredstatements="\([0-9]*\)".*statements="\([0-9]*\)".*/\1 \2/p' | awk '{if($2>0) print ($1/$2)*100; else print 0}' || echo "0")
+            
+            # Méthode 2: Chercher les métriques de couverture avec pourcentage direct
+            if [ "$COVERAGE_SCORE" = "0" ]; then
+              COVERAGE_SCORE=$(grep -E 'lines-covered|statements-covered' reports/metrics/coverage.xml | head -1 | grep -oE 'percent="[0-9.]+"' | grep -oE '[0-9.]+' || echo "0")
+            fi
+            
+            # Méthode 3: Parser les métriques du projet global
+            if [ "$COVERAGE_SCORE" = "0" ]; then
+              TOTAL_STATEMENTS=$(grep -E '<coverage.*>' reports/metrics/coverage.xml | grep -oE 'statements="[0-9]+"' | grep -oE '[0-9]+' || echo "0")
+              COVERED_STATEMENTS=$(grep -E '<coverage.*>' reports/metrics/coverage.xml | grep -oE 'coveredstatements="[0-9]+"' | grep -oE '[0-9]+' || echo "0")
+              if [ "$TOTAL_STATEMENTS" != "0" ] && [ "$COVERED_STATEMENTS" != "0" ]; then
+                COVERAGE_SCORE=$(awk "BEGIN {printf \"%.2f\", ($COVERED_STATEMENTS/$TOTAL_STATEMENTS)*100}")
+              fi
+            fi
+            
+            # Méthode 4: Parser avec xmllint si disponible
+            if [ "$COVERAGE_SCORE" = "0" ] && command -v xmllint >/dev/null 2>&1; then
+              TOTAL_STATEMENTS=$(xmllint --xpath "string(//coverage/project/metrics/@statements)" reports/metrics/coverage.xml 2>/dev/null || echo "0")
+              COVERED_STATEMENTS=$(xmllint --xpath "string(//coverage/project/metrics/@coveredstatements)" reports/metrics/coverage.xml 2>/dev/null || echo "0")
+              if [ "$TOTAL_STATEMENTS" != "0" ] && [ "$COVERED_STATEMENTS" != "0" ]; then
+                COVERAGE_SCORE=$(awk "BEGIN {printf \"%.2f\", ($COVERED_STATEMENTS/$TOTAL_STATEMENTS)*100}")
+              fi
+            fi
+            
+            # Méthode 5: Fallback - chercher n'importe quel pourcentage dans le fichier
+            if [ "$COVERAGE_SCORE" = "0" ]; then
+              COVERAGE_SCORE=$(grep -oE 'percent="[0-9.]+"' reports/metrics/coverage.xml | head -1 | grep -oE '[0-9.]+' || echo "0")
+            fi
+            
+            # Arrondir à 2 décimales
+            COVERAGE_SCORE=$(printf "%.2f" "$COVERAGE_SCORE" 2>/dev/null || echo "0")
+            
+            echo "📊 Couverture extraite: ${COVERAGE_SCORE}%"
+          else
+            echo "⚠️ Fichier coverage.xml non trouvé"
           fi
 
           # Analyser PHPStan
