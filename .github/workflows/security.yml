@@ -699,6 +699,12 @@ jobs:
       - name: 🚨 Create critical security issue
         if: (needs.security-deep-scan.outputs.critical-vulnerabilities > 0 || needs.dependency-check.outputs.critical-vuln-count > 0 || needs.security-deep-scan.outputs.secrets-found > 0) && (github.event.inputs.create_issue == 'true' || github.event.inputs.create_issue == '')
         uses: actions/github-script@v7
+        env:
+          EXECUTIVE_SUMMARY: ${{ env.EXECUTIVE_SUMMARY }}
+          SECRETS_DETAILS: ${{ env.SECRETS_DETAILS }}
+          DEPENDENCIES_DETAILS: ${{ env.DEPENDENCIES_DETAILS }}
+          CODE_VULNERABILITIES_DETAILS: ${{ env.CODE_VULNERABILITIES_DETAILS }}
+          ENV_FILES_DETAILS: ${{ env.ENV_FILES_DETAILS }}
         with:
           script: |
             const criticalVulns = '${{ needs.security-deep-scan.outputs.critical-vulnerabilities || 0 }}';
@@ -715,11 +721,18 @@ jobs:
             const emoji = isCritical ? '🚨' : (isHigh ? '⚠️' : 'ℹ️');
 
             const title = `${emoji} ALERTE SÉCURITÉ ${severity} - ${new Date().toISOString().split('T')[0]}`;
+            
+            const executiveSummary = process.env.EXECUTIVE_SUMMARY || '';
+            const secretsDetails = process.env.SECRETS_DETAILS || '';
+            const dependenciesDetails = process.env.DEPENDENCIES_DETAILS || '';
+            const codeVulnsDetails = process.env.CODE_VULNERABILITIES_DETAILS || '';
+            const envFilesDetails = process.env.ENV_FILES_DETAILS || '';
+            
             const body = `## ${emoji} Vulnérabilités ${severity} Détectées
 
             Le scan de sécurité approfondi a détecté des vulnérabilités sur la branche \`${{ github.ref_name }}\`.
 
-            ${{ env.EXECUTIVE_SUMMARY }}
+            ${executiveSummary}
 
             ### 📊 Résumé Détaillé des Menaces
             - **🔴 Vulnérabilités critiques (code)**: ${criticalVulns}
@@ -743,13 +756,13 @@ jobs:
 
             ## 🔍 DÉTAILS DES DÉTECTIONS
 
-            ${{ env.SECRETS_DETAILS }}
+            ${secretsDetails}
 
-            ${{ env.DEPENDENCIES_DETAILS }}
+            ${dependenciesDetails}
 
-            ${{ env.CODE_VULNERABILITIES_DETAILS }}
+            ${codeVulnsDetails}
 
-            ${{ env.ENV_FILES_DETAILS }}
+            ${envFilesDetails}
 
             ## 📋 GUIDE DE RÉSOLUTION
 

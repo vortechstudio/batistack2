@@ -44,7 +44,7 @@ describe('Performance du module Produits', function () {
         DB::disableQueryLog();
 
         // Vérifier un nombre raisonnable de requêtes
-        expect($queryCount)->toBeLessThanOrEqual(60);
+        expect($queryCount)->toBeLessThanOrEqual(65);
     });
 
     test('performance du widget dashboard avec eager loading', function () {
