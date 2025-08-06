@@ -1,50 +1,54 @@
-name: Semantic Release
+name: 📦 Release
 
 on:
   push:
-    branches:
-      - production
-
-permissions:
-  contents: read # for checkout
+    tags: [ 'v*' ]
+  workflow_dispatch:
 
 jobs:
   release:
-    name: Run semantic-release
+    name: 📦 Create Release
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
-      id-token: write # to enable use of OIDC for npm provenance
-
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # important pour les tags
+          fetch-depth: 0
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install semantic-release
-        run: npm install -g semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github
-
-      - name: Run semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: semantic-release
-
-      - name: Send Slack notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: |
-            🎉 Nouvelle release `${{ steps.semantic.outputs.new_release_version }}`
-            Consultez : https://github.com/vortechstudio/batistack2/releases
-
-      # Ajouter génération automatique du changelog
-      - name: Generate Changelog
+      - name: 📋 Generate changelog
+        id: changelog
         run: |
-          npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
+          # Générer le changelog depuis le dernier tag
+          LAST_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then
+            CHANGELOG=$(git log $LAST_TAG..HEAD --pretty=format:"- %s" --no-merges)
+          else
+            CHANGELOG=$(git log --pretty=format:"- %s" --no-merges)
+          fi
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
+      - name: 📦 Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ## 🎉 Nouvelle version de Batistack
+
+            ### 📋 Changements
+            ${{ steps.changelog.outputs.changelog }}
+
+            ### 🏗️ Modules mis à jour
+            Cette version inclut des améliorations sur les modules suivants :
+            - 🏢 Chantiers
+            - 👥 RH
+            - 🤝 Tiers
+            - 💼 Commerce
+            - 📦 Produits & Services
+
+          draft: false
+          prerelease: false

@@ -1,0 +1,66 @@
+name: 🔒 Security Scan
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 3 * * *' # Tous les jours à 3h
+  workflow_dispatch:
+
+jobs:
+  security-scan:
+    name: 🔒 Analyse de sécurité
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+
+      - name: 📦 Install dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: 🔍 Composer security audit
+        run: composer audit
+
+      - name: 🛡️ Check for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+
+      - name: 🔒 SARIF security scan
+        uses: github/super-linter/slim@v5
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_PHP_PHPSTAN: true
+          VALIDATE_PHP_PSALM: false
+          VALIDATE_DOCKERFILE_HADOLINT: true
+
+  dependency-check:
+    name: 🔍 Vérification des dépendances
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔍 Run dependency check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'Batistack'
+          path: '.'
+          format: 'ALL'
+
+      - name: 📤 Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: reports/

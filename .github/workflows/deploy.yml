@@ -1,0 +1,77 @@
+name: 🚀 Deploy
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  PHP_VERSION: '8.2'
+
+jobs:
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    environment: staging
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+
+      - name: 📦 Install dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: 🏗️ Build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: 🚀 Deploy to staging
+        run: |
+          echo "🚀 Déploiement vers l'environnement de staging"
+          # Ajoutez ici vos commandes de déploiement
+
+  deploy-production:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.environment == 'production'
+    environment: production
+    needs: [deploy-staging]
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+
+      - name: 📦 Install dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: 🏗️ Build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: 🚀 Deploy to production
+        run: |
+          echo "🚀 Déploiement vers la production"
+          # Ajoutez ici vos commandes de déploiement

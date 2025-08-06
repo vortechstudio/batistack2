@@ -1,0 +1,55 @@
+name: 📊 Code Metrics
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1' # Tous les lundis à 2h
+  workflow_dispatch:
+
+jobs:
+  metrics:
+    name: 📊 Génération des métriques
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+
+      - name: 📦 Install dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: 📊 Generate metrics
+        run: |
+          mkdir -p reports/metrics
+          ./vendor/bin/phpmetrics --report-html=reports/metrics app/
+
+      - name: 📈 Generate complexity report
+        run: |
+          ./vendor/bin/phpstan analyse --no-progress --error-format=json > reports/metrics/phpstan.json || true
+
+      - name: 📋 Generate summary
+        run: |
+          echo "# 📊 Métriques de code - $(date)" > reports/metrics/summary.md
+          echo "" >> reports/metrics/summary.md
+          echo "## 📁 Structure du projet" >> reports/metrics/summary.md
+          find app/ -name "*.php" | wc -l | xargs echo "- Fichiers PHP:" >> reports/metrics/summary.md
+          find tests/ -name "*.php" | wc -l | xargs echo "- Fichiers de tests:" >> reports/metrics/summary.md
+          echo "" >> reports/metrics/summary.md
+          echo "## 🏗️ Modules" >> reports/metrics/summary.md
+          for module in Chantiers RH Tiers Commerce Produit Core; do
+            count=$(find app/Models/$module app/Livewire/*$module* -name "*.php" 2>/dev/null | wc -l)
+            echo "- $module: $count fichiers" >> reports/metrics/summary.md
+          done
+
+      - name: 📤 Upload metrics artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-metrics
+          path: reports/metrics/
+          retention-days: 30

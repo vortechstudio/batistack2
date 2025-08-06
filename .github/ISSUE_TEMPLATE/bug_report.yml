@@ -1,199 +1,161 @@
 name: 🐛 Bug Report
-description: Signaler un bug pour nous aider à corriger quelque chose qui ne fonctionne pas
+description: Signaler un bug ou un dysfonctionnement dans Batistack
 title: "[BUG] "
-labels: ["Bug", "needs-triage"]
+labels: ["bug", "needs-triage"]
 assignees: []
-
 body:
   - type: markdown
     attributes:
       value: |
-        ## 🐛 Rapport de Bug - Batistack
+        Merci de signaler ce bug ! Votre rapport nous aide à améliorer Batistack.
 
-        Merci de prendre le temps de signaler ce bug. Vos informations nous aident à améliorer Batistack.
-
-        **Avant de continuer :**
-        - [ ] J'ai vérifié que ce bug n'a pas déjà été signalé
-        - [ ] J'ai testé avec la dernière version disponible
-        - [ ] J'ai des informations suffisantes pour reproduire le problème
-
-        Vous pouvez utiliser la [syntaxe Markdown](https://help.github.com/articles/getting-started-with-writing-and-formatting-on-github/) pour formater votre rapport.
-
-  - type: textarea
-    id: bug-description
-    attributes:
-      label: 📝 Description du Bug
-      description: Description claire et concise du problème rencontré
-      placeholder: "Décrivez ce qui ne fonctionne pas comme attendu..."
-    validations:
-      required: true
+        **Avant de continuer, vérifiez que :**
+        - [ ] Ce bug n'a pas déjà été signalé
+        - [ ] Vous utilisez la dernière version de Batistack
+        - [ ] Vous avez testé sur un environnement propre
 
   - type: dropdown
-    id: affected-modules
+    id: module
     attributes:
-      label: 🏗️ Module(s) Affecté(s)
-      description: Sélectionnez le ou les modules concernés par ce bug
-      multiple: true
+      label: 🏗️ Module concerné
+      description: Dans quel module le bug se produit-il ?
       options:
         - "🏗️ Chantiers"
         - "👥 RH (Ressources Humaines)"
+        - "🏢 Tiers (Clients/Fournisseurs)"
         - "💰 Commerce (Devis/Factures)"
-        - "🤝 Tiers (Clients/Fournisseurs)"
-        - "🔧 Infrastructure"
-        - "📊 Dashboard"
-        - "⚙️ Core/Système"
+        - "📦 Produits & Services"
+        - "⚙️ Core (Infrastructure)"
+        - "🖥️ Interface/UI"
         - "🔐 Authentification"
-        - "📱 Interface Utilisateur"
-        - "🖥️ Application Desktop (Tauri)"
-        - "📄 Génération PDF"
-        - "📁 Gestion des médias"
-        - "🔔 Notifications"
-        - "❓ Non identifié"
+        - "📱 Application Desktop (Tauri)"
+        - "🌐 API"
+        - "❓ Je ne sais pas"
     validations:
       required: true
 
   - type: dropdown
-    id: bug-severity
+    id: severity
     attributes:
-      label: 🚨 Niveau de Gravité
-      description: Évaluez l'impact du bug sur votre utilisation
+      label: 🚨 Sévérité
+      description: Quel est l'impact de ce bug ?
       options:
-        - "🔴 Critique - Bloque complètement l'utilisation"
-        - "🟠 Élevé - Fonctionnalité importante inutilisable"
-        - "🟡 Moyen - Gêne dans l'utilisation quotidienne"
-        - "🟢 Faible - Problème mineur ou cosmétique"
+        - "🔴 Critique - Bloque l'utilisation"
+        - "🟠 Majeur - Fonctionnalité importante cassée"
+        - "🟡 Mineur - Gêne mais contournable"
+        - "🔵 Cosmétique - Problème d'affichage"
     validations:
       required: true
-
-  - type: input
-    id: environment-version
-    attributes:
-      label: 📦 Version Batistack
-      description: Version de Batistack affectée
-      placeholder: "ex: 1.5.0, develop, master..."
-    validations:
-      required: true
-
-  - type: input
-    id: environment-php
-    attributes:
-      label: 🐘 Version PHP
-      description: Version PHP utilisée
-      placeholder: "ex: 8.3.1"
-
-  - type: input
-    id: environment-database
-    attributes:
-      label: 🗄️ Base de Données
-      description: Type et version de la base de données
-      placeholder: "ex: MySQL 8.0, PostgreSQL 15"
 
   - type: dropdown
-    id: environment-platform
+    id: environment
     attributes:
-      label: 💻 Plateforme
-      description: Sur quelle plateforme le bug se produit-il ?
+      label: 🌍 Environnement
+      description: Sur quel environnement le bug se produit-il ?
       options:
-        - "🌐 Web (Navigateur)"
+        - "🌐 Web (navigateur)"
         - "🖥️ Desktop (Tauri)"
-        - "📱 Mobile (Tauri Mobile)"
-        - "🔧 CLI/Artisan"
-        - "⚙️ Background Jobs"
+        - "📱 Mobile/PWA"
+        - "🧪 Test/Staging"
+        - "🏭 Production"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📝 Description du bug
+      description: Décrivez clairement le problème rencontré
+      placeholder: |
+        Exemple : Lors de la création d'un nouveau chantier, le formulaire ne se soumet pas et affiche une erreur 500.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 🔄 Étapes pour reproduire
+      description: Comment reproduire ce bug ?
+      placeholder: |
+        1. Aller sur la page "Chantiers"
+        2. Cliquer sur "Nouveau chantier"
+        3. Remplir le formulaire avec...
+        4. Cliquer sur "Enregistrer"
+        5. Observer l'erreur
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✅ Comportement attendu
+      description: Que devrait-il se passer normalement ?
+      placeholder: Le chantier devrait être créé et je devrais être redirigé vers sa fiche.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: ❌ Comportement observé
+      description: Que se passe-t-il réellement ?
+      placeholder: Une erreur 500 s'affiche et le chantier n'est pas créé.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📋 Logs/Messages d'erreur
+      description: Copiez ici les logs ou messages d'erreur (si disponibles)
+      render: shell
+      placeholder: |
+        [2025-01-XX XX:XX:XX] local.ERROR: ...
+
+        Ou capture d'écran de l'erreur
 
   - type: input
-    id: browser-info
+    id: version
     attributes:
-      label: 🌐 Navigateur (si applicable)
-      description: Navigateur et version utilisés
-      placeholder: "ex: Chrome 120.0, Firefox 121.0, Safari 17.0"
+      label: 📦 Version de Batistack
+      description: Quelle version utilisez-vous ?
+      placeholder: "v1.12.0"
+    validations:
+      required: true
 
   - type: textarea
-    id: steps-reproduce
+    id: browser
     attributes:
-      label: 🔄 Étapes pour Reproduire
-      description: Décrivez précisément les étapes pour reproduire le bug
+      label: 🌐 Informations navigateur/système
+      description: Navigateur, OS, version...
       placeholder: |
-        1. Aller à '...'
-        2. Cliquer sur '...'
-        3. Remplir le champ '...'
-        4. Voir l'erreur
-      value: |
-        1.
-        2.
-        3.
-        4.
-    validations:
-      required: true
+        - OS: Windows 11
+        - Navigateur: Chrome 120.0.0.0
+        - Résolution: 1920x1080
+        - Version PHP: 8.3
+        - Version Laravel: 11.x
 
   - type: textarea
-    id: expected-behavior
+    id: additional
     attributes:
-      label: ✅ Comportement Attendu
-      description: Décrivez ce qui devrait se passer normalement
-      placeholder: "Décrivez le comportement attendu..."
-    validations:
-      required: true
-
-  - type: textarea
-    id: actual-behavior
-    attributes:
-      label: ❌ Comportement Actuel
-      description: Décrivez ce qui se passe réellement
-      placeholder: "Décrivez ce qui se passe à la place..."
-    validations:
-      required: true
-
-  - type: textarea
-    id: error-messages
-    attributes:
-      label: 🚫 Messages d'Erreur
-      description: Copiez-collez les messages d'erreur complets (logs, console, etc.)
-      placeholder: "Collez ici les messages d'erreur, stack traces, logs..."
-      render: text
-
-  - type: textarea
-    id: additional-context
-    attributes:
-      label: 📋 Contexte Supplémentaire
-      description: Informations additionnelles qui pourraient aider (configuration spéciale, données de test, etc.)
-      placeholder: "Ajoutez toute information supplémentaire utile..."
-
-  - type: textarea
-    id: files-attachments
-    attributes:
-      label: 📎 Fichiers Joints
-      description: Screenshots, vidéos, logs, fichiers de configuration
+      label: ➕ Informations supplémentaires
+      description: Tout autre détail utile (captures d'écran, workarounds, etc.)
       placeholder: |
-        Vous pouvez glisser-déposer des fichiers ici ou utiliser des liens.
-
-        Types de fichiers utiles :
-        - Screenshots/captures d'écran
-        - Vidéos de reproduction du bug
-        - Logs Laravel (storage/logs/laravel.log)
-        - Logs de la console navigateur
-        - Fichiers de configuration (.env masqué)
+        - Captures d'écran
+        - Contournement possible
+        - Fréquence du problème
+        - Impact sur les utilisateurs
 
   - type: checkboxes
-    id: additional-checks
+    id: checklist
     attributes:
-      label: ✅ Vérifications Supplémentaires
-      description: Cochez les éléments que vous avez vérifiés
+      label: ✅ Checklist
       options:
-        - label: "J'ai vidé le cache de l'application (`php artisan cache:clear`)"
-        - label: "J'ai vidé le cache de configuration (`php artisan config:clear`)"
-        - label: "J'ai vérifié les logs Laravel pour des erreurs supplémentaires"
-        - label: "J'ai testé avec un autre navigateur/environnement"
-        - label: "J'ai vérifié que mes données de test sont valides"
-        - label: "J'ai testé en mode développement et production"
-
-  - type: dropdown
-    id: willing-to-help
-    attributes:
-      label: 🤝 Contribution
-      description: Seriez-vous disposé(e) à aider à résoudre ce bug ?
-      options:
-        - "✅ Oui, je peux aider à investiguer"
-        - "✅ Oui, je peux tester des corrections"
-        - "✅ Oui, je peux proposer une solution"
-        - "❓ Peut-être, selon ma disponibilité"
-        - "❌ Non, je ne peux pas contribuer"
+        - label: J'ai vérifié que ce bug n'existe pas déjà
+          required: true
+        - label: J'ai testé sur la dernière version
+          required: true
+        - label: J'ai fourni toutes les informations nécessaires
+          required: true
+        - label: J'ai masqué les informations sensibles (mots de passe, tokens, etc.)
+          required: true
