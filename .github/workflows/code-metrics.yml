@@ -241,9 +241,9 @@ jobs:
             });
 
       - name: 📱 Send Slack notification
-         if: github.event.inputs.slack_notification == 'true' || needs.quality-gate.outputs.quality-status == 'failed'
-         uses: actions/github-script@v7
-         with:
+        if: github.event.inputs.slack_notification == 'true' || needs.quality-gate.outputs.quality-status == 'failed'
+        uses: actions/github-script@v7
+        with:
            script: |
              // Note: Nécessite la configuration d'un webhook Slack dans les secrets
              // SLACK_WEBHOOK doit être défini dans les secrets du repository
