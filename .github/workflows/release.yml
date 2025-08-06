@@ -9,7 +9,6 @@ permissions:
   issues: write
   pull-requests: write
   contents: write
-  id-tokens: write
 
 
 jobs:
