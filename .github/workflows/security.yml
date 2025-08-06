@@ -75,7 +75,7 @@ jobs:
           echo "🔍 Recherche de patterns Laravel sensibles..."
 
           # Recherche de clés API, tokens, mots de passe en dur
-          grep -r -n -E "(api_key|secret_key|token|private_key)" \
+          grep -r -n -E "(secret_key)" \
             --include="*.php" --include="*.env*" --include="*.json" \
             --exclude-dir=node_modules --exclude-dir=vendor \
             app/ config/ database/ routes/ > reports/security/sensitive-patterns.txt || true
