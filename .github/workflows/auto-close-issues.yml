@@ -4,6 +4,11 @@ on:
   pull_request:
     types: [closed]
 
+permissions:
+  issues: write
+  pull-requests: read
+  contents: read
+
 jobs:
   close-linked-issues:
     runs-on: ubuntu-latest
@@ -27,7 +32,7 @@ jobs:
       uses: actions/github-script@v7
       with:
         script: |
-          const body = context.payload.pull_request.body
+          const body = (context.payload.pull_request.body || '')
           const issueNumbers = body.match(/#\d+/g) || []
           return issueNumbers.map(num => num.slice(1))
 
@@ -39,8 +44,11 @@ jobs:
       with:
         script: |
           const issues = JSON.parse('${{ steps.get-issues.outputs.result }}')
-          issues.forEach(async number => {
+          
+          for (const number of issues) {
             if (process.env.DRY_RUN === 'false') {
+              console.log(`Fermeture de l'issue #${number}...`)
+              
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -54,5 +62,11 @@ jobs:
                 issue_number: number,
                 body: `Fermeture automatique : Résolu par PR #${{ github.event.pull_request.number }}`
               })
+              
+              console.log(`Issue #${number} fermée avec succès`)
+            } else {
+              console.log(`[DRY RUN] Fermeture simulée de l'issue #${number}`)
             }
-          })
+          }
+          
+          console.log(`Traitement terminé pour ${issues.length} issue(s)`)
