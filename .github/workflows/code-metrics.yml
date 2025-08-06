@@ -59,6 +59,12 @@ jobs:
       - name: 📦 Install dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🔧 Build assets
+        run: npm run build
+
       - name: 📁 Create reports directory
         run: mkdir -p reports/metrics
 
@@ -91,67 +97,67 @@ jobs:
           MAINTAINABILITY_SCORE=0
           COVERAGE_SCORE=0
           VIOLATIONS_COUNT=0
-          
+
           # Analyser PHPMetrics (si le fichier JSON existe)
           if [ -f "reports/metrics/metrics.json" ]; then
             # Extraire les métriques principales (approximation)
             COMPLEXITY_SCORE=$(jq -r '.complexity // 0' reports/metrics/metrics.json 2>/dev/null || echo "0")
             MAINTAINABILITY_SCORE=$(jq -r '.maintainability // 0' reports/metrics/metrics.json 2>/dev/null || echo "0")
           fi
-          
+
           # Analyser la couverture de code
           if [ -f "reports/metrics/coverage.xml" ]; then
             COVERAGE_SCORE=$(grep -o 'percent="[0-9.]*"' reports/metrics/coverage.xml | head -1 | grep -o '[0-9.]*' || echo "0")
           fi
-          
+
           # Analyser PHPStan
           if [ -f "reports/metrics/phpstan.json" ]; then
             VIOLATIONS_COUNT=$(jq '.totals.file_errors // 0' reports/metrics/phpstan.json 2>/dev/null || echo "0")
           fi
-          
+
           # Définir les seuils de qualité
           MIN_COVERAGE=70
           MAX_VIOLATIONS=10
           MAX_COMPLEXITY=10
-          
+
           # Vérifier les seuils
           echo "📊 Métriques de qualité:"
           echo "- Couverture de code: ${COVERAGE_SCORE}% (min: ${MIN_COVERAGE}%)"
           echo "- Violations PHPStan: ${VIOLATIONS_COUNT} (max: ${MAX_VIOLATIONS})"
           echo "- Complexité moyenne: ${COMPLEXITY_SCORE} (max: ${MAX_COMPLEXITY})"
-          
+
           # Déterminer le statut global
           if (( $(echo "$COVERAGE_SCORE < $MIN_COVERAGE" | bc -l) )); then
             echo "❌ Couverture de code insuffisante: ${COVERAGE_SCORE}% < ${MIN_COVERAGE}%"
             QUALITY_STATUS="failed"
           fi
-          
+
           if (( VIOLATIONS_COUNT > MAX_VIOLATIONS )); then
             echo "❌ Trop de violations PHPStan: ${VIOLATIONS_COUNT} > ${MAX_VIOLATIONS}"
             QUALITY_STATUS="failed"
           fi
-          
+
           # Exporter les résultats
           echo "status=$QUALITY_STATUS" >> $GITHUB_OUTPUT
           echo "complexity=$COMPLEXITY_SCORE" >> $GITHUB_OUTPUT
           echo "maintainability=$MAINTAINABILITY_SCORE" >> $GITHUB_OUTPUT
           echo "coverage=$COVERAGE_SCORE" >> $GITHUB_OUTPUT
           echo "violations=$VIOLATIONS_COUNT" >> $GITHUB_OUTPUT
-          
+
           # Créer un résumé détaillé
           cat > reports/metrics/quality-summary.md << EOF
           # 📊 Rapport de Qualité - $(date)
-          
+
           ## 🎯 Statut Global: $([ "$QUALITY_STATUS" = "success" ] && echo "✅ SUCCÈS" || echo "❌ ÉCHEC")
-          
+
           ## 📈 Métriques Principales
           - **Couverture de code**: ${COVERAGE_SCORE}% $([ $(echo "$COVERAGE_SCORE >= $MIN_COVERAGE" | bc -l) -eq 1 ] && echo "✅" || echo "❌")
           - **Violations PHPStan**: ${VIOLATIONS_COUNT} $([ $VIOLATIONS_COUNT -le $MAX_VIOLATIONS ] && echo "✅" || echo "❌")
           - **Complexité moyenne**: ${COMPLEXITY_SCORE}
-          
+
           ## 📁 Structure du Projet
           EOF
-          
+
           # Ajouter les statistiques de fichiers
           echo "- Fichiers PHP: $(find app/ -name "*.php" | wc -l)" >> reports/metrics/quality-summary.md
           echo "- Fichiers de tests: $(find tests/ -name "*.php" | wc -l)" >> reports/metrics/quality-summary.md
@@ -161,7 +167,7 @@ jobs:
             count=$(find app/Models/$module app/Livewire/*$module* -name "*.php" 2>/dev/null | wc -l)
             echo "- $module: $count fichiers" >> reports/metrics/quality-summary.md
           done
-          
+
           # Échec si quality gate échoue
           if [ "$QUALITY_STATUS" = "failed" ]; then
             echo "🚫 Quality Gate échoué - Les seuils de qualité ne sont pas respectés"
@@ -183,10 +189,10 @@ jobs:
           script: |
             const fs = require('fs');
             const path = 'reports/metrics/quality-summary.md';
-            
+
             if (fs.existsSync(path)) {
               const summary = fs.readFileSync(path, 'utf8');
-              
+
               await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
@@ -211,27 +217,27 @@ jobs:
           script: |
             const title = `🚨 Quality Gate Failed - ${new Date().toISOString().split('T')[0]}`;
             const body = `## 🚫 Quality Gate Failure
-            
+
             Le workflow de métriques de code a échoué sur la branche \`${{ github.ref_name }}\`.
-            
+
             ### 📊 Métriques
             - **Couverture de code**: ${{ needs.quality-gate.outputs.coverage-score }}%
             - **Violations PHPStan**: ${{ needs.quality-gate.outputs.violations-count }}
             - **Complexité**: ${{ needs.quality-gate.outputs.complexity-score }}
-            
+
             ### 🔗 Liens
             - [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             - [Commit](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
-            
+
             ### 📋 Actions Requises
             - [ ] Améliorer la couverture de tests
             - [ ] Corriger les violations PHPStan
             - [ ] Réduire la complexité du code
             - [ ] Relancer le workflow après corrections
-            
+
             ---
             *Issue créée automatiquement par le workflow Code Metrics*`;
-            
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -247,21 +253,21 @@ jobs:
            script: |
              // Note: Nécessite la configuration d'un webhook Slack dans les secrets
              // SLACK_WEBHOOK doit être défini dans les secrets du repository
-             
+
              const webhookUrl = '${{ secrets.SLACK_WEBHOOK }}';
-             
+
              if (!webhookUrl) {
                console.log('⚠️ SLACK_WEBHOOK non configuré dans les secrets du repository');
                return;
              }
-             
+
              const status = '${{ needs.quality-gate.outputs.quality-status }}';
              const coverage = '${{ needs.quality-gate.outputs.coverage-score }}';
              const violations = '${{ needs.quality-gate.outputs.violations-count }}';
-             
+
              const emoji = status === 'success' ? '✅' : '❌';
              const color = status === 'success' ? 'good' : 'danger';
-             
+
              const message = {
                text: `${emoji} Code Metrics - ${status.toUpperCase()}`,
                attachments: [{
@@ -295,7 +301,7 @@ jobs:
                  }]
                }]
              };
-             
+
              try {
                const response = await fetch(webhookUrl, {
                  method: 'POST',
@@ -304,7 +310,7 @@ jobs:
                  },
                  body: JSON.stringify(message)
                });
-               
+
                if (response.ok) {
                  console.log('✅ Notification Slack envoyée avec succès');
                } else {
