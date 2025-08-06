@@ -30,6 +30,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Purifier;
+use Illuminate\Support\Facades\DB; // Ajout de l'import DB
+use Illuminate\Support\Facades\Log; // Ajout pour le logging des erreurs
 
 class ProduitShow extends Component implements HasActions, HasSchemas
 {
@@ -203,109 +205,192 @@ class ProduitShow extends Component implements HasActions, HasSchemas
                         ]),
             ])
             ->using(function (array $data) {
-                // Mise à jour des données principales du produit
-
-                if (isset($data['description'])) {
-                    $data['description'] = Purifier::clean($data['description'], [
-                        'HTML.Allowed' => 'p,br,strong,em,u,ol,ul,li,h1,h2,h3,h4,h5,h6',
-                        'HTML.ForbiddenElements' => 'script,style,iframe,object,embed,form,input,button',
-                        'Attr.AllowedFrameTargets' => [],
-                        'HTML.SafeIframe' => false,
-                        'URI.DisableExternalResources' => true,
-                    ]);
-                }
-
-                $this->produit->update([
-                    'name' => $data['name'],
-                    'serial_number' => $data['serial_number'] ?? null,
-                    'achat' => $data['achat'] ?? false,
-                    'vente' => $data['vente'] ?? false,
-                    'category_id' => $data['category_id'],
-                    'entrepot_id' => $data['entrepot_id'],
-                    'code_comptable_vente' => $data['code_comptable_vente'] ?? null,
-                    'description' => $data['description'] ?? null,
-                    'poids_value' => $data['poids_value'] ?? null,
-                    'poids_unite' => $data['poids_unite'] ?? null,
-                    'longueur' => $data['longueur'] ?? null,
-                    'largeur' => $data['largeur'] ?? null,
-                    'hauteur' => $data['hauteur'] ?? null,
-                    'llh_unite' => $data['llh_unite'] ?? null,
-                    'limit_stock' => $data['limit_stock'] ?? null,
-                    'optimal_stock' => $data['optimal_stock'] ?? null,
-                ]);
-
-                // Gestion des tarifs clients
-                if (isset($data['tarifClient']) && is_array($data['tarifClient'])) {
-                    // Supprimer les anciens tarifs clients
-                    $this->produit->tarifsClient()->delete();
-
-                    // Créer les nouveaux tarifs clients
-                    foreach ($data['tarifClient'] as $tarifData) {
-                        if (!empty($tarifData['prix_unitaire']) && !empty($tarifData['taux_tva'])) {
-                            TarifClient::create([
-                                'produit_id' => $this->produit->id,
-                                'prix_unitaire' => (float) $tarifData['prix_unitaire'],
-                                'taux_tva' => (float) $tarifData['taux_tva'],
+                try {
+                    // Démarrer une transaction pour assurer la cohérence des données
+                    DB::transaction(function () use ($data) {
+                        // Sanitisation de la description avant sauvegarde
+                        if (isset($data['description'])) {
+                            $data['description'] = Purifier::clean($data['description'], [
+                                'HTML.Allowed' => 'p,br,strong,em,u,ol,ul,li,h1,h2,h3,h4,h5,h6',
+                                'HTML.ForbiddenElements' => 'script,style,iframe,object,embed,form,input,button',
+                                'Attr.AllowedFrameTargets' => [],
+                                'HTML.SafeIframe' => false,
+                                'URI.DisableExternalResources' => true,
                             ]);
                         }
-                    }
-                }
 
-                // Gestion des tarifs fournisseurs
-                if (isset($data['tarifFournisseur']) && is_array($data['tarifFournisseur'])) {
-                    // Supprimer les anciens tarifs fournisseurs
-                    $this->produit->tarifsFournisseur()->delete();
+                        // Mise à jour des données principales du produit
+                        $this->produit->update([
+                            'name' => $data['name'],
+                            'serial_number' => $data['serial_number'] ?? null,
+                            'achat' => $data['achat'] ?? false,
+                            'vente' => $data['vente'] ?? false,
+                            'category_id' => $data['category_id'],
+                            'entrepot_id' => $data['entrepot_id'],
+                            'code_comptable_vente' => $data['code_comptable_vente'] ?? null,
+                            'description' => $data['description'] ?? null,
+                            'poids_value' => $data['poids_value'] ?? null,
+                            'poids_unite' => $data['poids_unite'] ?? null,
+                            'longueur' => $data['longueur'] ?? null,
+                            'largeur' => $data['largeur'] ?? null,
+                            'hauteur' => $data['hauteur'] ?? null,
+                            'llh_unite' => $data['llh_unite'] ?? null,
+                            'limit_stock' => $data['limit_stock'] ?? null,
+                            'optimal_stock' => $data['optimal_stock'] ?? null,
+                        ]);
 
-                    // Créer les nouveaux tarifs fournisseurs
-                    foreach ($data['tarifFournisseur'] as $tarifData) {
-                        if (!empty($tarifData['ref_fournisseur'])) {
-                            TarifFournisseur::create([
-                                'produit_id' => $this->produit->id,
-                                'ref_fournisseur' => $tarifData['ref_fournisseur'],
-                                'qte_minimal' => (float) ($tarifData['qte_minimal'] ?? 1),
-                                'prix_unitaire' => (float) ($tarifData['prix_unitaire'] ?? 0),
-                                'delai_livraison' => (int) ($tarifData['delai_livraison'] ?? 1),
-                                'barrecode' => $tarifData['barrecode'] ?? null,
-                            ]);
-                        }
-                    }
-                }
+                        // Gestion des tarifs clients avec validation
+                        if (isset($data['tarifClient']) && is_array($data['tarifClient'])) {
+                            // Supprimer les anciens tarifs clients
+                            $this->produit->tarifsClient()->delete();
 
-                // Gestion du stock initial
-                if (isset($data['stockInitial']) && is_array($data['stockInitial'])) {
-                    foreach ($data['stockInitial'] as $stockData) {
-                        if (!empty($stockData['entrepot_id'])) {
-                            // Vérifier si un stock existe déjà pour ce produit et cet entrepôt
-                            $existingStock = ProduitStock::where('produit_id', $this->produit->id)
-                                ->where('entrepot_id', $stockData['entrepot_id'])
-                                ->first();
+                            // Créer les nouveaux tarifs clients avec validation
+                            foreach ($data['tarifClient'] as $tarifData) {
+                                if (!empty($tarifData['prix_unitaire']) && !empty($tarifData['taux_tva'])) {
+                                    // Validation des données avant création
+                                    $prixUnitaire = (float) $tarifData['prix_unitaire'];
+                                    $tauxTva = (float) $tarifData['taux_tva'];
 
-                            if ($existingStock) {
-                                // Mettre à jour le stock existant
-                                $existingStock->update([
-                                    'quantite' => (int) ($stockData['quantite'] ?? 0),
-                                ]);
-                            } else {
-                                // Créer un nouveau stock
-                                ProduitStock::create([
-                                    'produit_id' => $this->produit->id,
-                                    'entrepot_id' => $stockData['entrepot_id'],
-                                    'quantite' => (int) ($stockData['quantite'] ?? 0),
-                                ]);
+                                    if ($prixUnitaire < 0) {
+                                        throw new \InvalidArgumentException('Le prix unitaire ne peut pas être négatif');
+                                    }
+
+                                    if ($tauxTva < 0 || $tauxTva > 100) {
+                                        throw new \InvalidArgumentException('Le taux TVA doit être entre 0 et 100');
+                                    }
+
+                                    TarifClient::create([
+                                        'produit_id' => $this->produit->id,
+                                        'prix_unitaire' => $prixUnitaire,
+                                        'taux_tva' => $tauxTva,
+                                    ]);
+                                }
                             }
                         }
-                    }
+
+                        // Gestion des tarifs fournisseurs avec validation
+                        if (isset($data['tarifFournisseur']) && is_array($data['tarifFournisseur'])) {
+                            // Supprimer les anciens tarifs fournisseurs
+                            $this->produit->tarifsFournisseur()->delete();
+
+                            // Créer les nouveaux tarifs fournisseurs avec validation
+                            foreach ($data['tarifFournisseur'] as $tarifData) {
+                                if (!empty($tarifData['ref_fournisseur'])) {
+                                    // Validation des données
+                                    $qteMinimal = (float) ($tarifData['qte_minimal'] ?? 1);
+                                    $prixUnitaire = (float) ($tarifData['prix_unitaire'] ?? 0);
+                                    $delaiLivraison = (int) ($tarifData['delai_livraison'] ?? 1);
+
+                                    if ($qteMinimal < 0) {
+                                        throw new \InvalidArgumentException('La quantité minimale ne peut pas être négative');
+                                    }
+
+                                    if ($prixUnitaire < 0) {
+                                        throw new \InvalidArgumentException('Le prix unitaire ne peut pas être négatif');
+                                    }
+
+                                    if ($delaiLivraison < 0) {
+                                        throw new \InvalidArgumentException('Le délai de livraison ne peut pas être négatif');
+                                    }
+
+                                    TarifFournisseur::create([
+                                        'produit_id' => $this->produit->id,
+                                        'ref_fournisseur' => $tarifData['ref_fournisseur'],
+                                        'qte_minimal' => $qteMinimal,
+                                        'prix_unitaire' => $prixUnitaire,
+                                        'delai_livraison' => $delaiLivraison,
+                                        'barrecode' => $tarifData['barrecode'] ?? null,
+                                    ]);
+                                }
+                            }
+                        }
+
+                        // Gestion du stock initial avec validation
+                        if (isset($data['stockInitial']) && is_array($data['stockInitial'])) {
+                            foreach ($data['stockInitial'] as $stockData) {
+                                if (!empty($stockData['entrepot_id'])) {
+                                    $quantite = (int) ($stockData['quantite'] ?? 0);
+
+                                    // Validation de la quantité
+                                    if ($quantite < 0) {
+                                        throw new \InvalidArgumentException('La quantité ne peut pas être négative');
+                                    }
+
+                                    // Vérifier si l'entrepôt existe et est actif
+                                    $entrepotExists = Entrepot::where('id', $stockData['entrepot_id'])
+                                        ->where('status', 1)
+                                        ->exists();
+
+                                    if (!$entrepotExists) {
+                                        throw new \InvalidArgumentException('L\'entrepôt spécifié n\'existe pas ou n\'est pas actif');
+                                    }
+
+                                    // Vérifier si un stock existe déjà pour ce produit et cet entrepôt
+                                    $existingStock = ProduitStock::where('produit_id', $this->produit->id)
+                                        ->where('entrepot_id', $stockData['entrepot_id'])
+                                        ->first();
+
+                                    if ($existingStock) {
+                                        // Mettre à jour le stock existant
+                                        $existingStock->update([
+                                            'quantite' => $quantite,
+                                        ]);
+                                    } else {
+                                        // Créer un nouveau stock
+                                        ProduitStock::create([
+                                            'produit_id' => $this->produit->id,
+                                            'entrepot_id' => $stockData['entrepot_id'],
+                                            'quantite' => $quantite,
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
+
+                        // Recharger le produit avec ses relations pour refléter les changements
+                        $this->produit->load(['tarifsClient', 'tarifsFournisseur', 'stocks']);
+                    });
+
+                    // Notification de succès (en dehors de la transaction)
+                    \Filament\Notifications\Notification::make()
+                        ->title('Produit mis à jour')
+                        ->body('Le produit a été mis à jour avec succès.')
+                        ->success()
+                        ->send();
+
+                } catch (\InvalidArgumentException $e) {
+                    // Erreur de validation des données
+                    Log::warning('Erreur de validation lors de la mise à jour du produit', [
+                        'produit_id' => $this->produit->id,
+                        'error' => $e->getMessage(),
+                        'data' => $data
+                    ]);
+
+                    \Filament\Notifications\Notification::make()
+                        ->title('Erreur de validation')
+                        ->body('Erreur de validation : ' . $e->getMessage())
+                        ->danger()
+                        ->send();
+
+                    throw $e; // Re-lancer l'exception pour arrêter le processus
+
+                } catch (\Exception $e) {
+                    // Erreur générale (base de données, etc.)
+                    Log::error('Erreur lors de la mise à jour du produit', [
+                        'produit_id' => $this->produit->id,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                        'data' => $data
+                    ]);
+
+                    \Filament\Notifications\Notification::make()
+                        ->title('Erreur de mise à jour')
+                        ->body('Une erreur est survenue lors de la mise à jour. Veuillez réessayer.')
+                        ->danger()
+                        ->send();
+
+                    throw $e; // Re-lancer l'exception pour que Filament puisse la gérer
                 }
-
-                // Recharger le produit avec ses relations pour refléter les changements
-                $this->produit->load(['tarifsClient', 'tarifsFournisseur', 'stocks']);
-
-                // Notification de succès
-                \Filament\Notifications\Notification::make()
-                    ->title('Produit mis à jour')
-                    ->body('Le produit a été mis à jour avec succès.')
-                    ->success()
-                    ->send();
             });
     }
 
