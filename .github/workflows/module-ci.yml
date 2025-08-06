@@ -231,9 +231,9 @@ jobs:
       - name: 📋 Copy environment file
         run: |
           if [[ "${{ needs.detect-environment.outputs.environment }}" == "production" ]]; then
-            cp .env.example .env
+            echo '${{ secrets.STAGING_ENV }}' > .env
           else
-            cp .env.github .env
+            echo '${{ secrets.GH_ENV }}' > .env
           fi
 
       - name: 🔑 Generate application key

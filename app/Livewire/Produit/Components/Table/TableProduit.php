@@ -143,6 +143,62 @@ final class TableProduit extends Component implements HasActions, HasSchemas, Ha
                     ->label('Catégorie')
                     ->options(Category::query()->pluck('name', 'id')),
 
+                SelectFilter::make('stock_status')
+                    ->label('Statut de stock')
+                    ->options([
+                        'rupture' => 'Rupture',
+                        'critique' => 'Critique',
+                        'faible' => 'Faible',
+                        'normal' => 'Normal',
+                        'aucun' => 'Aucun stock',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (! isset($data['value']) || $data['value'] === '') {
+                            return $query;
+                        }
+
+                        return $query->whereHas('stockPrincipal', function (Builder $stockQuery) use ($data) {
+                            switch ($data['value']) {
+                                case 'rupture':
+                                    $stockQuery->where('quantite', '<=', 0);
+                                    break;
+                                case 'critique':
+                                    $stockQuery->where('quantite', '>', 0)
+                                        ->whereColumn('quantite', '<=', 'produits.limit_stock')
+                                        ->whereNotNull('produits.limit_stock');
+                                    break;
+                                case 'faible':
+                                    $stockQuery->where('quantite', '>', 0)
+                                        ->whereColumn('quantite', '<=', 'produits.optimal_stock')
+                                        ->whereNotNull('produits.optimal_stock')
+                                        ->where(function (Builder $subQuery) {
+                                            $subQuery->whereNull('produits.limit_stock')
+                                                ->orWhereColumn('quantite', '>', 'produits.limit_stock');
+                                        });
+                                    break;
+                                case 'normal':
+                                    $stockQuery->where('quantite', '>', 0)
+                                        ->where(function (Builder $subQuery) {
+                                            $subQuery->where(function (Builder $limitQuery) {
+                                                $limitQuery->whereNull('produits.limit_stock')
+                                                    ->whereNull('produits.optimal_stock');
+                                            })
+                                            ->orWhere(function (Builder $optimalQuery) {
+                                                $optimalQuery->whereNotNull('produits.optimal_stock')
+                                                    ->whereColumn('quantite', '>', 'produits.optimal_stock')
+                                                    ->where(function (Builder $limitSubQuery) {
+                                                        $limitSubQuery->whereNull('produits.limit_stock')
+                                                            ->orWhereColumn('quantite', '>', 'produits.limit_stock');
+                                                    });
+                                            });
+                                        });
+                                    break;
+                                case 'aucun':
+                                    return $stockQuery->whereDoesntHave('stockPrincipal');
+                            }
+                        });
+                    }),
+
                 Filter::make('reference')
                     ->form([
                         TextInput::make('reference')
