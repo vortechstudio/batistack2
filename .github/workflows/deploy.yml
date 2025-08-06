@@ -3,13 +3,13 @@ name: 🚀 Deploy
 on:
   # Déclenchement automatique après la completion réussie des workflows critiques
   workflow_run:
-    workflows: 
+    workflows:
       - "🏗️ Module CI/CD"              # module-ci.yml
-      - "📊 Code Metrics & Quality Gate" # code-metrics.yml  
+      - "📊 Code Metrics & Quality Gate" # code-metrics.yml
       - "🔒 Security Deep Scan"         # security.yml
     types: [completed]
     branches: [ master, production ]
-  
+
   # Déclenchement manuel pour les déploiements d'urgence ou spécifiques
   workflow_dispatch:
     inputs:
@@ -60,8 +60,8 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       (github.event.inputs.skip_validations != 'true') &&
-      (github.event_name == 'workflow_dispatch' || 
-       github.event.workflow_run.conclusion == 'success' || 
+      (github.event_name == 'workflow_dispatch' ||
+       github.event.workflow_run.conclusion == 'success' ||
        github.event.inputs.force_deploy == 'true')
     outputs:
       tests-passed: ${{ steps.check-tests.outputs.passed }}
@@ -73,13 +73,13 @@ jobs:
         run: |
           echo "🚀 Informations sur le déclenchement du déploiement"
           echo "Event name: ${{ github.event_name }}"
-          
+
           if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
             echo "Déclenché par le workflow: ${{ github.event.workflow_run.name }}"
             echo "Statut du workflow déclencheur: ${{ github.event.workflow_run.conclusion }}"
             echo "Branche: ${{ github.event.workflow_run.head_branch }}"
             echo "Commit: ${{ github.event.workflow_run.head_sha }}"
-            
+
             # Vérifier que le workflow déclencheur a réussi
             if [[ "${{ github.event.workflow_run.conclusion }}" != "success" ]]; then
               echo "❌ Le workflow déclencheur a échoué - Arrêt du déploiement"
@@ -93,7 +93,7 @@ jobs:
             echo "Skip validations: ${{ github.event.inputs.skip_validations }}"
             echo "Force deploy: ${{ github.event.inputs.force_deploy }}"
           fi
-          
+
           echo "Branche actuelle: ${{ github.ref_name }}"
           echo "Commit actuel: ${{ github.sha }}"
 
@@ -101,34 +101,34 @@ jobs:
         if: github.event_name == 'workflow_run'
         run: |
           echo "🔍 Vérification du statut de tous les workflows critiques..."
-          
+
           # Liste des workflows critiques
           CRITICAL_WORKFLOWS=(
             "🏗️ Module CI/CD"
             "📊 Code Metrics & Quality Gate"
             "🔒 Security Deep Scan"
           )
-          
+
           BRANCH="${{ github.event.workflow_run.head_branch }}"
           ALL_SUCCESS=true
-          
+
           for workflow in "${CRITICAL_WORKFLOWS[@]}"; do
             echo "Vérification du workflow: $workflow"
-            
+
             # Obtenir le statut du dernier run de ce workflow sur la branche
             LATEST_RUN=$(gh run list --workflow="$workflow" --branch="$BRANCH" --limit=1 --json status,conclusion --jq '.[0]')
-            
+
             if [[ "$LATEST_RUN" == "null" || "$LATEST_RUN" == "" ]]; then
               echo "⚠️ Aucun run trouvé pour le workflow: $workflow"
               ALL_SUCCESS=false
               continue
             fi
-            
+
             STATUS=$(echo $LATEST_RUN | jq -r '.status')
             CONCLUSION=$(echo $LATEST_RUN | jq -r '.conclusion')
-            
+
             echo "  Status: $STATUS, Conclusion: $CONCLUSION"
-            
+
             if [[ "$STATUS" != "completed" || "$CONCLUSION" != "success" ]]; then
               echo "❌ Workflow échoué ou incomplet: $workflow"
               ALL_SUCCESS=false
@@ -136,7 +136,7 @@ jobs:
               echo "✅ Workflow réussi: $workflow"
             fi
           done
-          
+
           if [[ "$ALL_SUCCESS" != "true" ]]; then
             echo ""
             echo "❌ Certains workflows critiques ont échoué ou sont incomplets"
@@ -239,7 +239,7 @@ jobs:
         (github.ref == 'refs/heads/master')
       ) &&
       (
-        needs.pre-deployment-checks.outputs.deployment-approved == 'true' || 
+        needs.pre-deployment-checks.outputs.deployment-approved == 'true' ||
         github.event.inputs.skip_validations == 'true' ||
         github.event.inputs.force_deploy == 'true'
       )
@@ -369,11 +369,11 @@ jobs:
 
             # Copier le fichier .env spécifique au staging
             if [ -f ".env.staging" ]; then
-              cp .env.staging .env
+              echo '${{ secrets.STAGING_ENV }}' > .env
               echo "📄 Fichier .env staging configuré"
             else
               echo "⚠️ Fichier .env.staging non trouvé, utilisation de .env.example"
-              cp .env.example .env
+              echo '${{ secrets.STAGING_ENV }}' > .env
               # Générer une nouvelle clé d'application
               php artisan key:generate --force
             fi
@@ -453,7 +453,7 @@ jobs:
         (github.ref == 'refs/heads/production')
       ) &&
       (
-        needs.pre-deployment-checks.outputs.deployment-approved == 'true' || 
+        needs.pre-deployment-checks.outputs.deployment-approved == 'true' ||
         github.event.inputs.skip_validations == 'true' ||
         github.event.inputs.force_deploy == 'true'
       )
@@ -583,11 +583,11 @@ jobs:
 
             # Copier le fichier .env spécifique à la production
             if [ -f ".env.production" ]; then
-              cp .env.production .env
+              echo '${{ secrets.PRODUCTION_ENV }}' > .env
               echo "📄 Fichier .env production configuré"
             else
               echo "⚠️ Fichier .env.production non trouvé, utilisation de .env.example"
-              cp .env.example .env
+              echo '${{ secrets.PRODUCTION_ENV }}' > .env
               # Générer une nouvelle clé d'application
               php artisan key:generate --force
             fi
