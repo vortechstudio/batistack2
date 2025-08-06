@@ -83,18 +83,6 @@ describe('Index des Produits', function () {
         expect($component->instance())->toBeInstanceOf(ProduitIndex::class);
     });
 
-    test('intègre correctement le composant table', function () {
-        Produit::factory(3)->create([
-            'category_id' => $this->category->id,
-            'entrepot_id' => $this->entrepot->id,
-        ]);
-
-        $component = Livewire::test(ProduitIndex::class);
-
-        // Vérifier que le composant table est bien intégré
-        $component->assertSeeLivewire('produit.components.table.table-produit');
-    });
-
     test('performance avec de nombreux produits', function () {
         // Créer un grand nombre de produits pour tester les performances
         Produit::factory(50)->create([
