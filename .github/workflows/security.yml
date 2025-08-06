@@ -117,7 +117,7 @@ jobs:
           echo "🔒 Analyse SARIF avancée..."
           
           # Installation de outils de sécurité supplémentaires
-          composer require --dev psalm/psalm || true
+          composer require --dev vimeo/psalm || true
           
           # Analyse Psalm pour la sécurité
           ./vendor/bin/psalm --output-format=json > reports/security/psalm-security.json || true
