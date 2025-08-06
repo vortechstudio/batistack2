@@ -34,6 +34,11 @@ env:
   PHP_VERSION: '8.3'
   NODE_VERSION: '20'
 
+permissions:
+  issues: write
+  pull-requests: write
+  contents: write
+
 jobs:
   detect-environment:
     name: 🌍 Détection de l'environnement
@@ -74,6 +79,7 @@ jobs:
     needs: detect-environment
     outputs:
       modules: ${{ steps.detect.outputs.modules }}
+      modules-json: ${{ steps.detect.outputs.modules-json }}
       has-changes: ${{ steps.detect.outputs.has-changes }}
       all-modules: ${{ steps.detect.outputs.all-modules }}
     steps:
@@ -88,6 +94,7 @@ jobs:
           # Pour les environnements de staging et production, tester tous les modules
           if [[ "${{ needs.detect-environment.outputs.environment }}" == "staging" || "${{ needs.detect-environment.outputs.environment }}" == "production" ]]; then
             echo "modules=chantiers rh tiers commerce produit core" >> $GITHUB_OUTPUT
+            echo 'modules-json=["chantiers","rh","tiers","commerce","produit","core"]' >> $GITHUB_OUTPUT
             echo "has-changes=true" >> $GITHUB_OUTPUT
             echo "all-modules=true" >> $GITHUB_OUTPUT
             echo "🎯 Mode ${{ needs.detect-environment.outputs.environment }}: tous les modules seront testés"
@@ -96,7 +103,11 @@ jobs:
 
           # Détection manuelle via workflow_dispatch
           if [[ "${{ github.event.inputs.modules }}" != "" && "${{ github.event.inputs.modules }}" != "auto-detect" ]]; then
-            echo "modules=${{ github.event.inputs.modules }}" >> $GITHUB_OUTPUT
+            modules_input="${{ github.event.inputs.modules }}"
+            echo "modules=$modules_input" >> $GITHUB_OUTPUT
+            # Convertir la liste séparée par des espaces en JSON
+            modules_json=$(echo "$modules_input" | sed 's/ /","/g' | sed 's/^/["/' | sed 's/$/"]/')
+            echo "modules-json=$modules_json" >> $GITHUB_OUTPUT
             echo "has-changes=true" >> $GITHUB_OUTPUT
             echo "all-modules=false" >> $GITHUB_OUTPUT
             exit 0
@@ -135,6 +146,16 @@ jobs:
             echo "all-modules=false" >> $GITHUB_OUTPUT
           else
             echo "modules=${modules[*]}" >> $GITHUB_OUTPUT
+            # Convertir le tableau en JSON
+            modules_json="["
+            for i in "${!modules[@]}"; do
+              if [ $i -gt 0 ]; then
+                modules_json+=","
+              fi
+              modules_json+="\"${modules[$i]}\""
+            done
+            modules_json+="]"
+            echo "modules-json=$modules_json" >> $GITHUB_OUTPUT
             echo "has-changes=true" >> $GITHUB_OUTPUT
             echo "all-modules=false" >> $GITHUB_OUTPUT
           fi
@@ -189,7 +210,7 @@ jobs:
     strategy:
       fail-fast: ${{ needs.detect-environment.outputs.environment == 'production' }}
       matrix:
-        module: ${{ fromJson(format('["{0}"]', join(split(needs.detect-changes.outputs.modules, ' '), '","'))) }}
+        module: ${{ fromJson(needs.detect-changes.outputs.modules-json) }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
