@@ -1,8 +1,16 @@
 name: 🚀 Deploy
 
 on:
-  push:
+  # Déclenchement automatique après la completion réussie des workflows critiques
+  workflow_run:
+    workflows: 
+      - "🏗️ Module CI/CD"              # module-ci.yml
+      - "📊 Code Metrics & Quality Gate" # code-metrics.yml  
+      - "🔒 Security Deep Scan"         # security.yml
+    types: [completed]
     branches: [ master, production ]
+  
+  # Déclenchement manuel pour les déploiements d'urgence ou spécifiques
   workflow_dispatch:
     inputs:
       environment:
@@ -27,6 +35,11 @@ on:
           - standard
           - hotfix
           - rollback
+      force_deploy:
+        description: 'Force deployment even if workflows failed (emergency only)'
+        required: false
+        default: false
+        type: boolean
 
 env:
   PHP_VERSION: '8.3'
@@ -45,13 +58,98 @@ jobs:
   pre-deployment-checks:
     name: 🔍 Pre-deployment validations
     runs-on: ubuntu-latest
-    if: github.event.inputs.skip_validations != 'true'
+    if: |
+      (github.event.inputs.skip_validations != 'true') &&
+      (github.event_name == 'workflow_dispatch' || 
+       github.event.workflow_run.conclusion == 'success' || 
+       github.event.inputs.force_deploy == 'true')
     outputs:
       tests-passed: ${{ steps.check-tests.outputs.passed }}
       quality-passed: ${{ steps.check-quality.outputs.passed }}
       security-passed: ${{ steps.check-security.outputs.passed }}
       deployment-approved: ${{ steps.final-check.outputs.approved }}
     steps:
+      - name: 📋 Workflow trigger information
+        run: |
+          echo "🚀 Informations sur le déclenchement du déploiement"
+          echo "Event name: ${{ github.event_name }}"
+          
+          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            echo "Déclenché par le workflow: ${{ github.event.workflow_run.name }}"
+            echo "Statut du workflow déclencheur: ${{ github.event.workflow_run.conclusion }}"
+            echo "Branche: ${{ github.event.workflow_run.head_branch }}"
+            echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+            
+            # Vérifier que le workflow déclencheur a réussi
+            if [[ "${{ github.event.workflow_run.conclusion }}" != "success" ]]; then
+              echo "❌ Le workflow déclencheur a échoué - Arrêt du déploiement"
+              echo "Pour forcer le déploiement malgré l'échec, utilisez le déclenchement manuel avec 'force_deploy: true'"
+              exit 1
+            fi
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "Déclenchement manuel"
+            echo "Environnement cible: ${{ github.event.inputs.environment }}"
+            echo "Type de déploiement: ${{ github.event.inputs.deployment_type }}"
+            echo "Skip validations: ${{ github.event.inputs.skip_validations }}"
+            echo "Force deploy: ${{ github.event.inputs.force_deploy }}"
+          fi
+          
+          echo "Branche actuelle: ${{ github.ref_name }}"
+          echo "Commit actuel: ${{ github.sha }}"
+
+      - name: 🔍 Verify all critical workflows status
+        if: github.event_name == 'workflow_run'
+        run: |
+          echo "🔍 Vérification du statut de tous les workflows critiques..."
+          
+          # Liste des workflows critiques
+          CRITICAL_WORKFLOWS=(
+            "🏗️ Module CI/CD"
+            "📊 Code Metrics & Quality Gate"
+            "🔒 Security Deep Scan"
+          )
+          
+          BRANCH="${{ github.event.workflow_run.head_branch }}"
+          ALL_SUCCESS=true
+          
+          for workflow in "${CRITICAL_WORKFLOWS[@]}"; do
+            echo "Vérification du workflow: $workflow"
+            
+            # Obtenir le statut du dernier run de ce workflow sur la branche
+            LATEST_RUN=$(gh run list --workflow="$workflow" --branch="$BRANCH" --limit=1 --json status,conclusion --jq '.[0]')
+            
+            if [[ "$LATEST_RUN" == "null" || "$LATEST_RUN" == "" ]]; then
+              echo "⚠️ Aucun run trouvé pour le workflow: $workflow"
+              ALL_SUCCESS=false
+              continue
+            fi
+            
+            STATUS=$(echo $LATEST_RUN | jq -r '.status')
+            CONCLUSION=$(echo $LATEST_RUN | jq -r '.conclusion')
+            
+            echo "  Status: $STATUS, Conclusion: $CONCLUSION"
+            
+            if [[ "$STATUS" != "completed" || "$CONCLUSION" != "success" ]]; then
+              echo "❌ Workflow échoué ou incomplet: $workflow"
+              ALL_SUCCESS=false
+            else
+              echo "✅ Workflow réussi: $workflow"
+            fi
+          done
+          
+          if [[ "$ALL_SUCCESS" != "true" ]]; then
+            echo ""
+            echo "❌ Certains workflows critiques ont échoué ou sont incomplets"
+            echo "Le déploiement ne peut pas continuer automatiquement"
+            echo "Pour forcer le déploiement, utilisez le déclenchement manuel avec 'force_deploy: true'"
+            exit 1
+          else
+            echo ""
+            echo "✅ Tous les workflows critiques ont réussi - Déploiement autorisé"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
@@ -135,8 +233,16 @@ jobs:
     name: 🚀 Deploy to Staging (SSH)
     runs-on: ubuntu-latest
     if: |
-      (github.ref == 'refs/heads/master' || github.event.inputs.environment == 'staging') &&
-      (needs.pre-deployment-checks.outputs.deployment-approved == 'true' || github.event.inputs.skip_validations == 'true')
+      (
+        (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'master') ||
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging') ||
+        (github.ref == 'refs/heads/master')
+      ) &&
+      (
+        needs.pre-deployment-checks.outputs.deployment-approved == 'true' || 
+        github.event.inputs.skip_validations == 'true' ||
+        github.event.inputs.force_deploy == 'true'
+      )
     needs: [pre-deployment-checks]
     environment:
       name: staging
@@ -341,8 +447,16 @@ jobs:
     name: 🚀 Deploy to Production (SSH)
     runs-on: ubuntu-latest
     if: |
-      (github.ref == 'refs/heads/production' || github.event.inputs.environment == 'production') &&
-      (needs.pre-deployment-checks.outputs.deployment-approved == 'true' || github.event.inputs.skip_validations == 'true')
+      (
+        (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'production') ||
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production') ||
+        (github.ref == 'refs/heads/production')
+      ) &&
+      (
+        needs.pre-deployment-checks.outputs.deployment-approved == 'true' || 
+        github.event.inputs.skip_validations == 'true' ||
+        github.event.inputs.force_deploy == 'true'
+      )
     needs: [pre-deployment-checks]
     environment:
       name: production

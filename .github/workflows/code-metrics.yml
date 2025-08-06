@@ -5,7 +5,7 @@ on:
     branches: [ develop ]
   pull_request:
     branches: [ master ]
-    types: [ opened, synchronize, reopened ]
+    types: [ closed ]
   schedule:
     - cron: '0 2 * * 1' # Tous les lundis à 2h
   workflow_dispatch:
