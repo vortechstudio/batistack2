@@ -22,6 +22,7 @@
         Suppression des vulnérabilités dans les assets front-end qui ne sont pas exploitables côté serveur
         ]]></notes>
         <filePath regex="true">.*node_modules.*</filePath>
+        <cpe>cpe:/a:*:*</cpe>
     </suppress>
     
     <!-- Exemple de suppression spécifique par CVE (à adapter selon vos besoins) -->
@@ -41,6 +42,7 @@
         Suppression pour un fichier spécifique qui génère des faux positifs
         ]]></notes>
         <filePath regex="true">.*specific-file\.js</filePath>
+        <cpe>cpe:/a:*:*</cpe>
     </suppress>
     -->
 </suppressions>
