@@ -1,4 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<suppressions xmlns="http://jeremylong.github.io/dependency-check/dependency-suppression.1.4.xsd">
-    <!-- add suppression rules here if needed -->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <!-- 
+    Fichier de suppression pour OWASP Dependency Check
+    Utilisé pour supprimer les faux positifs et les vulnérabilités acceptées
+    
+    Exemples de suppressions courantes pour Laravel/PHP:
+    -->
+    
+    <!-- Suppression des vulnérabilités liées aux dépendances de développement -->
+    <suppress>
+        <notes><![CDATA[
+        Suppression des vulnérabilités dans les dépendances de développement uniquement
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/.*</packageUrl>
+        <cpe>cpe:/a:*:*</cpe>
+    </suppress>
+    
+    <!-- Suppression des vulnérabilités dans les assets front-end (si applicable) -->
+    <suppress>
+        <notes><![CDATA[
+        Suppression des vulnérabilités dans les assets front-end qui ne sont pas exploitables côté serveur
+        ]]></notes>
+        <filePath regex="true">.*node_modules.*</filePath>
+    </suppress>
+    
+    <!-- Exemple de suppression spécifique par CVE (à adapter selon vos besoins) -->
+    <!--
+    <suppress>
+        <notes><![CDATA[
+        CVE-XXXX-XXXX: Description de pourquoi cette vulnérabilité est supprimée
+        ]]></notes>
+        <cve>CVE-XXXX-XXXX</cve>
+    </suppress>
+    -->
+    
+    <!-- Suppression par nom de fichier spécifique -->
+    <!--
+    <suppress>
+        <notes><![CDATA[
+        Suppression pour un fichier spécifique qui génère des faux positifs
+        ]]></notes>
+        <filePath regex="true">.*specific-file\.js</filePath>
+    </suppress>
+    -->
 </suppressions>
