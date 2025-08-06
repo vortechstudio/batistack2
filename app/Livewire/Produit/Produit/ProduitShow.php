@@ -29,6 +29,7 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Purifier;
 
 class ProduitShow extends Component implements HasActions, HasSchemas
 {
@@ -91,7 +92,13 @@ class ProduitShow extends Component implements HasActions, HasSchemas
                                         ]),
 
                                     RichEditor::make('description')
-                                        ->label('Description'),
+                                ->label('Description')
+                                ->disableToolbarButtons([
+                                    'attachFiles',
+                                    'codeBlock',
+                                    'link',
+                                ])
+                                ->maxLength(5000),
 
                                     Section::make('Poids')
                                         ->schema([
@@ -197,6 +204,17 @@ class ProduitShow extends Component implements HasActions, HasSchemas
             ])
             ->using(function (array $data) {
                 // Mise à jour des données principales du produit
+
+                if (isset($data['description'])) {
+                    $data['description'] = Purifier::clean($data['description'], [
+                        'HTML.Allowed' => 'p,br,strong,em,u,ol,ul,li,h1,h2,h3,h4,h5,h6',
+                        'HTML.ForbiddenElements' => 'script,style,iframe,object,embed,form,input,button',
+                        'Attr.AllowedFrameTargets' => [],
+                        'HTML.SafeIframe' => false,
+                        'URI.DisableExternalResources' => true,
+                    ]);
+                }
+
                 $this->produit->update([
                     'name' => $data['name'],
                     'serial_number' => $data['serial_number'] ?? null,

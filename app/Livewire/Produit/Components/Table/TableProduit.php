@@ -200,7 +200,7 @@ final class TableProduit extends Component implements HasActions, HasSchemas, Ha
                     }),
 
                 Filter::make('reference')
-                    ->form([
+                    ->schema([
                         TextInput::make('reference')
                             ->label('Référence'),
                     ])

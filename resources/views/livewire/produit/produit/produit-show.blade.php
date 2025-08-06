@@ -28,7 +28,13 @@
                     </div>
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
                         <div class="text-lg font-bold">Description</div>
-                        <div class="text-sm">{{ $produit->description }}</div>
+                        <div class="text-sm">{!! Purifier::clean($produit->description, [
+                            'HTML.Allowed' => 'p,br,strong,em,u,ol,ul,li,h1,h2,h3,h4,h5,h6',
+                            'HTML.ForbiddenElements' => 'script,style,iframe,object,embed,form,input,button',
+                            'Attr.AllowedFrameTargets' => [],
+                            'HTML.SafeIframe' => false,
+                            'URI.DisableExternalResources' => true,
+                        ]) !!}</div>
                     </div>
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
                         <div class="text-lg font-bold">Catégorie</div>
