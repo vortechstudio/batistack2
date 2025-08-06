@@ -24,7 +24,7 @@
                     </div>
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
                         <div class="text-lg font-bold">Code comptable</div>
-                        <div class="text-sm">{{ $produit->codeComptableVente->code }} - {{ $produit->codeComptableVente->account }}</div>
+                        <div class="text-sm">{{ optional($produit->codeComptableVente)->code }} - {{ optional($produit->codeComptableVente)->account }}</div>
                     </div>
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
                         <div class="text-lg font-bold">Description</div>
@@ -32,27 +32,72 @@
                     </div>
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
                         <div class="text-lg font-bold">Catégorie</div>
-                        <div class="text-sm">{{ $produit->category->name }}</div>
+                        <div class="text-sm">{{ optional($produit->category)->name }}</div>
                     </div>
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
                         <div class="text-lg font-bold">Entrepot par default</div>
-                        <div class="text-sm">{{ $produit->entrepot->name }}</div>
+                        <div class="text-sm">{{ optional($produit->entrepot)->name }}</div>
                     </div>
                 </div>
                 <div class="flex flex-col w-1/2">
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
                         <div class="text-lg font-bold">Poids</div>
-                        <div class="text-sm">{{ $produit->poids_value }} {{ $produit->poids_unite->value }}</div>
+                        <div class="text-sm">{{ $produit->poids_value }} {{ optional($produit->poids_unite)->value }}</div>
                     </div>
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
                         <div class="text-lg font-bold">Longueur x Largeur x Hauteur</div>
-                        <div class="text-sm">{{ $produit->longueur }} X {{ $produit->largeur }} X {{ $produit->hauteur }} {{ $produit->llh_unite->value }}</div>
+                        <div class="text-sm">{{ $produit->longueur }} X {{ $produit->largeur }} X {{ $produit->hauteur }} {{ optional($produit->llh_unite)->value }}</div>
                     </div>
                     <div class="flex flex-row justify-between items-center border-separate border-b mb-2">
                         <div class="text-lg font-bold">Date de mise à jour</div>
                         <div class="text-sm">{{ $produit->updated_at->format('d/m/Y H:i:s') }} </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Prix de vente tab content -->
+        <div x-show="tabs === 'price_vente'" class="flex items-center justify-center h-64">
+            <div class="text-center">
+                <div class="text-gray-500 text-lg mb-2">💰</div>
+                <div class="text-gray-600 font-medium">Contenu à venir</div>
+                <div class="text-gray-500 text-sm">Les informations de prix de vente seront affichées ici</div>
+            </div>
+        </div>
+
+        <!-- Prix d'achat tab content -->
+        <div x-show="tabs === 'price_achat'" class="flex items-center justify-center h-64">
+            <div class="text-center">
+                <div class="text-gray-500 text-lg mb-2">🛒</div>
+                <div class="text-gray-600 font-medium">Contenu à venir</div>
+                <div class="text-gray-500 text-sm">Les informations de prix d'achat seront affichées ici</div>
+            </div>
+        </div>
+
+        <!-- Stock tab content -->
+        <div x-show="tabs === 'stock'" class="flex items-center justify-center h-64">
+            <div class="text-center">
+                <div class="text-gray-500 text-lg mb-2">📦</div>
+                <div class="text-gray-600 font-medium">Contenu à venir</div>
+                <div class="text-gray-500 text-sm">Les informations de stock seront affichées ici</div>
+            </div>
+        </div>
+
+        <!-- Objets Référents tab content -->
+        <div x-show="tabs === 'referencial'" class="flex items-center justify-center h-64">
+            <div class="text-center">
+                <div class="text-gray-500 text-lg mb-2">🔗</div>
+                <div class="text-gray-600 font-medium">Contenu à venir</div>
+                <div class="text-gray-500 text-sm">Les objets référents seront affichés ici</div>
+            </div>
+        </div>
+
+        <!-- Statistiques tab content -->
+        <div x-show="tabs === 'statistiques'" class="flex items-center justify-center h-64">
+            <div class="text-center">
+                <div class="text-gray-500 text-lg mb-2">📊</div>
+                <div class="text-gray-600 font-medium">Contenu à venir</div>
+                <div class="text-gray-500 text-sm">Les statistiques seront affichées ici</div>
             </div>
         </div>
     </div>
