@@ -145,7 +145,7 @@ describe('Intégration complète du module Produits', function () {
             ->assertSee('WF-001')
             ->assertSee('Test workflow complet');
 
-        // 3. Modifier le produit via ProduitShow - Supprimer le champ description problématique
+        // 3. Modifier le produit via ProduitShow
         $updateData = [
             'name' => 'Produit Workflow Modifié',
             'serial_number' => 'WF-001-MOD',
@@ -154,6 +154,7 @@ describe('Intégration complète du module Produits', function () {
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'code_comptable_vente' => $this->planComptable->id,
+            'description' => 'Description modifiée du workflow',
             'poids_value' => 2.0,
             'poids_unite' => 'kg',
             'longueur' => 100,
@@ -171,7 +172,8 @@ describe('Intégration complète du module Produits', function () {
         expect($produit->name)->toBe('Produit Workflow Modifié')
             ->and($produit->serial_number)->toBe('WF-001-MOD')
             ->and($produit->achat)->toBeFalse()
-            ->and($produit->limit_stock)->toBe(8.0);
+            ->and($produit->limit_stock)->toBe(8.0)
+            ->and($produit->description)->toBe('Description modifiée du workflow');
 
         // Vérifier que le produit existe toujours avec ses relations de base
         expect($produit->category_id)->toBe($this->category->id)
