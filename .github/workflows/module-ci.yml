@@ -231,9 +231,13 @@ jobs:
       - name: 📋 Copy environment file
         run: |
           if [[ "${{ needs.detect-environment.outputs.environment }}" == "production" ]]; then
-            echo '${{ secrets.STAGING_ENV }}' > .env
+            cat > .env << 'EOF'
+          ${{ secrets.STAGING_ENV }}
+          EOF
           else
-            echo '${{ secrets.GH_ENV }}' > .env
+            cat > .env << 'EOF'
+          ${{ secrets.GH_ENV }}
+          EOF
           fi
 
       - name: 🔑 Generate application key
