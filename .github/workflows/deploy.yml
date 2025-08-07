@@ -2,13 +2,7 @@ name: 🚀 Deploy
 
 on:
   # Déclenchement automatique après la completion réussie des workflows critiques
-  workflow_run:
-    workflows:
-      - "🏗️ Module CI/CD"              # module-ci.yml
-      - "📊 Code Metrics & Quality Gate" # code-metrics.yml
-      - "🔒 Security Deep Scan"         # security.yml
-    types: [completed]
-    branches: [ master, production ]
+
 
   # Déclenchement manuel pour les déploiements d'urgence ou spécifiques
   workflow_dispatch:
@@ -269,7 +263,7 @@ jobs:
           restore-keys: composer-${{ runner.os }}-
 
       - name: 📦 Install Composer dependencies
-        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+        run: composer install --optimize-autoloader --no-interaction --prefer-dist
 
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
