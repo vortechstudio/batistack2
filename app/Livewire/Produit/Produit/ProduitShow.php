@@ -94,13 +94,21 @@ class ProduitShow extends Component implements HasActions, HasSchemas
                                         ]),
 
                                     RichEditor::make('description')
-                                ->label('Description')
-                                ->disableToolbarButtons([
-                                    'attachFiles',
-                                    'codeBlock',
-                                    'link',
-                                ])
-                                ->maxLength(5000),
+                                        ->label('Description')
+                                        ->toolbarButtons([
+                                            'bold',
+                                            'italic',
+                                            'underline',
+                                            'strike',
+                                            'bulletList',
+                                            'orderedList',
+                                            'h2',
+                                            'h3',
+                                            'paragraph',
+                                            'undo',
+                                            'redo',
+                                        ])
+                                        ->maxLength(5000),
 
                                     Section::make('Poids')
                                         ->schema([
