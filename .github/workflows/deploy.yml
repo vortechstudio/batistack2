@@ -269,7 +269,7 @@ jobs:
           restore-keys: composer-${{ runner.os }}-
 
       - name: 📦 Install Composer dependencies
-        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+        run: composer install --optimize-autoloader --no-interaction --prefer-dist
 
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
