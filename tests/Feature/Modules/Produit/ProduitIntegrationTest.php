@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Actions\Produit\NewProduct;
 use App\Livewire\Produit\Components\Table\TableProduit;
+use App\Livewire\Produit\Produit\ProduitShow;
 use App\Models\Core\PlanComptable;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
@@ -76,7 +78,7 @@ describe('Intégration complète du module Produits', function () {
         ];
 
         // Appeler directement l'action NewProduct
-        $produit = app(App\Actions\Produit\NewProduct::class)->handle($data);
+        $produit = app(NewProduct::class)->handle($data);
 
         // Vérifier la création du produit
         expect($produit)->not->toBeNull()
@@ -132,6 +134,57 @@ describe('Intégration complète du module Produits', function () {
             ->assertSee('1'); // Total produits
     });
 
+    test('intégration avec les widgets du dashboard', function () {
+        // Créer plusieurs produits avec différents états
+        $produits = collect();
+
+        // Produit en stock normal
+        $produits->push(Produit::factory()->create([
+            'category_id' => $this->category->id,
+            'entrepot_id' => $this->entrepot->id,
+            'achat' => true,
+            'vente' => true,
+            'limit_stock' => 10,
+            'optimal_stock' => 30,
+        ]));
+
+        // Produit en rupture
+        $produits->push(Produit::factory()->create([
+            'category_id' => $this->category->id,
+            'entrepot_id' => $this->entrepot->id,
+            'achat' => true,
+            'vente' => false,
+            'limit_stock' => 10,
+            'optimal_stock' => 30,
+        ]));
+
+        // Créer des stocks et tarifs
+        foreach ($produits as $index => $produit) {
+            TarifClient::factory()->create([
+                'produit_id' => $produit->id,
+                'prix_unitaire' => 50.00 + ($index * 10),
+            ]);
+
+            ProduitStock::factory()->create([
+                'produit_id' => $produit->id,
+                'entrepot_id' => $this->entrepot->id,
+                'quantite' => $index === 0 ? 50 : 5, // Premier en stock normal, second en rupture
+            ]);
+        }
+
+        // Tester les widgets
+        Livewire::test('produit.components.widgets.dashboard-stat-overview')
+            ->assertSee('2') // Total produits
+            ->assertSee('Total de produits');
+
+        Livewire::test('produit.components.widgets.dashboard-table-produit')
+            ->assertSee($produits[0]->reference)
+            ->assertSee($produits[1]->reference);
+
+        Livewire::test('produit.components.widgets.statistique-chart')
+            ->assertSee('Statistiques des Produits');
+    });
+
     test('gestion des erreurs lors de la création', function () {
         $component = Livewire::test(TableProduit::class);
 
@@ -144,5 +197,22 @@ describe('Intégration complète du module Produits', function () {
 
         // Vérifier les erreurs de validation
         $component->assertHasTableActionErrors(['name', 'category_id', 'entrepot_id']);
+    });
+
+    test('navigation entre les composants', function () {
+        $produit = Produit::factory()->create([
+            'category_id' => $this->category->id,
+            'entrepot_id' => $this->entrepot->id,
+        ]);
+
+        // Test de navigation depuis l'index vers le show
+        $indexComponent = Livewire::test('produit.produit.produit-index');
+        $indexComponent->assertOk();
+
+        // Test d'affichage du produit
+        $showComponent = Livewire::test(ProduitShow::class, ['id' => $produit->id]);
+        $showComponent->assertOk()
+            ->assertSee($produit->name)
+            ->assertSee($produit->reference);
     });
 });
