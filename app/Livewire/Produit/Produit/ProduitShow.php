@@ -41,13 +41,54 @@ class ProduitShow extends Component implements HasActions, HasSchemas
 
     public function mount(int $id)
     {
-        $this->produit = Produit::findOrFail($id);
+        $this->produit = Produit::with(['tarifsClient', 'tarifsFournisseur', 'stocks'])->findOrFail($id);
     }
 
     public function editAction(): EditAction
     {
         return EditAction::make('edit')
-            ->record($this->produit) // Ajouter cette ligne pour spécifier le modèle à éditer
+            ->record($this->produit)
+            ->fillForm(function () {
+                return [
+                    'name' => $this->produit->name,
+                    'serial_number' => $this->produit->serial_number,
+                    'achat' => $this->produit->achat,
+                    'vente' => $this->produit->vente,
+                    'category_id' => $this->produit->category_id,
+                    'entrepot_id' => $this->produit->entrepot_id,
+                    'code_comptable_vente' => $this->produit->code_comptable_vente,
+                    'description' => $this->produit->description,
+                    'poids_value' => $this->produit->poids_value,
+                    'poids_unite' => $this->produit->poids_unite,
+                    'longueur' => $this->produit->longueur,
+                    'largeur' => $this->produit->largeur,
+                    'hauteur' => $this->produit->hauteur,
+                    'llh_unite' => $this->produit->llh_unite,
+                    'limit_stock' => $this->produit->limit_stock,
+                    'optimal_stock' => $this->produit->optimal_stock,
+                    'tarifClient' => $this->produit->tarifsClient->map(function ($tarif) {
+                        return [
+                            'prix_unitaire' => $tarif->prix_unitaire,
+                            'taux_tva' => $tarif->taux_tva,
+                        ];
+                    })->toArray(),
+                    'tarifFournisseur' => $this->produit->tarifsFournisseur->map(function ($tarif) {
+                        return [
+                            'ref_fournisseur' => $tarif->ref_fournisseur,
+                            'qte_minimal' => $tarif->qte_minimal,
+                            'prix_unitaire' => $tarif->prix_unitaire,
+                            'delai_livraison' => $tarif->delai_livraison,
+                            'barrecode' => $tarif->barrecode,
+                        ];
+                    })->toArray(),
+                    'stockInitial' => $this->produit->stocks->map(function ($stock) {
+                        return [
+                            'entrepot_id' => $stock->entrepot_id,
+                            'quantite' => $stock->quantite,
+                        ];
+                    })->toArray(),
+                ];
+            })
             ->schema([
                 Wizard::make([
                             Step::make('Produit')
