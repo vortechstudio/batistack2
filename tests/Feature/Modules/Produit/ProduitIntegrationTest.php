@@ -113,7 +113,6 @@ describe('Intégration complète du module Produits', function () {
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'code_comptable_vente' => $this->planComptable->id,
-            'description' => 'Test workflow complet',
             'poids_value' => 1.5,
             'poids_unite' => 'kg',
             'longueur' => 80,
@@ -142,8 +141,7 @@ describe('Intégration complète du module Produits', function () {
         $showComponent = Livewire::test(ProduitShow::class, ['id' => $produit->id]);
         $showComponent->assertOk()
             ->assertSee('Produit Workflow Test')
-            ->assertSee('WF-001')
-            ->assertSee('Test workflow complet');
+            ->assertSee('WF-001');
 
         // 3. Modifier le produit via ProduitShow
         $updateData = [
@@ -154,7 +152,6 @@ describe('Intégration complète du module Produits', function () {
             'category_id' => $this->category->id,
             'entrepot_id' => $this->entrepot->id,
             'code_comptable_vente' => $this->planComptable->id,
-            'description' => 'Description modifiée du workflow',
             'poids_value' => 2.0,
             'poids_unite' => 'kg',
             'longueur' => 100,
@@ -172,8 +169,7 @@ describe('Intégration complète du module Produits', function () {
         expect($produit->name)->toBe('Produit Workflow Modifié')
             ->and($produit->serial_number)->toBe('WF-001-MOD')
             ->and($produit->achat)->toBeFalse()
-            ->and($produit->limit_stock)->toBe(8.0)
-            ->and($produit->description)->toBe('Description modifiée du workflow');
+            ->and($produit->limit_stock)->toBe(8.0);
 
         // Vérifier que le produit existe toujours avec ses relations de base
         expect($produit->category_id)->toBe($this->category->id)

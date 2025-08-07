@@ -32,6 +32,7 @@ use Livewire\Component;
 use Purifier;
 use Illuminate\Support\Facades\DB; // Ajout de l'import DB
 use Illuminate\Support\Facades\Log; // Ajout pour le logging des erreurs
+use Mews\Purifier\Facades\Purifier as FacadesPurifier;
 
 class ProduitShow extends Component implements HasActions, HasSchemas
 {
@@ -95,19 +96,6 @@ class ProduitShow extends Component implements HasActions, HasSchemas
 
                                     RichEditor::make('description')
                                         ->label('Description')
-                                        ->toolbarButtons([
-                                            'bold',
-                                            'italic',
-                                            'underline',
-                                            'strike',
-                                            'bulletList',
-                                            'orderedList',
-                                            'h2',
-                                            'h3',
-                                            'paragraph',
-                                            'undo',
-                                            'redo',
-                                        ])
                                         ->maxLength(5000),
 
                                     Section::make('Poids')
@@ -218,7 +206,7 @@ class ProduitShow extends Component implements HasActions, HasSchemas
                     DB::transaction(function () use ($data) {
                         // Sanitisation de la description avant sauvegarde
                         if (isset($data['description'])) {
-                            $data['description'] = Purifier::clean($data['description'], [
+                            $data['description'] = FacadesPurifier::clean($data['description'], [
                                 'HTML.Allowed' => 'p,br,strong,em,u,ol,ul,li,h1,h2,h3,h4,h5,h6',
                                 'HTML.ForbiddenElements' => 'script,style,iframe,object,embed,form,input,button',
                                 'Attr.AllowedFrameTargets' => [],
