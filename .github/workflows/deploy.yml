@@ -97,6 +97,9 @@ jobs:
           echo "Branche actuelle: ${{ github.ref_name }}"
           echo "Commit actuel: ${{ github.sha }}"
 
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
       - name: 🔍 Verify all critical workflows status
         if: github.event_name == 'workflow_run'
         run: |
@@ -149,9 +152,6 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ github.token }}
-
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
 
       - name: 🔍 Check latest CI status
         id: check-tests
