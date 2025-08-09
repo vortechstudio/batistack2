@@ -1,5 +1,5 @@
 # 📦 Journal des modifications (Changelog)
-## 🗓️ Version 1.12.0 (2025-07-27)
+## 🗓️ Version 1.13.0 (2025-07-30)
 
 Cette version apporte une **refonte importante de la gestion des notes de frais**, avec de **nouvelles fonctionnalités** pour les salariés et le service RH, ainsi que plusieurs **améliorations techniques** et **correctifs d’interface**.
 
