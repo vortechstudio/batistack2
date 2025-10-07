@@ -20,6 +20,7 @@ use App\Models\Commerce\Facture;
 use App\Models\Commerce\FactureLigne;
 use App\Models\Commerce\FacturePaiement;
 use App\Models\Core\Company;
+use App\Models\Core\ConditionReglement;
 use App\Models\Core\ModeReglement;
 use App\Models\Produit\Category;
 use App\Models\Produit\Entrepot;
@@ -151,6 +152,7 @@ final class DatabaseSeeder extends Seeder
             $this->command->info('✓ Répertoire company créé');
         }
     }
+
 
     /**
      * Création des tiers (clients/fournisseurs)

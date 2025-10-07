@@ -8,7 +8,7 @@ use App\Models\Core\Bank;
 use App\Services\Bridge;
 use Exception;
 use Illuminate\Console\Command;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 final class InstallBankCommand extends Command
 {
@@ -40,8 +40,15 @@ final class InstallBankCommand extends Command
                 $progress->finish();
 
             } catch (Exception $exception) {
+                Bank::create([
+                    'bridge_id' => 1,
+                    'name' => "Banque de Test",
+                    "logo_bank" => 'https://bank.test',
+                    "status_aggegation" => "healthy",
+                    "status_payment" => "healthy",
+                ]);
                 Log::error($exception);
-                $this->error("Erreur lors de l'importation des banques");
+                $this->error("Erreur lors de l'importation des banques, Base primaire insérer");
             }
         }
     }
