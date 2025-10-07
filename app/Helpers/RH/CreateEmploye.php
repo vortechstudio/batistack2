@@ -15,7 +15,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Str;
+use Illuminate\Support\Str;
 
 final class CreateEmploye
 {
@@ -78,13 +78,19 @@ final class CreateEmploye
             'status' => 'draft',
         ]);
 
-        $userBridge = $bridge->post('/aggregation/users', [
-            'external_user_id' => $salarie->matricule,
-        ]);
+        try {
+            $userBridge = $bridge->post('/aggregation/users', [
+                'external_user_id' => $salarie->matricule,
+            ]);
 
-        $salarie->update([
-            'bridge_user_id' => $userBridge['uuid'],
-        ]);
+            $salarie->update([
+                'bridge_user_id' => $userBridge['uuid'],
+            ]);
+        } catch (Exception $ex) {
+            $salarie->update([
+                'bridge_user_id' => null
+            ]);
+        }
 
         try {
             if (! Storage::disk('ged')->exists($salarie->matricule)) {
