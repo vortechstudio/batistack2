@@ -40,15 +40,18 @@ final class InstallBankCommand extends Command
                 $progress->finish();
 
             } catch (Exception $exception) {
-                Bank::create([
-                    'bridge_id' => 1,
-                    'name' => "Banque de Test",
-                    "logo_bank" => 'https://bank.test',
-                    "status_aggegation" => "healthy",
-                    "status_payment" => "healthy",
-                ]);
                 Log::error($exception);
                 $this->error("Erreur lors de l'importation des banques, Base primaire insérer");
+                if (app()->environment('local', 'testing')) {
+                    $this->info("Importation des banques en mode local ou de test, banque de test insérée");
+                    Bank::create([
+                        'bridge_id' => 1,
+                        'name' => "Banque de Test",
+                        "logo_bank" => 'https://bank.test',
+                        "status_aggegation" => "healthy",
+                        "status_payment" => "healthy",
+                    ]);
+                }
             }
         }
     }
