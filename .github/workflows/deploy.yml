@@ -92,7 +92,7 @@ jobs:
           echo "Commit actuel: ${{ github.sha }}"
 
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🔍 Verify all critical workflows status
         if: github.event_name == 'workflow_run'
@@ -246,7 +246,7 @@ jobs:
       staging-url: ${{ steps.deploy.outputs.staging-url }}
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@v2
@@ -266,7 +266,7 @@ jobs:
         run: composer install --optimize-autoloader --no-interaction --prefer-dist
 
       - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -460,7 +460,7 @@ jobs:
       production-url: ${{ steps.deploy.outputs.production-url }}
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@v2
@@ -480,7 +480,7 @@ jobs:
         run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
       - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -735,7 +735,7 @@ jobs:
 
       - name: 📝 Create deployment issue on failure
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const title = `🚨 Échec de déploiement - ${context.ref}`;
